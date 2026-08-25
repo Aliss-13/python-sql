@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.venv/
+.vscode/
+
+# Images
+*.png
+
+# Fichiers texte temporaires
+*.txt
+
+# Sauvegardes / données générées
+*.json
