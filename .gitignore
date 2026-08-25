@@ -11,3 +11,6 @@ __pycache__/
 
 # Sauvegardes / données générées
 *.json
+
+# Base de données
+*.db
