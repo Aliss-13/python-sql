@@ -17,32 +17,32 @@ def menu(cursor, connection):
         print("[q] Quitter")
 
         choix = input("> ")
-
+        
         if choix == "1":
             add_product(cursor, connection)
 
-        if choix == "2":
+        elif choix == "2":
             all_products(cursor)
 
-        if choix == "3":
+        elif choix == "3":
             add_customer(cursor, connection)
 
-        if choix == "4":
+        elif choix == "4":
             all_customers(cursor)
 
-        if choix == "5":
+        elif choix == "5":
             add_sale(cursor, connection)
             
-        if choix == "6":
+        elif choix == "6":
             all_sales(cursor)
 
-        if choix == "7":
+        elif choix == "7":
             total_revenue(cursor)
 
-        if choix == "8":
+        elif choix == "8":
             products_revenues(cursor)
 
-        if choix == "9":
+        elif choix == "9":
             revenues_from_customers(cursor)
 
         elif choix == "q":

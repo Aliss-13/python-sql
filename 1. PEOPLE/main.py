@@ -1,8 +1,12 @@
+from pathlib import Path
 from menu import menu
-
 import sqlite3
 
-connection = sqlite3.connect("database.db")
+
+BASE_DIR = Path(__file__).resolve().parent #C:\Users\lisas\OneDrive\Documents\Python\python-sql\1. PEOPLE
+DATABASE_PATH = BASE_DIR / "database.db"
+
+connection = sqlite3.connect(DATABASE_PATH)
 cursor = connection.cursor()
 
 cursor.execute("""
