@@ -41,6 +41,19 @@ cursor.execute("""
     )
 """)
 
+
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS stock_purchases (
+        id INTEGER PRIMARY KEY,
+        product_id INTEGER,
+        quantity INTEGER,
+        unit_purchase_price REAL,
+        date TEXT,
+    
+    FOREIGN KEY (product_id) REFERENCES products(id)
+    )
+""")
+
 connection.commit()
 
 
