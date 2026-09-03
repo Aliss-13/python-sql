@@ -116,7 +116,8 @@ def menu_customers(cursor, connection):
         print()
         print("👥 CLIENTS ")
         print("[1] Ajouter client")
-        print("[2] Afficher clients")
+        print("[2] Supprimer client")
+        print("[3] Afficher clients")
         print("[r] Retour")
 
         choix = input("> ")
@@ -125,6 +126,9 @@ def menu_customers(cursor, connection):
             add_customer(cursor, connection)
 
         elif choix == "2":
+            delete_customer(cursor, connection)
+
+        elif choix == "3":
             all_customers(cursor)
 
         elif choix == "r":
@@ -352,6 +356,41 @@ def add_customer(cursor, connection):
     connection.commit()
 
 
+def delete_customer(cursor, connection):
+
+    all_customers(cursor)
+
+    customer_id = int(input("Client à supprimer : "))
+
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM sales
+        WHERE customer_id = ?
+    """, (customer_id,))
+
+    sale_count = cursor.fetchone()[0]
+
+    print(f"Ventes client : {sale_count}")
+
+    if sale_count > 0:
+        print("Impossible de supprimer ce client : il possède un historique de ventes.")
+
+    else:
+        confirmation = input("Confirmer la suppression de ce client ? (o/n) : ").lower()
+
+        if confirmation == "o":
+            cursor.execute("""
+                DELETE FROM customers
+                WHERE id = ?
+                """, (customer_id,))
+
+            connection.commit()
+            print("Client supprimé.")
+
+        else:
+            print("Suppression annulée.")
+
+
 def all_customers(cursor):
 
     cursor.execute("""
@@ -373,6 +412,12 @@ def delete_sale(cursor, connection):
 
     sale_id = int(input("Vente à supprimer : "))
 
+    confirmation = input("Confirmer la suppression de cette vente ? (o/n) : ").lower()
+
+    if confirmation != "o":
+        print("Suppression annulée.")
+        return
+    
     cursor.execute("""
         SELECT
             product_id,
