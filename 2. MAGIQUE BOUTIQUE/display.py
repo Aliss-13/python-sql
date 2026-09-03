@@ -20,8 +20,8 @@ def display_product(products):
 
 
 def display_sale(sales):
-    for sale_id, customer_id, product_id, quantity, current_price, selling_price, margin, revenue, date in sales:
-        print(f'{sale_id} - {YELLOW}{customer_id}{RESET} - {LIGHT_PINK}{product_id}{RESET} x{quantity} - Prix actuel : {current_price} - Prix vente : {selling_price} - {GREEN}Marge : {margin}{RESET} - {BLUE}CA : {revenue}{RESET} - Date : {date}')
+    for sale_id, customer_name, product_name, quantity, current_price, selling_price, margin, revenue, date in sales:
+        print(f'{sale_id} - {YELLOW}{customer_name}{RESET} - {LIGHT_PINK}{product_name}{RESET} x{quantity} - Prix actuel : {current_price} - Prix vente : {selling_price} - {GREEN}Marge : {margin}{RESET} - {BLUE}CA : {revenue}{RESET} - Date : {date}')
 
 
 def display_product_revenue(sales):

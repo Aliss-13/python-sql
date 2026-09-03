@@ -370,28 +370,32 @@ def all_customers(cursor):
 def delete_sale(cursor, connection):
 
     all_sales(cursor)
+
     sale_id = int(input("Vente à supprimer : "))
 
     cursor.execute("""
-        SELECT 
-            quantity,
-            product_id
-        FROM sales
-        JOIN products
-            ON sales.product_id = products.id
-        WHERE sales.id = ?
-    """,(sale_id,))
+        SELECT
+            product_id,
+            quantity
+        FROM sale_items
+        WHERE sale_id = ?
+    """, (sale_id,))
 
-    sale = cursor.fetchone()
-    quantity = sale[0]
-    product_id = sale[1]
+    sale_items = cursor.fetchall()
+
+    for product_id, quantity in sale_items:
+
+        cursor.execute("""
+            UPDATE products
+            SET stock = stock + ?
+            WHERE id = ?
+        """, (quantity, product_id))
 
     cursor.execute("""
-        UPDATE products
-        SET stock = stock + ?
-        WHERE id = ?
-        """, (quantity, product_id,))
-        
+        DELETE FROM sale_items
+        WHERE sale_id = ?
+    """, (sale_id,))
+
     cursor.execute("""
         DELETE FROM sales
         WHERE id = ?
@@ -405,46 +409,69 @@ def add_sale(cursor, connection):
     all_customers(cursor)
     customer_id = int(input("Client : "))
 
-    all_products(cursor)
-    product_id = int(input("Produit : "))
+    date = input("Date (jj-mm-aaaa, vide = aujourd'hui) : ")
 
-    quantity = int(input("Quantité : "))
+    if not date:
+        date = datetime.now(ZoneInfo("Europe/Paris")).strftime("%d-%m-%Y")
 
     cursor.execute("""
-        SELECT stock, price, purchase_price
-        FROM products
-        WHERE id = ?
-    """, (product_id,))
+        INSERT INTO sales (customer_id, date)
+        VALUES (?, ?)
+    """, (customer_id, date))
 
-    sale = cursor.fetchone()
-    stock = sale[0]
-    unit_price = sale[1]
-    unit_purchase_price = sale[2]
+    sale_id = cursor.lastrowid
 
-    if stock >= quantity:
+    while True:
+
+        all_products(cursor)
+        product_id = int(input("Produit (0 = terminer) : "))
+
+        if product_id == 0:
+            break
+
+        quantity = int(input("Quantité : "))
 
         cursor.execute("""
-            UPDATE products
-            SET stock = stock - ?
+            SELECT stock, price, purchase_price
+            FROM products
             WHERE id = ?
-            """, (quantity, product_id,))
+        """, (product_id,))
 
-        date = input("Date (jj-mm-aaaa, vide = aujourd'hui) : ")
+        sale = cursor.fetchone()
 
-        if not date:
-            date = datetime.now(ZoneInfo("Europe/Paris")).strftime("%d-%m-%Y")
+        stock = sale[0]
+        unit_price = sale[1]
+        unit_purchase_price = sale[2]
 
-        cursor.execute("""
-            INSERT INTO sales (customer_id, product_id, quantity, unit_price, unit_purchase_price, date)
-            VALUES (?, ?, ?, ?, ?, ?)""", (customer_id, product_id, quantity, unit_price, unit_purchase_price, date)
-            )
+        if stock >= quantity:
 
-        connection.commit()
+            cursor.execute("""
+                UPDATE products
+                SET stock = stock - ?
+                WHERE id = ?
+            """, (quantity, product_id))
 
+            cursor.execute("""
+                INSERT INTO sale_items (
+                    sale_id,
+                    product_id,
+                    quantity,
+                    unit_price,
+                    unit_purchase_price
+                )
+                VALUES (?, ?, ?, ?, ?)
+            """, (
+                sale_id,
+                product_id,
+                quantity,
+                unit_price,
+                unit_purchase_price
+            ))
 
-    else:
-        print("Stock insuffisant")
-        return
+        else:
+            print("Stock insuffisant.")
+
+    connection.commit()
 
 
 def all_sales(cursor):
@@ -454,17 +481,19 @@ def all_sales(cursor):
         sales.id,
         customers.name,
         products.name,
-        sales.quantity,
+        sale_items.quantity,
         products.price AS prix_actuel,
-        sales.unit_price AS prix_vente,
-        (sales.unit_price - sales.unit_purchase_price) * quantity AS margin,
-        sales.unit_price * quantity AS revenue,
+        sale_items.unit_price AS prix_vente,
+        (sale_items.unit_price - sale_items.unit_purchase_price) * sale_items.quantity AS margin,
+        sale_items.unit_price * sale_items.quantity AS revenue,
         sales.date
     FROM sales
     JOIN customers
         ON sales.customer_id = customers.id
+    JOIN sale_items
+        ON sale_items.sale_id = sales.id
     JOIN products
-        ON sales.product_id = products.id
+        ON sale_items.product_id = products.id
     """)
 
     result = cursor.fetchall()
@@ -478,7 +507,7 @@ def net_revenue(cursor):
         SELECT SUM(
             (unit_price - unit_purchase_price) * quantity
         )
-        FROM sales
+        FROM sale_items
     """)
 
     total_margin = cursor.fetchone()[0] or 0
@@ -501,10 +530,10 @@ def total_revenue(cursor):
 
     cursor.execute("""
     SELECT
-        SUM(products.price * sales.quantity) AS total
-    FROM sales
+        SUM(products.price * sale_items.quantity) AS total
+    FROM sale_items
     JOIN products
-    ON sales.product_id = products.id
+    ON sale_items.product_id = products.id
     """)
 
     result = cursor.fetchone()
@@ -516,8 +545,8 @@ def total_margin(cursor):
 
     cursor.execute("""
     SELECT
-        SUM((sales.unit_price - sales.unit_purchase_price) * sales.quantity) AS total
-    FROM sales
+        SUM((sale_items.unit_price - sale_items.unit_purchase_price) * sale_items.quantity) AS total
+    FROM sale_items
     """)
 
     result = cursor.fetchone()
@@ -530,12 +559,12 @@ def products_revenues(cursor):
     cursor.execute("""
     SELECT
         products.name,
-        SUM(sales.quantity) AS total_sold,
+        SUM(sale_items.quantity) AS total_sold,
         products.price,
-        SUM(products.price * sales.quantity) AS total_revenue
-    FROM sales
+        SUM(products.price * sale_items.quantity) AS total_revenue
+    FROM sale_items
     JOIN products
-        ON sales.product_id = products.id
+        ON sale_items.product_id = products.id
     GROUP BY products.id 
     ORDER BY total_revenue DESC
     """)
@@ -549,11 +578,13 @@ def revenues_from_customers(cursor):
     cursor.execute("""
     SELECT
         customers.name,
-        SUM(sales.quantity),
-        SUM(products.price * sales.quantity) AS total_revenue
-    FROM sales
+        SUM(sale_items.quantity),
+        SUM(products.price * sale_items.quantity) AS total_revenue
+    FROM sale_items
     JOIN products
-        ON sales.product_id = products.id
+        ON sale_items.product_id = products.id
+    JOIN sales
+        ON sale_items.sale_id = sales.id
     JOIN customers
         ON sales.customer_id = customers.id
     GROUP BY customers.id 
