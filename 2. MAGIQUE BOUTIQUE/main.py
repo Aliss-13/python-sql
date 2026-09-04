@@ -16,7 +16,8 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS products (
     name TEXT,
     category TEXT,
     price REAL,
-    stock INTEGER
+    stock INTEGER,
+    purchase_price REAL
 )""")
 
 
@@ -32,12 +33,9 @@ cursor.execute("""
     CREATE TABLE IF NOT EXISTS sales (
         id INTEGER PRIMARY KEY,
         customer_id INTEGER,
-        product_id INTEGER,
-        quantity INTEGER,
         date TEXT,
-
-        FOREIGN KEY (customer_id) REFERENCES customers(id),
-        FOREIGN KEY (product_id) REFERENCES products(id)
+        
+        FOREIGN KEY (customer_id) REFERENCES customers(id)   
     )
 """)
 
@@ -70,24 +68,6 @@ cursor.execute("""
 """)
 
 connection.commit()
-
-cursor.execute("""
-    CREATE TABLE IF NOT EXISTS sales_new (
-        id INTEGER PRIMARY KEY,
-        customer_id INTEGER,
-        date TEXT,
-        FOREIGN KEY (customer_id) REFERENCES customers(id)
-    )
-""")
-
-connection.commit()
-
-cursor.execute("""
-    SELECT COUNT(*)
-    FROM sale_items
-""")
-
-print(cursor.fetchone())
 
 
 menu(cursor, connection)
