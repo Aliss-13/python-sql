@@ -10,6 +10,61 @@ GREEN = "\033[32m"
 BLUE = "\033[94m"
 LIGHT_GREEN = "\033[38;5;120m"
 RESET = "\033[0m"
+
+
+def id_exists(cursor, table, object_id):
+    cursor.execute(f"""
+        SELECT id
+        FROM {table}
+        WHERE id = ?
+    """, (object_id,))
+
+    return cursor.fetchone() is not None
+
+
+def ask_int(prompt):
+
+    while True:
+
+        try:
+            value = int(input(prompt))
+            return value
+
+        except ValueError:
+            print("Saisie invalide.")
+
+
+def ask_positive_int(prompt):
+
+    while True:
+
+        try:
+            value = int(input(prompt))
+
+            if value > 0 :
+                return value
+            else:
+                print("La valeur doit être positive.")
+
+        except ValueError:
+            print("Saisie invalide.")
+
+
+def ask_positive_float(prompt):
+
+    while True:
+
+        try:
+            value = float(input(prompt))
+
+            if value > 0 :
+                return value
+            else:
+                print("La valeur doit être positive.")
+
+        except ValueError:
+            print("Saisie invalide.")
+
 # --------------------------------------------------------- MENU --------------------------------------------------------------
 
 def menu(cursor, connection):
@@ -210,8 +265,13 @@ def add_stock(cursor, connection):
 
     all_products(cursor)
 
-    product_id = int(input("Produit : "))
-    added_stock = int(input("Stock à ajouter : "))
+    product_id = ask_positive_int("Produit : ")
+
+    if not id_exists(cursor, "products", product_id):
+        print("Produit introuvable.")
+        return
+
+    added_stock = ask_positive_int("Stock à ajouter : ")
 
     cursor.execute("""
         SELECT purchase_price
@@ -282,9 +342,9 @@ def add_product(cursor, connection):
 
     name = input("Nom : ")
     category = input("Catégorie : ")
-    price = float(input("Prix : "))
-    stock = int(input("Stock disponible : "))
-    purchase_price = float(input("Prix fournisseur : "))
+    price = ask_positive_float("Prix : ")
+    stock = ask_positive_int("Stock disponible : ")
+    purchase_price = ask_positive_float("Prix fournisseur : ")
 
     cursor.execute("""
         INSERT INTO products (name, category, price, stock, purchase_price)
@@ -314,8 +374,13 @@ def update_price(cursor, connection):
 
     all_products(cursor)
 
-    product_id = int(input("Produit : "))
-    new_price = float(input("Nouveau prix : "))
+    product_id = ask_positive_int("Produit : ")
+
+    if not id_exists(cursor, "products", product_id):
+        print("Produit introuvable.")
+        return
+
+    new_price = ask_positive_float("Nouveau prix : ")
 
     cursor.execute("""
         UPDATE products
@@ -330,8 +395,13 @@ def update_purchase_price(cursor, connection):
 
     all_products(cursor)
 
-    product_id = int(input("Produit : "))
-    new_price = float(input("Nouveau prix fournisseur : "))
+    product_id = ask_positive_int("Produit : ")
+
+    if not id_exists(cursor, "products", product_id):
+        print("Produit introuvable.")
+        return
+    
+    new_price = ask_positive_float("Nouveau prix fournisseur : ")
 
     cursor.execute("""
         UPDATE products
@@ -360,7 +430,11 @@ def delete_customer(cursor, connection):
 
     all_customers(cursor)
 
-    customer_id = int(input("Client à supprimer : "))
+    customer_id = ask_positive_int("Client à supprimer : ")
+
+    if not id_exists(cursor, "customers", customer_id):
+        print("Client introuvable.")
+        return
 
     cursor.execute("""
         SELECT COUNT(*)
@@ -410,7 +484,11 @@ def delete_sale(cursor, connection):
 
     all_sales(cursor)
 
-    sale_id = int(input("Vente à supprimer : "))
+    sale_id = ask_positive_int("Vente à supprimer : ")
+
+    if not id_exists(cursor, "sales", sale_id):
+        print("Vente introuvable.")
+        return
 
     confirmation = input("Confirmer la suppression de cette vente ? (o/n) : ").lower()
 
@@ -447,12 +525,17 @@ def delete_sale(cursor, connection):
     """, (sale_id,))
 
     connection.commit()
+    print("Vente supprimée.")
 
 
 def add_sale(cursor, connection):
 
     all_customers(cursor)
-    customer_id = int(input("Client : "))
+    customer_id = ask_positive_int("Client : ")
+
+    if not id_exists(cursor, "customers", customer_id):
+        print("Client introuvable.")
+        return
 
     date = input("Date (jj-mm-aaaa, vide = aujourd'hui) : ")
 
@@ -466,15 +549,26 @@ def add_sale(cursor, connection):
 
     sale_id = cursor.lastrowid
 
+    sale_has_items = False
+
     while True:
 
         all_products(cursor)
-        product_id = int(input("Produit (0 = terminer) : "))
+        product_id = ask_int("Produit (0 = terminer) : ")
 
         if product_id == 0:
+            if not sale_has_items:
+                connection.rollback()
+                print("Vente annulée.")
+                return
             break
 
-        quantity = int(input("Quantité : "))
+        if not id_exists(cursor, "products", product_id):
+            print("Produit introuvable.")
+            connection.rollback()
+            return
+
+        quantity = ask_positive_int("Quantité : ")
 
         cursor.execute("""
             SELECT stock, price, purchase_price
@@ -512,6 +606,8 @@ def add_sale(cursor, connection):
                 unit_price,
                 unit_purchase_price
             ))
+
+            sale_has_items = True
 
         else:
             print("Stock insuffisant.")
@@ -575,7 +671,7 @@ def total_revenue(cursor):
 
     cursor.execute("""
     SELECT
-        SUM(products.price * sale_items.quantity) AS total
+        SUM(sale_items.unit_price * sale_items.quantity) AS total
     FROM sale_items
     JOIN products
     ON sale_items.product_id = products.id
@@ -606,7 +702,7 @@ def products_revenues(cursor):
         products.name,
         SUM(sale_items.quantity) AS total_sold,
         products.price,
-        SUM(products.price * sale_items.quantity) AS total_revenue
+        SUM(sale_items.unit_price * sale_items.quantity) AS total_revenue
     FROM sale_items
     JOIN products
         ON sale_items.product_id = products.id
@@ -624,7 +720,7 @@ def revenues_from_customers(cursor):
     SELECT
         customers.name,
         SUM(sale_items.quantity),
-        SUM(products.price * sale_items.quantity) AS total_revenue
+        SUM(sale_items.unit_price * sale_items.quantity) AS total_revenue
     FROM sale_items
     JOIN products
         ON sale_items.product_id = products.id
