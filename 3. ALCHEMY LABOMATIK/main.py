@@ -11,21 +11,37 @@ cursor = connection.cursor()
 
 connection.execute("PRAGMA foreign_keys = ON")
 
+#------------------------------------------ table rarities -----------------------------
+
 cursor.execute("""
-CREATE TABLE IF NOT EXISTS ingredients (
+CREATE TABLE IF NOT EXISTS rarities (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
-    description TEXT,
-    level INTEGER,
-    rarity TEXT
+    color TEXT NOT NULL
 )""")
 
+#------------------------------------------ table affinities -----------------------------
 
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS affinities (
         id INTEGER PRIMARY KEY,
         name TEXT NOT NULL UNIQUE
     )""")
+
+#------------------------------------------ table ingredients -----------------------------
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS ingredients (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE,
+    description TEXT,
+    level INTEGER,
+    rarity_id INTEGER,
+
+    FOREIGN KEY (rarity_id) REFERENCES rarities(id)
+)""")
+
+#------------------------------------------ table ingredient_affinities -----------------------------
 
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS ingredient_affinities (
@@ -34,10 +50,13 @@ CREATE TABLE IF NOT EXISTS ingredient_affinities (
     value REAL,
     PRIMARY KEY (ingredient_id, affinity_id),
     FOREIGN KEY (ingredient_id) REFERENCES ingredients(id),
-    FOREIGN KEY (affinity_id) REFERENCES affinity(id)
+    FOREIGN KEY (affinity_id) REFERENCES affinities(id)
 )""")
 
 connection.commit()
+
+#------------------------------------------ affichage des tables et des colonnes -----------------------------
+
 cursor.execute("""
     SELECT name
     FROM sqlite_master
@@ -49,14 +68,15 @@ tables = cursor.fetchall()
 for table in tables:
     print(table[0])
 
-for table in ["ingredients", "affinities", "ingredient_affinities"]:
+for table in ["ingredients", "affinities", "ingredient_affinities", "rarities"]:
     print(f"\n--- {table} ---")
 
     cursor.execute(f"PRAGMA table_info({table})")
 
     for column in cursor.fetchall():
         print(column)
-
+        
+#------------------------------------------ menu -----------------------------
 
 menu(cursor, connection)
 
