@@ -25,7 +25,8 @@ CREATE TABLE IF NOT EXISTS rarities (
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS affinities (
         id INTEGER PRIMARY KEY,
-        name TEXT NOT NULL UNIQUE
+        name TEXT NOT NULL UNIQUE,
+        icon TEXT
     )""")
 
 #------------------------------------------ table ingredients -----------------------------
@@ -57,24 +58,6 @@ connection.commit()
 
 #------------------------------------------ affichage des tables et des colonnes -----------------------------
 
-cursor.execute("""
-    SELECT name
-    FROM sqlite_master
-    WHERE type = 'table'
-""")
-
-tables = cursor.fetchall()
-
-for table in tables:
-    print(table[0])
-
-for table in ["ingredients", "affinities", "ingredient_affinities", "rarities"]:
-    print(f"\n--- {table} ---")
-
-    cursor.execute(f"PRAGMA table_info({table})")
-
-    for column in cursor.fetchall():
-        print(column)
         
 #------------------------------------------ menu -----------------------------
 
