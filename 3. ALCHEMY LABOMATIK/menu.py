@@ -1,5 +1,5 @@
 from affinities import add_affinity_to_ingredient, reset_ingredient_affinities
-from display import display_all_affinities, display_all_ingredients
+from display import display_all_affinities, display_all_ingredients, display_inventory
 from ingredients import add_ingredient, update_ingredient_menu
 
 
@@ -16,6 +16,7 @@ def menu(cursor, connection):
         print("[4] Liste des affinités")
         print("[5] Ajouter une ou plusieurs affinités à un ingrédient")
         print("[6] Supprimer les affinités d'un ingrédient")
+        print("[7] Inventaire")
         
         print("[q] Quitter")
 
@@ -38,6 +39,9 @@ def menu(cursor, connection):
 
         elif choix == "6":
             reset_ingredient_affinities(cursor, connection)
+
+        elif choix == "7":
+            display_inventory(cursor)
 
         elif choix == "q":
             return

@@ -1,6 +1,7 @@
 from pathlib import Path
 from menu import menu
 import sqlite3
+from inventory import add_to_inventory
 
 
 BASE_DIR = Path(__file__).resolve().parent #C:\Users\lisas\OneDrive\Documents\Python\python-sql\3. ALCHEMY LABOMATIK
@@ -54,10 +55,37 @@ CREATE TABLE IF NOT EXISTS ingredient_affinities (
     FOREIGN KEY (affinity_id) REFERENCES affinities(id)
 )""")
 
+#------------------------------------------ table inventory -----------------------------
+
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS inventory (
+        ingredient_id INTEGER PRIMARY KEY,
+        quantity INTEGER NOT NULL DEFAULT 0,
+        FOREIGN KEY (ingredient_id) REFERENCES ingredients(id)
+)""")
+
 connection.commit()
 
 #------------------------------------------ affichage des tables et des colonnes -----------------------------
 
+cursor.execute("""
+    SELECT name
+    FROM sqlite_master
+    WHERE type = 'table'
+""")
+
+tables = cursor.fetchall()
+
+for table in tables:
+    print(table[0])
+
+for table in ["rarities", "affinities", "ingredients", "ingredient_affinities", "inventory"]:
+    print(f"\n--- {table} ---")
+
+    cursor.execute(f"PRAGMA table_info({table})")
+
+    for column in cursor.fetchall():
+        print(column)
         
 #------------------------------------------ menu -----------------------------
 
