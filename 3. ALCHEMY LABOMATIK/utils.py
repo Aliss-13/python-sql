@@ -8,6 +8,18 @@ def id_exists(cursor, table, object_id):
     return cursor.fetchone() is not None
 
 
+def ask_int(prompt):
+
+    while True:
+
+        try:
+            value = int(input(prompt))
+            return value
+
+        except ValueError:
+            print("Saisie invalide.")
+
+
 def ask_positive_int(prompt):
 
     while True:

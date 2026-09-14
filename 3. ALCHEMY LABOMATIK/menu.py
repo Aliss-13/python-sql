@@ -1,8 +1,8 @@
 from affinities import add_affinity_to_ingredient, reset_ingredient_affinities
-from display import display_all_affinities, display_all_ingredients, display_inventory, display_all_equipment
+from display import display_all_affinities, display_all_ingredients, display_inventory, display_all_equipment, display_all_equipment_crafts
 from ingredients import add_ingredient, menu_update_ingredient
 from portals import menu_portal
-from equipment import add_equipment, menu_update_equipment
+from equipment import add_equipment, menu_update_equipment, add_equipment_craft, reset_equipment_craft
 
 
 
@@ -113,6 +113,9 @@ def menu_equipment(cursor, connection):
         print("[1] Liste matériel")
         print("[2] Ajouter matériel")
         print("[3] Modifier matériel")
+        print("[4] Ajouter ingrédients pour craft matériel")
+        print("[5] Afficher ingrédients pour craft matériel")
+        print("[6] Supprimer ingrédients pour craft matériel")
             
         print("[r] Retour")
     
@@ -126,6 +129,15 @@ def menu_equipment(cursor, connection):
             
         elif choix == "3":
             menu_update_equipment(cursor, connection)
+
+        elif choix == "4":
+            add_equipment_craft(cursor, connection)
+
+        elif choix == "5":
+            display_all_equipment_crafts(cursor)
+
+        elif choix == "6":
+            reset_equipment_craft(cursor, connection)
     
         elif choix == "r":
             return

@@ -222,6 +222,7 @@ def display_harvest_portal(cursor, quantity, ingredient_id):
             
     print(f"{ingredient_color}{ingredient_name}{RESET} x{quantity}")
 
+#----------------------------------------------- EQUIPMENT ----------------------------------------------------
 
 def display_all_equipment(cursor):
 
@@ -239,7 +240,83 @@ def display_all_equipment(cursor):
     equipment = cursor.fetchall()
 
     print()
-    print("⚗️ Matériel")
+    print("--- Matériel ---")
     for equipment_id, equipment_name, equipment_description, equipment_color in equipment:
         color = COLORS[equipment_color]
         print(f'{equipment_id} - {color}{equipment_name}{RESET} - {DIM}{equipment_description}{RESET}')
+
+
+def display_all_equipment_crafts(cursor):
+
+    cursor.execute("""
+    SELECT
+        equipment.id,
+        equipment.name,
+        equipment.description,
+        rarities.color,
+        ingredients.name,
+        equipment_craft.quantity
+    FROM equipment_craft
+    JOIN equipment
+        ON equipment.id = equipment_craft.equipment_id
+    JOIN rarities
+        ON rarities.id = equipment.rarity_id
+    JOIN ingredients
+        ON ingredients.id = equipment_craft.ingredient_id
+    ORDER BY equipment.id ASC
+    """)
+
+    result = cursor.fetchall()
+    print()
+    print("--- Fabrication ---")
+    display_equipment_craft(result)
+
+
+def display_equipment_craft(equipment_craft):
+
+    current_id = None
+    current_equipment = None
+    craft_list = []
+    
+    for equipment in equipment_craft:
+        equipment_id = equipment[0]
+    
+        if current_id is None:
+            current_id = equipment_id
+            current_equipment = equipment
+    
+        if current_id != equipment_id:
+
+            if current_equipment is not None:  
+                equipment_color = COLORS[current_equipment[3]]
+    
+                craft_text = ""
+
+                for ingredient, quantity in craft_list:
+
+                    if craft_text:
+                        craft_text += " - "
+
+                    craft_text += f"{ingredient} x{quantity}"
+                        
+                print(f"{current_equipment[0]} - {equipment_color}{current_equipment[1]}{RESET} : {craft_text}")
+    
+            current_equipment = equipment
+            current_id = equipment_id
+            craft_list = []
+    
+        ingredient = equipment[4]
+        quantity = equipment[5]
+    
+        if ingredient is not None:
+            craft_list.append((ingredient, quantity))
+    
+    equipment_color = COLORS[current_equipment[3]]
+            
+    craft_text = ""
+    for ingredient, quantity in craft_list:
+        if craft_text:
+            craft_text += " - "
+        craft_text += f"{ingredient} x{quantity}"
+                                
+    print(f"{equipment[0]} - {equipment_color}{equipment[1]}{RESET} : {craft_text}")

@@ -1,6 +1,6 @@
 import sqlite3
-from utils import id_exists
-from display import display_all_equipment
+from utils import id_exists, ask_positive_int, ask_int
+from display import display_all_equipment, display_all_ingredients, display_all_equipment_crafts
 
 
 def add_equipment(cursor, connection):
@@ -163,9 +163,82 @@ def update_equipment_rarity(cursor, connection):
         print("Choix invalide.")
 
     cursor.execute("""
-        UPDATE ingredients
+        UPDATE equipment
         SET rarity_id = ?
         WHERE id = ?
         """, (new_rarity_id, equipment_id,))
 
     connection.commit()
+
+
+def add_equipment_craft(cursor, connection):
+
+    display_all_equipment(cursor)
+    equipment_id = ask_positive_int("Matériel : ")
+
+    if not id_exists(cursor, "equipment", equipment_id):
+        print("Matériel introuvable.")
+        return
+
+    equipment_has_craft = False
+
+    while True:
+
+        display_all_ingredients(cursor)
+        ingredient_id = ask_int("Ingrédients pour le craft (0 = terminer) : ")
+
+        if ingredient_id == 0:
+            if not equipment_has_craft:
+                connection.rollback()
+                print("Saisie annulée.")
+                return
+            break
+
+        if not id_exists(cursor, "ingredients", ingredient_id):
+            print("Ingrédient introuvable.")
+            connection.rollback()
+            return
+
+        quantity = ask_positive_int("Quantité : ")
+
+        cursor.execute("""
+            INSERT INTO equipment_craft (equipment_id, ingredient_id, quantity)
+            VALUES (?, ?, ?)
+        """, (equipment_id, ingredient_id, quantity))
+
+        equipment_has_craft = True
+
+    connection.commit()
+
+
+def reset_equipment_craft(cursor, connection):
+
+    display_all_equipment_crafts(cursor)
+
+    while True:
+            
+        choix = input("Matériel choisi : ")
+
+        cursor.execute("""
+            SELECT equipment_id
+            FROM equipment_craft
+            WHERE equipment_id = ?
+            """, (choix,))
+        
+        result = cursor.fetchone()
+
+        if choix.isdigit() and result is not None:
+            equipment_id = int(choix)
+            break
+
+        print("Choix invalide.")
+
+    cursor.execute("""  
+        DELETE FROM equipment_craft
+        WHERE equipment_id = ?
+        """, (equipment_id,))
+
+    connection.commit()
+    print("Matériaux nécessaires au craft de l'équipement supprimés.")
+
+
