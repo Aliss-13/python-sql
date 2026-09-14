@@ -9,7 +9,7 @@ def menu_portal(cursor, connection, player_level):
     while True:
 
         print()
-        print("--- Accès portails ---")
+        print("🌀 Portails")
 
         display_all_affinities(cursor)
 

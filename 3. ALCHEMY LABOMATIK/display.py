@@ -117,7 +117,7 @@ def display_all_affinities(cursor):
 
 def display_affinity(affinities):
     for aff_id, name, icon in affinities:
-        print(f'{aff_id} - {icon} - {name}')
+        print(f'{aff_id} - {icon} {name}')
 
 
 #----------------------------------------------- INVENTORY ----------------------------------------------------
@@ -147,7 +147,7 @@ def display_inventory(cursor):
 
     result = cursor.fetchall()
     print()
-    print("--- Inventaire ---")
+    print("📓 Inventaire")
     display_ingredient_from_inventory(result)
     return result
 
@@ -179,8 +179,7 @@ def display_ingredient_from_inventory(inventory):
 
                     affinity_text += f"{icon} {value}"
                     
-                print(f"{current_ingredient[0]} - {ingredient_color}{current_ingredient[1]}\033[0m ({affinity_text}) - Niv. {current_ingredient[3]} - Qté : {current_ingredient[2]}")
-                
+                print(f"{current_ingredient[0]} - {ingredient_color}{current_ingredient[1]}{RESET} {YELLOW}x{current_ingredient[2]}{RESET} ({affinity_text}) - Niv. {current_ingredient[3]}")
 
             current_ingredient = ingredient
             current_id = ingredient_id
@@ -200,7 +199,7 @@ def display_ingredient_from_inventory(inventory):
             affinity_text += " - "
         affinity_text += f"{icon} {value}"
         
-    print(f"{current_ingredient[0]} - {ingredient_color}{current_ingredient[1]}\033[0m ({affinity_text}) - Niv. {current_ingredient[3]} - Qté : {current_ingredient[2]}")
+    print(f"{current_ingredient[0]} - {ingredient_color}{current_ingredient[1]}{RESET} {YELLOW}x{current_ingredient[2]}{RESET} ({affinity_text}) - Niv. {current_ingredient[3]}")
 
 #----------------------------------------------- PORTALS ----------------------------------------------------
 
@@ -222,3 +221,25 @@ def display_harvest_portal(cursor, quantity, ingredient_id):
     ingredient_color = COLORS[ingredient[1]]
             
     print(f"{ingredient_color}{ingredient_name}{RESET} x{quantity}")
+
+
+def display_all_equipment(cursor):
+
+    cursor.execute("""
+        SELECT
+            equipment.id,
+            equipment.name,
+            equipment.description,
+            rarities.color
+        FROM equipment
+        JOIN rarities
+            ON rarities.id = equipment.rarity_id
+    """)
+    
+    equipment = cursor.fetchall()
+
+    print()
+    print("⚗️ Matériel")
+    for equipment_id, equipment_name, equipment_description, equipment_color in equipment:
+        color = COLORS[equipment_color]
+        print(f'{equipment_id} - {color}{equipment_name}{RESET} - {DIM}{equipment_description}{RESET}')

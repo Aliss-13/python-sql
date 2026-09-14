@@ -41,7 +41,7 @@ def add_ingredient(cursor, connection):
         connection.commit()
 
     except sqlite3.IntegrityError:
-        print("Cet ingrédient existe déjà.")
+        print("Cet ingrédient est déjà répertorié.")
 
 
 

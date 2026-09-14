@@ -12,7 +12,7 @@ cursor = connection.cursor()
 
 connection.execute("PRAGMA foreign_keys = ON")
 
-#------------------------------------------ table rarities -----------------------------
+#------------------------------------------ rarities -----------------------------
 
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS rarities (
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS rarities (
     weight REAL
 )""")
 
-#------------------------------------------ table affinities -----------------------------
+#------------------------------------------ affinities -----------------------------
 
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS affinities (
@@ -31,7 +31,7 @@ cursor.execute("""
         icon TEXT
     )""")
 
-#------------------------------------------ table ingredients -----------------------------
+#------------------------------------------ ingredients -----------------------------
 
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS ingredients (
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS ingredients (
     FOREIGN KEY (rarity_id) REFERENCES rarities(id)
 )""")
 
-#------------------------------------------ table ingredient_affinities -----------------------------
+#------------------------------------------ ingredient_affinities -----------------------------
 
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS ingredient_affinities (
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS ingredient_affinities (
     FOREIGN KEY (affinity_id) REFERENCES affinities(id)
 )""")
 
-#------------------------------------------ table inventory -----------------------------
+#------------------------------------------ inventory -----------------------------
 
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS inventory (
@@ -65,9 +65,41 @@ cursor.execute("""
         FOREIGN KEY (ingredient_id) REFERENCES ingredients(id)
 )""")
 
+#------------------------------------------ equipment -----------------------------
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS equipment (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE,
+    description TEXT
+    rarity_id INTEGER,
+    FOREIGN KEY (rarity_id) REFERENCES rarities(id)
+)""")
+
+#------------------------------------------ equipment_craft -----------------------------
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS equipment_craft (
+    equipment_id INTEGER,
+    ingredient_id INTEGER,
+    quantity INTEGER NOT NULL,
+    PRIMARY KEY (equipment_id, ingredient_id),
+    FOREIGN KEY (equipment_id) REFERENCES equipment(id),
+    FOREIGN KEY (ingredient_id) REFERENCES ingredients(id)
+)""")
+
 connection.commit()
 
+#------------------------------------------ affichage des tables et des colonnes -----------------------------
+
+#for table in ["rarities", "affinities", "ingredients", "ingredient_affinities", "inventory", "equipment", "equipment_craft"]:
+    #print(f"\n--- {table} ---")
+
 #------------------------------------------ menu -----------------------------
+
+print("            ┌──────────────────────┐            ")
+print("            | Alchemy Lab-o-Matik  |            ")
+print("            └──────────────────────┘            ")
 
 menu(cursor, connection, player_level)
 
