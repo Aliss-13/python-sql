@@ -120,7 +120,7 @@ def display_affinity(affinities):
         print(f'{aff_id} - {icon} - {name}')
 
 
-#----------------------------------------------- AFFINITIES ----------------------------------------------------
+#----------------------------------------------- INVENTORY ----------------------------------------------------
 
 def display_inventory(cursor):
 
@@ -142,10 +142,12 @@ def display_inventory(cursor):
             ON ingredient_affinities.ingredient_id = ingredients.id
         LEFT JOIN affinities
             ON affinities.id = ingredient_affinities.affinity_id
-        ORDER BY ingredients.rarity_id ASC
+        ORDER BY inventory.ingredient_id ASC
     """)
 
     result = cursor.fetchall()
+    print()
+    print("--- Inventaire ---")
     display_ingredient_from_inventory(result)
     return result
 
@@ -190,7 +192,7 @@ def display_ingredient_from_inventory(inventory):
         if icon is not None:
             affinity_list.append((icon, value))
 
-    ingredient_color = COLORS[ingredient[4]]
+    ingredient_color = COLORS[current_ingredient[4]]
         
     affinity_text = ""
     for icon, value in affinity_list:
@@ -200,5 +202,23 @@ def display_ingredient_from_inventory(inventory):
         
     print(f"{current_ingredient[0]} - {ingredient_color}{current_ingredient[1]}\033[0m ({affinity_text}) - Niv. {current_ingredient[3]} - Qté : {current_ingredient[2]}")
 
+#----------------------------------------------- PORTALS ----------------------------------------------------
 
+def display_harvest_portal(cursor, quantity, ingredient_id):
 
+    cursor.execute("""
+        SELECT 
+            ingredients.name,
+            rarities.color
+        FROM ingredients
+        JOIN rarities
+            ON rarities.id = ingredients.rarity_id
+        WHERE ingredients.id = ?
+    """, (ingredient_id,))
+    
+    ingredient = cursor.fetchone()
+    
+    ingredient_name = ingredient[0]
+    ingredient_color = COLORS[ingredient[1]]
+            
+    print(f"{ingredient_color}{ingredient_name}{RESET} x{quantity}")

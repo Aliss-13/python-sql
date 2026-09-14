@@ -45,7 +45,7 @@ def add_ingredient(cursor, connection):
 
 
 
-def update_ingredient_menu(cursor, connection):
+def menu_update_ingredient(cursor, connection):
 
     while True:
         print()

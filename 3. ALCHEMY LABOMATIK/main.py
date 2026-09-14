@@ -1,8 +1,8 @@
 from pathlib import Path
 from menu import menu
 import sqlite3
-from inventory import add_to_inventory
 
+player_level = 1
 
 BASE_DIR = Path(__file__).resolve().parent #C:\Users\lisas\OneDrive\Documents\Python\python-sql\3. ALCHEMY LABOMATIK
 DATABASE_PATH = BASE_DIR / "database.db"
@@ -18,7 +18,8 @@ cursor.execute("""
 CREATE TABLE IF NOT EXISTS rarities (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
-    color TEXT NOT NULL
+    color TEXT NOT NULL,
+    weight REAL
 )""")
 
 #------------------------------------------ table affinities -----------------------------
@@ -66,29 +67,8 @@ cursor.execute("""
 
 connection.commit()
 
-#------------------------------------------ affichage des tables et des colonnes -----------------------------
-
-cursor.execute("""
-    SELECT name
-    FROM sqlite_master
-    WHERE type = 'table'
-""")
-
-tables = cursor.fetchall()
-
-for table in tables:
-    print(table[0])
-
-for table in ["rarities", "affinities", "ingredients", "ingredient_affinities", "inventory"]:
-    print(f"\n--- {table} ---")
-
-    cursor.execute(f"PRAGMA table_info({table})")
-
-    for column in cursor.fetchall():
-        print(column)
-        
 #------------------------------------------ menu -----------------------------
 
-menu(cursor, connection)
+menu(cursor, connection, player_level)
 
 connection.close()
