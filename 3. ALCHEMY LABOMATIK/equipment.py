@@ -49,7 +49,8 @@ def menu_update_equipment(cursor, connection):
         print("--- Modifier matériel ---")
         print("[1] Nom")
         print("[2] Description")
-        print("[4] Rareté")
+        print("[3] Rareté")
+        print("[4] Catégorie")
         print("[r] Retour")
 
         choix = input("> ")
@@ -62,6 +63,9 @@ def menu_update_equipment(cursor, connection):
 
         elif choix == "3":
             update_equipment_rarity(cursor, connection)
+
+        elif choix == "4":
+            update_equipment_category(cursor, connection)
 
         elif choix == "r":
             return
@@ -95,6 +99,7 @@ def update_equipment_name(cursor, connection):
             """, (new_name, equipment_id,))
 
         connection.commit()
+        print ("Nom mis à jour.")
 
     except sqlite3.IntegrityError:
         print("Ce nom existe déjà.")
@@ -124,6 +129,7 @@ def update_equipment_description(cursor, connection):
         """, (new_description, equipment_id,))
 
     connection.commit()
+    print ("Description mise à jour.")
 
 
 def update_equipment_rarity(cursor, connection):
@@ -169,6 +175,53 @@ def update_equipment_rarity(cursor, connection):
         """, (new_rarity_id, equipment_id,))
 
     connection.commit()
+    print ("Rareté mise à jour.")
+
+
+def update_equipment_category(cursor, connection):
+            
+    display_all_equipment(cursor)
+    
+    while True:
+    
+        choix = input("Matériel choisi : ")
+    
+        if choix.isdigit() and id_exists(cursor, "equipment", int(choix)):
+            equipment_id = int(choix)
+            break
+    
+        print("Choix invalide.")
+        return
+
+    cursor.execute("""
+            SELECT id, name
+            FROM equipment_categories
+        """)
+    
+    categories = cursor.fetchall()
+    
+    while True:
+        print("--- Catégories ---")
+    
+        for category in categories:
+            print(f"[{category[0]}] {category[1]}")
+    
+        choix = input("> ")
+    
+        if choix.isdigit() and 1 <= int(choix) <= len(categories):
+            new_category_id = int(choix)
+            break
+    
+        print("Choix invalide.")
+
+    cursor.execute("""
+        UPDATE equipment
+        SET category_id = ?
+        WHERE id = ?
+        """, (new_category_id, equipment_id,))
+
+    connection.commit()
+    print ("Catégorie mise à jour.")
 
 
 def add_equipment_craft(cursor, connection):

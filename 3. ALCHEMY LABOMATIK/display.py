@@ -230,20 +230,24 @@ def display_all_equipment(cursor):
         SELECT
             equipment.id,
             equipment.name,
+            equipment_categories.name,
             equipment.description,
             rarities.color
         FROM equipment
-        JOIN rarities
+        LEFT JOIN equipment_categories
+            ON equipment.category_id = equipment_categories.id
+        LEFT JOIN rarities
             ON rarities.id = equipment.rarity_id
+        ORDER BY equipment.id ASC
     """)
     
     equipment = cursor.fetchall()
 
     print()
     print("--- Matériel ---")
-    for equipment_id, equipment_name, equipment_description, equipment_color in equipment:
+    for equipment_id, equipment_name, equipment_category, equipment_description, equipment_color in equipment:
         color = COLORS[equipment_color]
-        print(f'{equipment_id} - {color}{equipment_name}{RESET} - {DIM}{equipment_description}{RESET}')
+        print(f'{equipment_id} - {color}{equipment_name}{RESET} - {YELLOW}{equipment_category}{RESET} - {DIM}{equipment_description}{RESET}')
 
 
 def display_all_equipment_crafts(cursor):
