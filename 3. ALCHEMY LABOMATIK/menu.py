@@ -3,6 +3,7 @@ from display import display_all_affinities, display_all_ingredients, display_inv
 from ingredients import add_ingredient, menu_update_ingredient
 from portals import menu_portal
 from equipment import add_equipment, menu_update_equipment, add_equipment_craft, reset_equipment_craft
+from blending import blending_list
 
 
 
@@ -14,9 +15,11 @@ def menu(cursor, connection, player_level):
         print("[1] 🫟 Ingrédients") 
         print("[2] 🧬 Affinités")
         print("[3] ⚗️ Matériel")
+        print()
         print("[4] 📓 Inventaire")
         print("[5] 🌀 Portails")
-        
+        print("[6] 🧫 Mélanger")
+        print()
         print("[q] 🔚 Quitter")
 
         choix = input("> ")
@@ -36,6 +39,9 @@ def menu(cursor, connection, player_level):
 
         elif choix == "5":
             menu_portal(cursor, connection, player_level)
+
+        elif choix == "6":
+            blending_list(cursor)
 
         elif choix == "q":
             return
