@@ -98,6 +98,15 @@ CREATE TABLE IF NOT EXISTS equipment_craft (
     FOREIGN KEY (ingredient_id) REFERENCES ingredients(id)
 )""")
 
+#------------------------------------------ mixing_tools -----------------------------
+
+cursor.execute("""CREATE TABLE IF NOT EXISTS mixing_tools (
+    equipment_id INTEGER PRIMARY KEY,
+    capacity INTEGER NOT NULL,
+    FOREIGN KEY (equipment_id) REFERENCES equipment(id)
+)""")
+
+
 connection.commit()
 
 #------------------------------------------ affichage des tables et des colonnes -----------------------------
@@ -113,7 +122,7 @@ tables = cursor.fetchall()
 for table in tables:
     print(table[0])
 
-for table in ["rarities", "affinities", "ingredients", "ingredient_affinities", "inventory", "equipment", "equipment_categories", "equipment_craft"]:
+for table in ["rarities", "affinities", "ingredients", "ingredient_affinities", "inventory", "equipment", "equipment_categories", "equipment_craft", "mixing_tools"]:
     print(f"\n--- {table} ---")
 
     cursor.execute(f"PRAGMA table_info({table})")

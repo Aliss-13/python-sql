@@ -157,6 +157,7 @@ def display_ingredient_from_inventory(inventory):
     affinity_list = []
     current_id = None
     current_ingredient = None
+    display_number = 1
 
     for ingredient in inventory:
         ingredient_id = ingredient[0]
@@ -164,6 +165,7 @@ def display_ingredient_from_inventory(inventory):
         if current_id is None:
             current_id = ingredient_id
             current_ingredient = ingredient
+            display_number = 1
 
         if current_id != ingredient_id:
 
@@ -179,11 +181,12 @@ def display_ingredient_from_inventory(inventory):
 
                     affinity_text += f"{icon} {value}"
                     
-                print(f"{current_ingredient[0]} - {ingredient_color}{current_ingredient[1]}{RESET} {YELLOW}x{current_ingredient[2]}{RESET} ({affinity_text}) - Niv. {current_ingredient[3]}")
+                print(f"{display_number} - {ingredient_color}{current_ingredient[1]}{RESET} {YELLOW}x{current_ingredient[2]}{RESET} ({affinity_text}) - Niv. {current_ingredient[3]}")
 
-            current_ingredient = ingredient
-            current_id = ingredient_id
             affinity_list = []
+            current_id = ingredient_id
+            current_ingredient = ingredient
+            display_number += 1
 
         icon = ingredient[5]
         value = ingredient[6]
@@ -199,8 +202,31 @@ def display_ingredient_from_inventory(inventory):
             affinity_text += " - "
         affinity_text += f"{icon} {value}"
         
-    print(f"{current_ingredient[0]} - {ingredient_color}{current_ingredient[1]}{RESET} {YELLOW}x{current_ingredient[2]}{RESET} ({affinity_text}) - Niv. {current_ingredient[3]}")
+    print(f"{display_number} - {ingredient_color}{current_ingredient[1]}{RESET} {YELLOW}x{current_ingredient[2]}{RESET} ({affinity_text}) - Niv. {current_ingredient[3]}")
 
+
+def display_inventory_join_id_to_list_numbering(cursor):
+
+    inventory = display_inventory(cursor)
+
+    numbering = {}
+
+    display_number = 1
+    current_id = None
+
+    for ingredient in inventory:
+        ingredient_id = ingredient[0]
+
+        if current_id is None:
+            current_id = ingredient_id
+            numbering[display_number] = ingredient_id
+
+        if current_id != ingredient_id:
+            current_id = ingredient_id
+            display_number += 1
+            numbering[display_number] = ingredient_id
+
+    return numbering
 #----------------------------------------------- PORTALS ----------------------------------------------------
 
 def display_harvest_portal(cursor, quantity, ingredient_id):
@@ -324,3 +350,76 @@ def display_equipment_craft(equipment_craft):
         craft_text += f"{ingredient} x{quantity}"
                                 
     print(f"{equipment[0]} - {equipment_color}{equipment[1]}{RESET} : {craft_text}")
+
+#----------------------------------------------- INSTRUMENTS : MIXING TOOLS ----------------------------------------------------
+
+def display_all_mixing_tools(cursor):
+
+    cursor.execute("""
+        SELECT
+            equipment.id,
+            equipment.name,
+            rarities.color,
+            mixing_tools.capacity
+        FROM mixing_tools
+        JOIN equipment
+            ON equipment.id = mixing_tools.equipment_id
+        JOIN rarities
+            ON rarities.id = equipment.rarity_id
+    """)
+
+    result = cursor.fetchall()
+
+    display_mixing_tool(result)
+
+    return result
+
+def display_mixing_tool(mixing_tools):
+
+    current_id = None
+    current_mixing_tool = None
+    display_number = 1
+
+    for mixing_tool in mixing_tools:
+        mixing_tool_id = mixing_tool[0]
+
+        if current_id is None:
+            current_id = mixing_tool_id
+            current_mixing_tool = mixing_tool
+            display_number = 1
+
+        if current_id != mixing_tool_id:
+            if current_mixing_tool is not None:
+                mixing_tool_color = COLORS[current_mixing_tool[2]]
+                print(f"{display_number} - {mixing_tool_color}{current_mixing_tool[1]}{RESET} - Nombre d'ingrédients : {current_mixing_tool[3]}")
+
+            current_id = mixing_tool_id
+            current_mixing_tool = mixing_tool
+            display_number += 1
+
+        mixing_tool_color = COLORS[current_mixing_tool[2]]
+    print(f"{display_number} - {mixing_tool_color}{current_mixing_tool[1]}{RESET} - Nombre d'ingrédients : {current_mixing_tool[3]}")
+        
+    
+def display_mixing_tools_join_id_to_list_numbering(cursor):
+
+    mixing_tools = display_all_mixing_tools(cursor)
+
+    numbering = {}
+
+    display_number = 1
+    current_id = None
+
+    for mixing_tool in mixing_tools:
+        mixing_tool_id = mixing_tool[0]
+
+        if current_id is None:
+            current_id = mixing_tool_id
+            numbering[display_number] = mixing_tool_id
+
+        if current_id != mixing_tool_id:
+            current_id = mixing_tool_id
+            display_number += 1
+            numbering[display_number] = mixing_tool_id
+
+    return numbering
