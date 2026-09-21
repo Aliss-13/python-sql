@@ -1,9 +1,13 @@
 from affinities import add_affinity_to_ingredient, reset_ingredient_affinities
-from display import display_all_affinities, display_all_ingredients, display_inventory, display_all_equipment, display_all_equipment_crafts
+
+from display import display_all_affinities, display_all_ingredients, display_inventory, display_all_equipment
+from display import display_all_equipment_crafts, display_all_recipes
+
 from ingredients import add_ingredient, menu_update_ingredient
 from portals import menu_portal
 from equipment import add_equipment, menu_update_equipment, add_equipment_craft, reset_equipment_craft
 from blending import blending_list
+from recipes import add_recipe, menu_update_recipe
 
 
 
@@ -15,10 +19,11 @@ def menu(cursor, connection, player_level):
         print("[1] 🫟 Ingrédients") 
         print("[2] 🧬 Affinités")
         print("[3] ⚗️ Matériel")
+        print("[4] 📜 Recettes")
         print()
-        print("[4] 📓 Inventaire")
-        print("[5] 🌀 Portails")
-        print("[6] 🧫 Mélanger")
+        print("[5] 📓 Inventaire")
+        print("[6] 🌀 Portails")
+        print("[7] 🧫 Mélanger")
         print()
         print("[q] 🔚 Quitter")
 
@@ -34,13 +39,16 @@ def menu(cursor, connection, player_level):
             menu_equipment(cursor, connection)
 
         elif choix == "4":
+            menu_recipes(cursor, connection)
+
+        elif choix == "5":
             display_inventory(cursor)
             print()
 
-        elif choix == "5":
+        elif choix == "6":
             menu_portal(cursor, connection, player_level)
 
-        elif choix == "6":
+        elif choix == "7":
             blending_list(cursor)
 
         elif choix == "q":
@@ -48,6 +56,37 @@ def menu(cursor, connection, player_level):
 
         else:
             print("Choix invalide")
+
+
+def menu_recipes(cursor, connection):
+
+    while True:
+    
+        print()
+        print("📜 RECETTES")
+        print("[1] Liste recettes")
+        print("[2] Ajouter recette")
+        print("[3] Modifier recette")
+            
+        print("[r] Retour")
+    
+        choix = input("> ")
+    
+        if choix == "1":
+            display_all_recipes(cursor)
+            
+        elif choix == "2":
+            add_recipe(cursor, connection)
+            
+        elif choix == "3":
+            menu_update_recipe(cursor, connection)
+
+        elif choix == "r":
+            return
+    
+        else:
+            print("Choix invalide")
+
 
 
 def menu_ingredients(cursor, connection):

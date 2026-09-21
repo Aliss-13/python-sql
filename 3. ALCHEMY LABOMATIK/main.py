@@ -1,6 +1,8 @@
 from pathlib import Path
-from menu import menu
 import sqlite3
+from menu import menu
+from display import display_tables, display_tables_info, display_new_table_contents, display_FK
+
 
 player_level = 1
 
@@ -106,35 +108,73 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS mixing_tools (
     FOREIGN KEY (equipment_id) REFERENCES equipment(id)
 )""")
 
+#------------------------------------------ targets -----------------------------
+
+cursor.execute("""CREATE TABLE IF NOT EXISTS targets (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE
+)""")
+
+#------------------------------------------ recipes -----------------------------
+
+cursor.execute("""CREATE TABLE IF NOT EXISTS recipes (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE,
+    type_id INTEGER NOT NULL,
+    target_id INTEGER NOT NULL,
+    description TEXT,
+    effect TEXT,
+    rarity_id INTEGER,
+    fire_equipment_id INTEGER,
+    melting_pot_equipment_id INTEGER,
+    FOREIGN KEY (type_id) REFERENCES recipe_types(id),
+    FOREIGN KEY (target_id) REFERENCES targets(id),
+    FOREIGN KEY (rarity_id) REFERENCES rarities(id),
+    FOREIGN KEY (fire_equipment_id) REFERENCES equipment(id),
+    FOREIGN KEY (melting_pot_equipment_id) REFERENCES equipment(id)
+)""")
+
+#------------------------------------------ recipe_types -----------------------------
+
+cursor.execute("""CREATE TABLE IF NOT EXISTS recipe_types (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE
+)""")
+
+#------------------------------------------ recipe_discovery -----------------------------
+
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS recipe_discovery (
+        recipe_id INTEGER,
+        number_of_ingredients INTEGER NOT NULL,
+        affinity_id INTEGER,
+        value REAL,
+        PRIMARY KEY (recipe_id, affinity_id),
+        FOREIGN KEY (recipe_id) REFERENCES recipes(id),
+        FOREIGN KEY (affinity_id) REFERENCES affinities(id)
+    )""")
+
+#------------------------------------------ commit -----------------------------
 
 connection.commit()
 
 #------------------------------------------ affichage des tables et des colonnes -----------------------------
 
-cursor.execute("""
-    SELECT name
-    FROM sqlite_master
-    WHERE type = 'table'
-""")
-
-tables = cursor.fetchall()
-
-for table in tables:
-    print(table[0])
-
-for table in ["rarities", "affinities", "ingredients", "ingredient_affinities", "inventory", "equipment", "equipment_categories", "equipment_craft", "mixing_tools"]:
-    print(f"\n--- {table} ---")
-
-    cursor.execute(f"PRAGMA table_info({table})")
-
-    for column in cursor.fetchall():
-        print(column)
+print("======= SQL database info =======")
+print()
+#display_tables(cursor)
+#display_tables_info(cursor)
+#display_new_table_contents(cursor)
+#display_FK(cursor)
+print("=================================")
 
 #------------------------------------------ menu -----------------------------
 
+print()
 print("            ┌──────────────────────┐            ")
 print("            | Alchemy Lab-o-Matik  |            ")
 print("            └──────────────────────┘            ")
+print()
 
 menu(cursor, connection, player_level)
 

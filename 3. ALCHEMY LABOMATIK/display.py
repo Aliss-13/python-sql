@@ -5,6 +5,8 @@ DIM = "\033[2m"
 LIGHT_PINK = "\033[38;5;218m"
 LIGHT_GREEN = "\033[38;5;120m"
 PURPLE = "\033[95m"
+ORANGE = "\033[38;5;208m"
+RED = "\033[38;5;196m"
 RESET = "\033[0m"
 
 
@@ -16,6 +18,96 @@ COLORS = {
     "reset": "\033[0m",
 }
 
+#----------------------------------------------- SQL INFO ----------------------------------------------------
+
+def display_tables(cursor):
+    cursor.execute("""
+        SELECT name
+        FROM sqlite_master
+        WHERE type = 'table'
+    """)
+
+    tables = cursor.fetchall()
+
+    for table in tables:
+        print(table[0])
+
+
+def display_tables_info(cursor):
+
+    for table in ["rarities", "affinities", "ingredients", "ingredient_affinities", "inventory", "equipment", 
+              "equipment_categories", "equipment_craft", "mixing_tools", "recipes", "recipe_types",
+              "recipe_discovery"]:
+        print(f"\n--- {table} ---")
+
+        cursor.execute(f"PRAGMA table_info({table})")
+
+        for column in cursor.fetchall():
+            print(column)
+
+
+def display_new_table_contents(cursor):
+    print()
+    print("=> Contenu de targets")
+    cursor.execute("SELECT * FROM targets")
+    print(cursor.fetchall())
+    print()
+
+
+def display_FK(cursor):
+    print()
+    print("=> Liste clés étrangères recipes")
+    cursor.execute("""
+        PRAGMA foreign_key_list(recipes)
+    """)
+
+    for row in cursor.fetchall():
+        print(row)
+
+
+#----------------------------------------------- RECIPES ----------------------------------------------------
+
+def display_all_recipes(cursor):
+
+    cursor.execute("""
+    SELECT
+        recipes.id,
+        recipes.name,
+        recipe_types.name,
+        targets.name,
+        recipes.description,
+        recipes.effect,
+        rarities.color,
+        fire.name,
+        melting_pot.name
+    FROM recipes
+    JOIN recipe_types
+        ON recipe_types.id = recipes.type_id
+    JOIN targets
+        ON targets.id = recipes.target_id
+    JOIN rarities
+        ON rarities.id = recipes.rarity_id
+    LEFT JOIN equipment AS fire
+        ON fire.id = recipes.fire_equipment_id
+    LEFT JOIN equipment AS melting_pot
+        ON melting_pot.id = recipes.melting_pot_equipment_id
+    ORDER BY recipes.name ASC
+    """)
+   
+
+    result = cursor.fetchall()
+    display_recipe(result)
+    return(result)
+
+
+def display_recipe(recipes):
+    for id, name, type, target, description, effect, color, fire, melting_pot in recipes:
+        print(
+            f'{id} - {COLORS[color]}{name}{RESET} - '
+            f'{YELLOW}{type}{RESET} - {effect} ({target}) - '
+            f'{RED}Feu : {fire or "Aucun"}{RESET} - {LIGHT_PINK}Creuset : {melting_pot or "Aucun"}{RESET}'
+        )
+        print(f"{DIM}{description}{RESET}")
 
 #----------------------------------------------- INGREDIENTS ----------------------------------------------------
 
@@ -37,7 +129,7 @@ def display_all_ingredients(cursor):
         ON ingredient_affinities.ingredient_id = ingredients.id
     LEFT JOIN affinities
         ON affinities.id = ingredient_affinities.affinity_id
-    ORDER BY ingredients.id ASC
+    ORDER BY rarities.id ASC
     """)
    
 
@@ -264,7 +356,8 @@ def display_all_equipment(cursor):
             ON equipment.category_id = equipment_categories.id
         LEFT JOIN rarities
             ON rarities.id = equipment.rarity_id
-        ORDER BY equipment.id ASC
+        ORDER BY equipment_categories.id, equipment.rarity_id ASC
+        
     """)
     
     equipment = cursor.fetchall()

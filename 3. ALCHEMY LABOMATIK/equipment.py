@@ -5,9 +5,37 @@ from display import display_all_equipment, display_all_ingredients, display_all_
 
 def add_equipment(cursor, connection):
 
+    # =============================== NAME, DESCRIPTION
+
     name = input("Nom : ")
 
     description = input("Description : ")
+
+    # =============================== CATEGORIES
+
+    cursor.execute("""
+        SELECT id, name
+        FROM equipment_categories
+        """)
+    
+    categories = cursor.fetchall()
+    
+    while True:
+        print()
+        print("--- Catégories ---")
+    
+        for category in categories:
+            print(f"[{category[0]}] {category[1]}")
+    
+        choix = input("> ")
+    
+        if choix.isdigit() and 1 <= int(choix) <= len(categories):
+            new_category_id = int(choix)
+            break
+    
+        print("Choix invalide.")
+
+    # =============================== RARITIES
 
     cursor.execute("""
         SELECT id, name
@@ -30,11 +58,13 @@ def add_equipment(cursor, connection):
 
         print("Choix invalide.")
 
+    # =============================== COMMIT
+    
     try:
         cursor.execute("""
-            INSERT INTO equipment (name, description, rarity_id)
-            VALUES (?, ?, ?)
-        """, (name, description, rarity_id))
+            INSERT INTO equipment (name, description, rarity_id, category_id)
+            VALUES (?, ?, ?, ?)
+        """, (name, description, rarity_id, new_category_id))
 
         connection.commit()
 
