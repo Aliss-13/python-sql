@@ -102,6 +102,7 @@ def update_ingredient_name(cursor, connection):
             """, (new_name, ingredient_id,))
 
         connection.commit()
+        print("Nom mis à jour.")
 
     except sqlite3.IntegrityError:
         print("Ce nom existe déjà.")
@@ -131,6 +132,7 @@ def update_ingredient_description(cursor, connection):
         """, (new_description, ingredient_id,))
 
     connection.commit()
+    print("Description mise à jour.")
 
 
 def update_ingredient_level(cursor, connection):
@@ -157,6 +159,7 @@ def update_ingredient_level(cursor, connection):
         """, (new_level, ingredient_id,))
 
     connection.commit()
+    print("Niveau mis à jour.")
 
 
 def update_ingredient_rarity(cursor, connection):
@@ -202,3 +205,27 @@ def update_ingredient_rarity(cursor, connection):
         """, (new_rarity_id, ingredient_id,))
 
     connection.commit()
+    print("Rareté mise à jour.")
+
+
+def reset_ingredient_affinities(cursor, connection):
+
+    display_all_ingredients(cursor)
+
+    while True:
+            
+        choix = input("Ingrédient choisi : ")
+
+        if choix.isdigit() and id_exists(cursor, "ingredients", int(choix)):
+            ingredient_id = int(choix)
+            break
+
+        print("Choix invalide.")
+
+    cursor.execute("""  
+        DELETE FROM ingredient_affinities
+        WHERE ingredient_id = ?
+        """, (ingredient_id,))
+
+    connection.commit()
+    print("Affinités de l'ingrédient supprimées.")

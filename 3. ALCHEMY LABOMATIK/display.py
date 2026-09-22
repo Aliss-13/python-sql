@@ -65,6 +65,91 @@ def display_FK(cursor):
         print(row)
 
 
+#----------------------------------------------- DISCOVERIES ----------------------------------------------------
+
+def display_all_discoveries(cursor):
+
+    cursor.execute("""
+    SELECT
+        recipe_discovery.recipe_id,
+        recipes.name,
+        rarities.color,
+        recipe_discovery.number_of_ingredients,
+        affinities.icon,
+        recipe_discovery.value
+    FROM recipe_discovery
+    JOIN recipes
+        ON recipes.id = recipe_discovery.recipe_id
+    JOIN rarities
+        ON rarities.id = recipes.rarity_id
+    JOIN affinities
+        ON affinities.id = recipe_discovery.affinity_id
+    ORDER BY recipes.name ASC
+    """)
+   
+    result = cursor.fetchall()
+    display_discovery(result)
+    return(result)
+
+
+def display_discovery(recipe_discovery):
+
+    affinity_list = []
+    current_id = None
+    current_discovery = None
+
+
+    for discovery in recipe_discovery:
+        discovery_id = discovery[0]
+        
+
+        if current_id is None:
+            current_id = discovery_id
+            current_discovery = discovery
+
+        if current_id != discovery_id:
+            if current_discovery is not None:
+                color = COLORS[current_discovery[2]]
+
+                affinity_text = ""
+
+                for icon, value in affinity_list:
+                    if affinity_text:
+                        affinity_text += " - "
+
+                    affinity_text += f"{icon} {value}"
+
+                print(f'{current_discovery[0]} - {color}{current_discovery[1]}{RESET} - '
+                        f'{YELLOW}Ingrédients : {current_discovery[3]}{RESET} - '
+                        f'Mélange : {affinity_text}'
+                    )
+
+            current_discovery = discovery
+            current_id = discovery_id
+            affinity_list = []
+                
+        icon = discovery[4]
+        value = discovery[5]
+                
+        if icon is not None:
+            affinity_list.append((icon, value))
+
+    color = COLORS[current_discovery[2]]
+                
+    affinity_text = ""
+                
+    for icon, value in affinity_list:
+        if affinity_text:
+            affinity_text += " - "
+                
+        affinity_text += f"{icon} {value}"
+                
+    print(
+        f'{current_discovery[0]} - {color}{current_discovery[1]}{RESET} - '
+        f'{YELLOW}Ingrédients : {current_discovery[3]}{RESET} - '
+        f'Mélange : {affinity_text}'
+    )
+        
 #----------------------------------------------- RECIPES ----------------------------------------------------
 
 def display_all_recipes(cursor):
@@ -94,7 +179,6 @@ def display_all_recipes(cursor):
     ORDER BY recipes.name ASC
     """)
    
-
     result = cursor.fetchall()
     display_recipe(result)
     return(result)
@@ -108,6 +192,7 @@ def display_recipe(recipes):
             f'{RED}Feu : {fire or "Aucun"}{RESET} - {LIGHT_PINK}Creuset : {melting_pot or "Aucun"}{RESET}'
         )
         print(f"{DIM}{description}{RESET}")
+
 
 #----------------------------------------------- INGREDIENTS ----------------------------------------------------
 
@@ -165,7 +250,6 @@ def display_ingredient(ingredients):
 
                     affinity_text += f"{icon} {value}"
                     
-
                 print(f"{current_ingredient[0]} - {ingredient_color}{current_ingredient[1]}\033[0m ({affinity_text}) - Niv. {current_ingredient[3]}")
                 print(f"{DIM}{current_ingredient[2]}{RESET}")
 

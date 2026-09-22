@@ -1,13 +1,14 @@
-from affinities import add_affinity_to_ingredient, reset_ingredient_affinities
+from affinities import add_affinity_to_ingredient
 
 from display import display_all_affinities, display_all_ingredients, display_inventory, display_all_equipment
-from display import display_all_equipment_crafts, display_all_recipes
+from display import display_all_equipment_crafts, display_all_recipes, display_all_discoveries
 
-from ingredients import add_ingredient, menu_update_ingredient
+from ingredients import add_ingredient, menu_update_ingredient, reset_ingredient_affinities
 from portals import menu_portal
 from equipment import add_equipment, menu_update_equipment, add_equipment_craft, reset_equipment_craft
 from blending import blending_list
 from recipes import add_recipe, menu_update_recipe
+from discoveries import add_recipe_discovery, menu_update_discovery
 
 
 
@@ -20,10 +21,11 @@ def menu(cursor, connection, player_level):
         print("[2] 🧬 Affinités")
         print("[3] ⚗️ Matériel")
         print("[4] 📜 Recettes")
+        print("[5] 💡 Découvertes")
         print()
-        print("[5] 📓 Inventaire")
-        print("[6] 🌀 Portails")
-        print("[7] 🧫 Mélanger")
+        print("[6] 📓 Inventaire")
+        print("[7] 🌀 Portails")
+        print("[8] 🧫 Mélanger")
         print()
         print("[q] 🔚 Quitter")
 
@@ -42,13 +44,16 @@ def menu(cursor, connection, player_level):
             menu_recipes(cursor, connection)
 
         elif choix == "5":
+            menu_discoveries(cursor, connection)
+
+        elif choix == "6":
             display_inventory(cursor)
             print()
 
-        elif choix == "6":
+        elif choix == "7":
             menu_portal(cursor, connection, player_level)
 
-        elif choix == "7":
+        elif choix == "8":
             blending_list(cursor)
 
         elif choix == "q":
@@ -56,6 +61,37 @@ def menu(cursor, connection, player_level):
 
         else:
             print("Choix invalide")
+
+
+def menu_discoveries(cursor, connection):
+
+    while True:
+    
+        print()
+        print("💡 DÉCOUVERTES")
+        print("[1] Liste découvertes")
+        print("[2] Ajouter découverte")
+        print("[3] Modifier découverte")
+            
+        print("[r] Retour")
+    
+        choix = input("> ")
+    
+        if choix == "1":
+            display_all_discoveries(cursor)
+            
+        elif choix == "2":
+            add_recipe_discovery(cursor, connection)
+            
+        elif choix == "3":
+            menu_update_discovery(cursor, connection)
+
+        elif choix == "r":
+            return
+    
+        else:
+            print("Choix invalide")
+
 
 
 def menu_recipes(cursor, connection):
