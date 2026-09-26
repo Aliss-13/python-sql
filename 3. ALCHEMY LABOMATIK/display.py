@@ -37,7 +37,7 @@ def display_tables_info(cursor):
 
     for table in ["rarities", "affinities", "ingredients", "ingredient_affinities", "inventory", "equipment", 
               "equipment_categories", "equipment_craft", "mixing_tools", "recipes", "recipe_types",
-              "recipe_discovery"]:
+              "recipe_discovery", "player_recipes"]:
         print(f"\n--- {table} ---")
 
         cursor.execute(f"PRAGMA table_info({table})")

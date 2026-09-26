@@ -4,13 +4,14 @@ from menu import menu
 from display import display_tables, display_tables_info, display_new_table_contents, display_FK
 
 
-player_level = 1
-
 BASE_DIR = Path(__file__).resolve().parent #C:\Users\lisas\OneDrive\Documents\Python\python-sql\3. ALCHEMY LABOMATIK
 DATABASE_PATH = BASE_DIR / "database.db"
 
 connection = sqlite3.connect(DATABASE_PATH)
 cursor = connection.cursor()
+
+player_level = 1
+
 
 connection.execute("PRAGMA foreign_keys = ON")
 
@@ -154,6 +155,15 @@ cursor.execute("""
         FOREIGN KEY (affinity_id) REFERENCES affinities(id)
     )""")
 
+#------------------------------------------ player_recipes -----------------------------
+
+cursor.execute("""CREATE TABLE IF NOT EXISTS player_recipes (
+    recipe_id INTEGER PRIMARY KEY,
+    crafted INTEGER NOT NULL DEFAULT 0
+    	CHECK (crafted IN (0, 1)),
+    FOREIGN KEY (recipe_id) REFERENCES recipes(id)
+)""")
+
 #------------------------------------------ commit -----------------------------
 
 connection.commit()
@@ -162,8 +172,8 @@ connection.commit()
 
 print("======= SQL database info =======")
 print()
-#display_tables(cursor)
-#display_tables_info(cursor)
+display_tables(cursor)
+display_tables_info(cursor)
 #display_new_table_contents(cursor)
 #display_FK(cursor)
 print("=================================")
@@ -177,5 +187,6 @@ print("            └───────────────────�
 print()
 
 menu(cursor, connection, player_level)
+
 
 connection.close()

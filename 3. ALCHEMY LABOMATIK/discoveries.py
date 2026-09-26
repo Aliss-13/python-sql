@@ -198,3 +198,35 @@ def reset_discovery_affinities(cursor, connection):
 
     connection.commit()
     print("Affinités de l'ingrédient supprimées.")
+
+
+def discover_recipe(cursor, connection, recipe_id):
+
+    cursor.execute("""
+        SELECT recipe_id
+        FROM player_recipes
+    """)
+
+    player_recipes = cursor.fetchall()
+    player_recipes = [recipe[0] for recipe in player_recipes]
+
+    if recipe_id not in player_recipes:
+        
+        cursor.execute("""
+            SELECT name
+            FROM recipes
+            WHERE id = ?
+        """, (recipe_id,))
+
+        name = cursor.fetchone()[0]
+
+        print(f"Vous découvrez {name} !")
+    
+        cursor.execute("""
+            INSERT INTO player_recipes (recipe_id)
+            VALUES (?)
+        """, (recipe_id,))
+
+        connection.commit()
+
+        

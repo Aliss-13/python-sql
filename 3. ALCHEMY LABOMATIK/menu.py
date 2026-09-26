@@ -6,9 +6,9 @@ from display import display_all_equipment_crafts, display_all_recipes, display_a
 from ingredients import add_ingredient, menu_update_ingredient, reset_ingredient_affinities
 from portals import menu_portal
 from equipment import add_equipment, menu_update_equipment, add_equipment_craft, reset_equipment_craft
-from blending import blending_list
+from blending import join_corresponding_recipe_to_blend
 from recipes import add_recipe, menu_update_recipe
-from discoveries import add_recipe_discovery, menu_update_discovery
+from discoveries import add_recipe_discovery, menu_update_discovery, discover_recipe
 
 
 
@@ -54,7 +54,10 @@ def menu(cursor, connection, player_level):
             menu_portal(cursor, connection, player_level)
 
         elif choix == "8":
-            blending_list(cursor)
+            recipe_id = join_corresponding_recipe_to_blend(cursor)
+
+            if recipe_id is not None:
+                discover_recipe(cursor, connection, recipe_id)
 
         elif choix == "q":
             return
@@ -194,8 +197,8 @@ def menu_equipment(cursor, connection):
         print("[1] Liste matériel")
         print("[2] Ajouter matériel")
         print("[3] Modifier matériel")
-        print("[4] Ajouter ingrédients pour craft matériel")
-        print("[5] Afficher ingrédients pour craft matériel")
+        print("[4] Afficher ingrédients pour craft matériel")
+        print("[5] Ajouter ingrédients pour craft matériel")
         print("[6] Supprimer ingrédients pour craft matériel")
             
         print("[r] Retour")
@@ -212,10 +215,10 @@ def menu_equipment(cursor, connection):
             menu_update_equipment(cursor, connection)
 
         elif choix == "4":
-            add_equipment_craft(cursor, connection)
+            display_all_equipment_crafts(cursor)
 
         elif choix == "5":
-            display_all_equipment_crafts(cursor)
+            add_equipment_craft(cursor, connection)
 
         elif choix == "6":
             reset_equipment_craft(cursor, connection)
