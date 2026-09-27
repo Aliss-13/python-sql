@@ -128,11 +128,13 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS recipes (
     rarity_id INTEGER,
     fire_equipment_id INTEGER,
     melting_pot_equipment_id INTEGER,
+    container_equipment_id INTEGER,
     FOREIGN KEY (type_id) REFERENCES recipe_types(id),
     FOREIGN KEY (target_id) REFERENCES targets(id),
     FOREIGN KEY (rarity_id) REFERENCES rarities(id),
     FOREIGN KEY (fire_equipment_id) REFERENCES equipment(id),
     FOREIGN KEY (melting_pot_equipment_id) REFERENCES equipment(id)
+    FOREIGN KEY (container_equipment_id) REFERENCES equipment(id)
 )""")
 
 #------------------------------------------ recipe_types -----------------------------
@@ -164,6 +166,18 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS player_recipes (
     FOREIGN KEY (recipe_id) REFERENCES recipes(id)
 )""")
 
+#------------------------------------------ recipe_types -----------------------------
+
+cursor.execute("""CREATE TABLE IF NOT EXISTS recipe_ingredients (
+    recipe_id INTEGER,
+    ingredient_id INTEGER,
+    quantity INTEGER,
+    PRIMARY KEY (recipe_id, ingredient_id),
+    FOREIGN KEY (recipe_id) REFERENCES recipes(id),
+    FOREIGN KEY (ingredient_id) REFERENCES ingredients(id)
+
+)""")
+
 #------------------------------------------ commit -----------------------------
 
 connection.commit()
@@ -175,7 +189,7 @@ print()
 display_tables(cursor)
 display_tables_info(cursor)
 #display_new_table_contents(cursor)
-#display_FK(cursor)
+display_FK(cursor)
 print("=================================")
 
 #------------------------------------------ menu -----------------------------

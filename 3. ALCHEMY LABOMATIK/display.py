@@ -37,7 +37,7 @@ def display_tables_info(cursor):
 
     for table in ["rarities", "affinities", "ingredients", "ingredient_affinities", "inventory", "equipment", 
               "equipment_categories", "equipment_craft", "mixing_tools", "recipes", "recipe_types",
-              "recipe_discovery", "player_recipes"]:
+              "recipe_discovery", "player_recipes", "recipe_ingredients"]:
         print(f"\n--- {table} ---")
 
         cursor.execute(f"PRAGMA table_info({table})")
@@ -64,6 +64,90 @@ def display_FK(cursor):
     for row in cursor.fetchall():
         print(row)
 
+
+#----------------------------------------------- RECIPE_INGREDIENTS ----------------------------------------------------
+
+def display_all_recipes_ingredients(cursor):
+
+    cursor.execute("""
+    SELECT
+        recipe_ingredients.recipe_id,
+        recipes.name,
+        ingredients.name,
+        recipe_rarity.color,
+        ingredient_rarity.color,
+        recipe_ingredients.quantity
+    FROM recipe_ingredients
+    JOIN recipes
+        ON recipes.id = recipe_ingredients.recipe_id
+    JOIN ingredients
+        ON ingredients.id = recipe_ingredients.ingredient_id
+    JOIN rarities AS recipe_rarity
+        ON recipe_rarity.id = recipes.rarity_id
+    JOIN rarities AS ingredient_rarity
+        ON ingredient_rarity.id = ingredients.rarity_id
+    ORDER BY recipe_ingredients.recipe_id ASC
+    """)
+   
+    result = cursor.fetchall()
+    display_recipe_ingredients(result)
+    return(result)
+
+
+def display_recipe_ingredients(recipe_ingredients):
+   
+    ingredient_list = []
+    current_recipe_id = None
+    current_recipe = None
+        
+    for recipe in recipe_ingredients:
+        recipe_id = recipe[0]
+        
+        if current_recipe_id is None:
+            current_recipe_id = recipe_id
+            current_recipe = recipe
+        
+        if current_recipe_id != recipe_id:
+            
+            if current_recipe is not None:
+
+                ingredient_color = COLORS[current_recipe[4]]
+
+                ingredient_text = ""
+                
+                for name, quantity in ingredient_list:
+                    if ingredient_text:
+                        ingredient_text += " - "
+                    ingredient_text += f"{ingredient_color}{name}{RESET} x{quantity}"
+
+                print(
+                    f'{current_recipe[0]} - {COLORS[current_recipe[3]]}{current_recipe[1]}{RESET} - '
+                    f'{ingredient_text}'
+                )
+
+            ingredient_list = []
+            current_recipe_id = recipe_id
+            current_recipe = recipe
+
+        name = recipe[2]
+        quantity = recipe[5]
+
+        if name is not None:
+            ingredient_list.append((name, quantity))
+
+    ingredient_color = COLORS[current_recipe[4]]
+
+    ingredient_text = ""
+                            
+    for name, quantity in ingredient_list:
+        if ingredient_text:
+            ingredient_text += " - "
+        ingredient_text += f"{ingredient_color}{name}{RESET} x{quantity}"
+
+    print(
+        f'{current_recipe_id} - {COLORS[current_recipe[3]]}{current_recipe[1]}{RESET} - '
+        f'{ingredient_text}'
+    )
 
 #----------------------------------------------- DISCOVERIES ----------------------------------------------------
 
@@ -164,7 +248,8 @@ def display_all_recipes(cursor):
         recipes.effect,
         rarities.color,
         fire.name,
-        melting_pot.name
+        melting_pot.name,
+        container.name
     FROM recipes
     JOIN recipe_types
         ON recipe_types.id = recipes.type_id
@@ -176,7 +261,9 @@ def display_all_recipes(cursor):
         ON fire.id = recipes.fire_equipment_id
     LEFT JOIN equipment AS melting_pot
         ON melting_pot.id = recipes.melting_pot_equipment_id
-    ORDER BY recipes.name ASC
+    LEFT JOIN equipment AS container
+        ON container.id = recipes.container_equipment_id
+    ORDER BY recipes.rarity_id ASC
     """)
    
     result = cursor.fetchall()
@@ -185,11 +272,12 @@ def display_all_recipes(cursor):
 
 
 def display_recipe(recipes):
-    for id, name, type, target, description, effect, color, fire, melting_pot in recipes:
+    for id, name, type, target, description, effect, color, fire, melting_pot, container in recipes:
         print(
             f'{id} - {COLORS[color]}{name}{RESET} - '
             f'{YELLOW}{type}{RESET} - {effect} ({target}) - '
-            f'{RED}Feu : {fire or "Aucun"}{RESET} - {LIGHT_PINK}Creuset : {melting_pot or "Aucun"}{RESET}'
+            f'{RED}Feu : {fire or "Aucun"}{RESET} - {LIGHT_PINK}Creuset : {melting_pot or "Aucun"}{RESET} - '
+            f'{CYAN}Contenant : {container or "Aucun"}{RESET}'
         )
         print(f"{DIM}{description}{RESET}")
 

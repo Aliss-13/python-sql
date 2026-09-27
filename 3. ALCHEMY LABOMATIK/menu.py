@@ -2,12 +2,13 @@ from affinities import add_affinity_to_ingredient
 
 from display import display_all_affinities, display_all_ingredients, display_inventory, display_all_equipment
 from display import display_all_equipment_crafts, display_all_recipes, display_all_discoveries
+from display import display_all_recipes_ingredients
 
 from ingredients import add_ingredient, menu_update_ingredient, reset_ingredient_affinities
 from portals import menu_portal
 from equipment import add_equipment, menu_update_equipment, add_equipment_craft, reset_equipment_craft
 from blending import join_corresponding_recipe_to_blend
-from recipes import add_recipe, menu_update_recipe
+from recipes import add_recipe, menu_update_recipe, add_recipe_ingredients, reset_recipe_ingredients
 from discoveries import add_recipe_discovery, menu_update_discovery, discover_recipe
 
 
@@ -106,6 +107,9 @@ def menu_recipes(cursor, connection):
         print("[1] Liste recettes")
         print("[2] Ajouter recette")
         print("[3] Modifier recette")
+        print("[4] Afficher recettes et ingrédients")
+        print("[5] Ajouter ingrédient(s) à une recette")
+        print("[6] Supprimer ingrédient(s) d'une recette")
             
         print("[r] Retour")
     
@@ -119,6 +123,15 @@ def menu_recipes(cursor, connection):
             
         elif choix == "3":
             menu_update_recipe(cursor, connection)
+
+        elif choix == "4":
+            display_all_recipes_ingredients(cursor)
+
+        elif choix == "5":
+            add_recipe_ingredients(cursor, connection)
+
+        elif choix == "6":
+            reset_recipe_ingredients(cursor, connection)
 
         elif choix == "r":
             return
