@@ -2,6 +2,7 @@ from pathlib import Path
 import sqlite3
 from menu import menu
 from display import display_tables, display_tables_info, display_new_table_contents, display_FK
+from inventory import add_container_to_inventory
 
 
 BASE_DIR = Path(__file__).resolve().parent #C:\Users\lisas\OneDrive\Documents\Python\python-sql\3. ALCHEMY LABOMATIK
@@ -66,6 +67,14 @@ cursor.execute("""
         ingredient_id INTEGER PRIMARY KEY,
         quantity INTEGER NOT NULL DEFAULT 0,
         FOREIGN KEY (ingredient_id) REFERENCES ingredients(id)
+)""")
+
+#------------------------------------------ container_inventory -----------------------------
+
+cursor.execute("""CREATE TABLE IF NOT EXISTS container_inventory (
+    equipment_id INTEGER PRIMARY KEY,
+    quantity INTEGER NOT NULL DEFAULT 0,
+    FOREIGN KEY (equipment_id) REFERENCES equipment(id)
 )""")
 
 #------------------------------------------ equipment_categories -----------------------------
@@ -166,7 +175,7 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS player_recipes (
     FOREIGN KEY (recipe_id) REFERENCES recipes(id)
 )""")
 
-#------------------------------------------ recipe_types -----------------------------
+#------------------------------------------ recipe_ingredients -----------------------------
 
 cursor.execute("""CREATE TABLE IF NOT EXISTS recipe_ingredients (
     recipe_id INTEGER,
@@ -182,22 +191,24 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS recipe_ingredients (
 
 connection.commit()
 
+#------------------------------------------ code temporaire -----------------------------
+
 #------------------------------------------ affichage des tables et des colonnes -----------------------------
 
 print("======= SQL database info =======")
 print()
 display_tables(cursor)
 display_tables_info(cursor)
-#display_new_table_contents(cursor)
+display_new_table_contents(cursor)
 display_FK(cursor)
 print("=================================")
 
 #------------------------------------------ menu -----------------------------
 
 print()
-print("            ┌──────────────────────┐            ")
-print("            | Alchemy Lab-o-Matik  |            ")
-print("            └──────────────────────┘            ")
+print("   ┌──────────────────────┐   ")
+print("   | Alchemy Lab-o-Matik  |   ")
+print("   └──────────────────────┘   ")
 print()
 
 menu(cursor, connection, player_level)

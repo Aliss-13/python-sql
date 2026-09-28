@@ -37,7 +37,7 @@ def display_tables_info(cursor):
 
     for table in ["rarities", "affinities", "ingredients", "ingredient_affinities", "inventory", "equipment", 
               "equipment_categories", "equipment_craft", "mixing_tools", "recipes", "recipe_types",
-              "recipe_discovery", "player_recipes", "recipe_ingredients"]:
+              "recipe_discovery", "player_recipes", "recipe_ingredients", "container_inventory"]:
         print(f"\n--- {table} ---")
 
         cursor.execute(f"PRAGMA table_info({table})")
@@ -48,17 +48,17 @@ def display_tables_info(cursor):
 
 def display_new_table_contents(cursor):
     print()
-    print("=> Contenu de targets")
-    cursor.execute("SELECT * FROM targets")
+    print("=> Contenu de container_inventory")
+    cursor.execute("SELECT * FROM container_inventory")
     print(cursor.fetchall())
     print()
 
 
 def display_FK(cursor):
     print()
-    print("=> Liste clés étrangères recipes")
+    print("=> Liste clés étrangères container_inventory")
     cursor.execute("""
-        PRAGMA foreign_key_list(recipes)
+        PRAGMA foreign_key_list(container_inventory)
     """)
 
     for row in cursor.fetchall():
@@ -168,7 +168,7 @@ def display_all_discoveries(cursor):
         ON rarities.id = recipes.rarity_id
     JOIN affinities
         ON affinities.id = recipe_discovery.affinity_id
-    ORDER BY recipes.name ASC
+    ORDER BY recipes.rarity_id ASC
     """)
    
     result = cursor.fetchall()

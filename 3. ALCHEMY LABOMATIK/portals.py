@@ -1,6 +1,6 @@
 from display import display_all_affinities, display_inventory, display_harvest_portal
 from utils import id_exists
-from inventory import add_to_inventory
+from inventory import add_ingredient_to_inventory
 import random
 
 
@@ -77,5 +77,5 @@ def harvest_portal(cursor, connection, portal, player_level):
         
     display_harvest_portal(cursor, quantity, ingredient_id)
 
-    add_to_inventory(cursor, connection, ingredient_id, quantity)
+    add_ingredient_to_inventory(cursor, connection, ingredient_id, quantity)
 

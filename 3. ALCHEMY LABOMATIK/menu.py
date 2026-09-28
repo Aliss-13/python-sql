@@ -17,18 +17,24 @@ def menu(cursor, connection, player_level):
 
     while True:
 
-        print("──────── Menu ────────")
+        print("       = MENU =        ")
+        print("")
+        print("  - Base de données -  ")
+        print("")
         print("[1] 🫟 Ingrédients") 
         print("[2] 🧬 Affinités")
         print("[3] ⚗️ Matériel")
         print("[4] 📜 Recettes")
         print("[5] 💡 Découvertes")
-        print()
+        print("")
+        print("      - Jeu -     ")
+        print("")
         print("[6] 📓 Inventaire")
         print("[7] 🌀 Portails")
         print("[8] 🧫 Mélanger")
-        print()
+        print("")
         print("[q] 🔚 Quitter")
+        print("")
 
         choix = input("> ")
 

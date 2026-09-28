@@ -15,7 +15,6 @@
 
 
 from display import display_inventory_join_id_to_list_numbering, display_mixing_tools_join_id_to_list_numbering, COLORS, RESET
-from discoveries import discover_recipe
 
 
 def blending_ingredients(cursor):
