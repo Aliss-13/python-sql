@@ -77,6 +77,22 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS container_inventory (
     FOREIGN KEY (equipment_id) REFERENCES equipment(id)
 )""")
 
+#------------------------------------------ product_inventory -----------------------------
+
+cursor.execute("""CREATE TABLE IF NOT EXISTS product_inventory (
+    recipe_id INTEGER PRIMARY KEY,
+    quantity INTEGER NOT NULL DEFAULT 0,
+    FOREIGN KEY (recipe_id) REFERENCES recipes(id)
+)""")
+
+#------------------------------------------ shop_inventory -----------------------------
+
+cursor.execute("""CREATE TABLE IF NOT EXISTS shop_inventory (
+    recipe_id INTEGER PRIMARY KEY,
+    quantity INTEGER NOT NULL DEFAULT 0,
+    FOREIGN KEY (recipe_id) REFERENCES recipes(id)
+)""")
+
 #------------------------------------------ equipment_categories -----------------------------
 
 cursor.execute("""
@@ -175,6 +191,14 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS player_recipes (
     FOREIGN KEY (recipe_id) REFERENCES recipes(id)
 )""")
 
+#------------------------------------------ player_equipment -----------------------------
+
+cursor.execute("""CREATE TABLE IF NOT EXISTS player_equipment (
+    equipment_id INTEGER PRIMARY KEY,
+    crafted INTEGER NOT NULL DEFAULT 0 CHECK (crafted IN (0, 1)),
+    FOREIGN KEY (equipment_id) REFERENCES equipment(id)
+)""")
+
 #------------------------------------------ recipe_ingredients -----------------------------
 
 cursor.execute("""CREATE TABLE IF NOT EXISTS recipe_ingredients (
@@ -184,7 +208,6 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS recipe_ingredients (
     PRIMARY KEY (recipe_id, ingredient_id),
     FOREIGN KEY (recipe_id) REFERENCES recipes(id),
     FOREIGN KEY (ingredient_id) REFERENCES ingredients(id)
-
 )""")
 
 #------------------------------------------ commit -----------------------------
@@ -199,7 +222,7 @@ print("======= SQL database info =======")
 print()
 display_tables(cursor)
 display_tables_info(cursor)
-display_new_table_contents(cursor)
+#display_new_table_contents(cursor)
 display_FK(cursor)
 print("=================================")
 

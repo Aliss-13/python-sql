@@ -10,6 +10,7 @@ from equipment import add_equipment, menu_update_equipment, add_equipment_craft,
 from blending import join_corresponding_recipe_to_blend
 from recipes import add_recipe, menu_update_recipe, add_recipe_ingredients, reset_recipe_ingredients
 from discoveries import add_recipe_discovery, menu_update_discovery, discover_recipe
+from craft import craft_recipe
 
 
 
@@ -31,7 +32,8 @@ def menu(cursor, connection, player_level):
         print("")
         print("[6] 📓 Inventaire")
         print("[7] 🌀 Portails")
-        print("[8] 🧫 Mélanger")
+        print("[8] 🥣 Mélanger")
+        print("[9] 🧫 Crafter")
         print("")
         print("[q] 🔚 Quitter")
         print("")
@@ -65,6 +67,9 @@ def menu(cursor, connection, player_level):
 
             if recipe_id is not None:
                 discover_recipe(cursor, connection, recipe_id)
+
+        elif choix == "9":
+            craft_recipe(cursor)
 
         elif choix == "q":
             return
