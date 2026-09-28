@@ -249,7 +249,7 @@ def display_all_recipes_ingredients(cursor):
         ON recipe_rarity.id = recipes.rarity_id
     JOIN rarities AS ingredient_rarity
         ON ingredient_rarity.id = ingredients.rarity_id
-    ORDER BY recipe_ingredients.recipe_id ASC
+    ORDER BY recipe_rarity.id ASC
     """)
    
     result = cursor.fetchall()

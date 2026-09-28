@@ -674,7 +674,7 @@ def add_recipe_ingredients(cursor, connection):
         FROM recipes
         JOIN rarities
             ON rarities.id = recipes.rarity_id
-        ORDER BY recipes.id ASC
+        ORDER BY recipes.rarity_id ASC
     """)
 
     recipes = cursor.fetchall()
@@ -684,11 +684,11 @@ def add_recipe_ingredients(cursor, connection):
         print("--- Recettes ---")
 
         for recipe in recipes:
-            print(f"[{recipe[0]}] {COLORS[recipe[2]]}{recipe[1]}{RESET}")
+            print(f"{recipe[0]} - {COLORS[recipe[2]]}{recipe[1]}{RESET}")
 
         choice = input("> ")
 
-        if choice.isdigit() and 1 <= int(choice) <= len(recipes):
+        if choice.isdigit() and id_exists(cursor, "recipes", int(choice)):
             recipe_id = int(choice)
             break
 
