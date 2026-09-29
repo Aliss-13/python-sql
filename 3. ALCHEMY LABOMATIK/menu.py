@@ -2,8 +2,9 @@ from affinities import add_affinity_to_ingredient
 
 from display import display_all_affinities, display_all_ingredients, display_inventory, display_all_equipment
 from display import display_all_equipment_crafts, display_all_recipes, display_all_discoveries
-from display import display_all_recipes_ingredients
+from display import display_all_recipes_ingredients, display_container_inventory, display_product_inventory
 from display import display_tables_info, display_tables, display_new_table_contents, display_FK
+from display import DIM, RESET
 
 from ingredients import add_ingredient, menu_update_ingredient, reset_ingredient_affinities
 from portals import menu_portal
@@ -68,13 +69,13 @@ def menu(cursor, connection, player_level):
 
         print("       = MENU =        ")
         print("")
-        print("[1] 🌀 Portails")
-        print("[2] 🥣 Mélanger")
-        print("[3] 🧫 Fabriquer")
-        print("[4] 📓 Inventaire")
-        print("[5] 💰 Boutique")
+        print(f'[1] 🌀 Portails {DIM}- Récolte des ingrédients.{RESET}')
+        print(f"[2] 🧪 Laboratoire {DIM}- Expérimentation par le mélange des ingrédients, la souffrance et l'introspection.{RESET}")
+        print(f'[3] 🧫 Fabriquer {DIM}- Fabrication des produits dont la recette est connue. Ne fonctionne pas pour le gasoil.{RESET}')
+        print(f"[4] 📓 Inventaire {DIM}- Ingrédients, contenants et produits fabriqués.{RESET}")
+        print(f"[5] 💰 Boutique {DIM}- Vente des produits fabriqués : enrichissement personnel, gain d'expérience et contrôle fiscal.{RESET}")
         print("")
-        print("[q] 🔚 Quitter")
+        print(f"[q] 🔚 Quitter {DIM}- Je m'en vais comme un prince !{RESET}")
         print("")
 
         choix = input("> ")
@@ -96,6 +97,8 @@ def menu(cursor, connection, player_level):
 
         elif choix == "4":
             display_inventory(cursor)
+            display_container_inventory(cursor)
+            display_product_inventory(cursor)
             print()
 
         elif choix == "5":

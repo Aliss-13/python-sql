@@ -557,6 +557,7 @@ def display_inventory(cursor):
             ingredients.name,
             inventory.quantity,
             ingredients.level,
+            ingredients.description,
             rarities.color,
             affinities.icon,
             ingredient_affinities.value
@@ -569,12 +570,12 @@ def display_inventory(cursor):
             ON ingredient_affinities.ingredient_id = ingredients.id
         LEFT JOIN affinities
             ON affinities.id = ingredient_affinities.affinity_id
-        ORDER BY inventory.ingredient_id ASC
+        ORDER BY ingredients.rarity_id ASC
     """)
 
     result = cursor.fetchall()
     print()
-    print("📓 Inventaire")
+    print("🫟 Ingrédients")
     display_ingredient_from_inventory(result)
     return result
 
@@ -598,7 +599,7 @@ def display_ingredient_from_inventory(inventory):
 
             if current_ingredient is not None:
                 
-                ingredient_color = COLORS[current_ingredient[4]]
+                ingredient_color = COLORS[current_ingredient[5]]
 
                 affinity_text = ""
                 for icon, value in affinity_list:
@@ -608,20 +609,20 @@ def display_ingredient_from_inventory(inventory):
 
                     affinity_text += f"{icon} {value}"
                     
-                print(f"{display_number} - {ingredient_color}{current_ingredient[1]}{RESET} {YELLOW}x{current_ingredient[2]}{RESET} ({affinity_text}) - Niv. {current_ingredient[3]}")
+                print(f"{display_number} - {ingredient_color}{current_ingredient[1]}{RESET} {YELLOW}x{current_ingredient[2]}{RESET} ({affinity_text}) - Niv. {current_ingredient[3]} - {DIM}{current_ingredient[4]}{RESET}")
 
             affinity_list = []
             current_id = ingredient_id
             current_ingredient = ingredient
             display_number += 1
 
-        icon = ingredient[5]
-        value = ingredient[6]
+        icon = ingredient[6]
+        value = ingredient[7]
 
         if icon is not None:
             affinity_list.append((icon, value))
 
-    ingredient_color = COLORS[current_ingredient[4]]
+    ingredient_color = COLORS[current_ingredient[5]]
         
     affinity_text = ""
     for icon, value in affinity_list:
@@ -629,7 +630,7 @@ def display_ingredient_from_inventory(inventory):
             affinity_text += " - "
         affinity_text += f"{icon} {value}"
         
-    print(f"{display_number} - {ingredient_color}{current_ingredient[1]}{RESET} {YELLOW}x{current_ingredient[2]}{RESET} ({affinity_text}) - Niv. {current_ingredient[3]}")
+    print(f"{display_number} - {ingredient_color}{current_ingredient[1]}{RESET} {YELLOW}x{current_ingredient[2]}{RESET} ({affinity_text}) - Niv. {current_ingredient[3]} - {DIM}{current_ingredient[4]}{RESET}")
 
 
 def display_inventory_join_id_to_list_numbering(cursor):
@@ -825,8 +826,9 @@ def display_mixing_tool(mixing_tools):
             current_mixing_tool = mixing_tool
             display_number += 1
 
+    if current_mixing_tool is not None:
         mixing_tool_color = COLORS[current_mixing_tool[2]]
-    print(f"{display_number} - {mixing_tool_color}{current_mixing_tool[1]}{RESET} - Nombre d'ingrédients : {current_mixing_tool[3]}")
+        print(f"{display_number} - {mixing_tool_color}{current_mixing_tool[1]}{RESET} - Nombre d'ingrédients : {current_mixing_tool[3]}")
         
     
 def display_mixing_tools_join_id_to_list_numbering(cursor):
@@ -851,3 +853,115 @@ def display_mixing_tools_join_id_to_list_numbering(cursor):
             numbering[display_number] = mixing_tool_id
 
     return numbering
+
+#----------------------------------------------- CONTAINER_INVENTORY ----------------------------------------------------
+
+
+def display_container_inventory(cursor):
+
+    cursor.execute("""
+        SELECT
+            container_inventory.equipment_id,
+            equipment.name,
+            rarities.color,
+            equipment.description,
+            container_inventory.quantity
+        FROM container_inventory
+        JOIN equipment
+            ON equipment.id = container_inventory.equipment_id
+        JOIN rarities
+            ON rarities.id = equipment.rarity_id
+        ORDER BY equipment.rarity_id ASC
+    """)
+
+    containers = cursor.fetchall()
+    print()
+    print("🫙 Contenants")
+   
+    display_container_from_container_inventory(containers)
+
+    return containers
+
+
+def display_container_from_container_inventory(container_inventory):
+
+    current_id = None
+    current_container = None
+    display_number = 1
+
+    for container in container_inventory:
+        container_id = container[0]
+
+        if current_id is None:
+            current_id = container_id
+            current_container = container
+            display_number = 1
+
+        if current_id != container_id:
+            if current_container is not None:
+                container_color = COLORS[current_container[2]]
+                print(f"{display_number} - {container_color}{current_container[1]}{RESET} {YELLOW}x{current_container[4]}{RESET} - {DIM}{current_container[3]}{RESET}")
+
+            current_id = container_id
+            current_container = container
+            display_number += 1
+
+    if current_container is not None:
+        container_color = COLORS[current_container[2]]
+        print(f"{display_number} - {container_color}{current_container[1]}{RESET} {YELLOW}x{current_container[4]}{RESET} - {DIM}{current_container[3]}{RESET}")
+
+
+#----------------------------------------------- PRODUCT_INVENTORY ----------------------------------------------------
+
+def display_product_inventory(cursor):
+
+    cursor.execute("""
+        SELECT
+            product_inventory.recipe_id,
+            recipes.name,
+            rarities.color,
+            recipes.description,
+            product_inventory.quantity
+        FROM product_inventory
+        JOIN recipes
+            ON recipes.id = product_inventory.recipe_id
+        JOIN rarities
+            ON rarities.id = recipes.rarity_id
+        ORDER BY recipes.rarity_id ASC
+    """)
+
+    products = cursor.fetchall()
+    print()
+    print("🛍️ Produits fabriqués")
+   
+    display_product_from_product_inventory(products)
+
+    return products
+
+
+def display_product_from_product_inventory(product_inventory):
+
+    current_id = None
+    current_product = None
+    display_number = 1
+
+    for product in product_inventory:
+        product_id = product[0]
+
+        if current_id is None:
+            current_id = product_id
+            current_product = product
+            display_number = 1
+
+        if current_id != product_id:
+            if current_product is not None:
+                product_color = COLORS[current_product[2]]
+                print(f"{display_number} - {product_color}{current_product[1]}{RESET} {YELLOW}x{current_product[4]}{RESET} - {DIM}x{current_product[3]}{RESET}")
+
+            current_id = product_id
+            current_product = product
+            display_number += 1
+
+    if current_product is not None:
+        product_color = COLORS[current_product[2]]
+        print(f"{display_number} - {product_color}{current_product[1]}{RESET} {YELLOW}x{current_product[4]}{RESET} - {DIM}x{current_product[3]}{RESET}")
