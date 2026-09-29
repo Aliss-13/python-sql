@@ -93,7 +93,7 @@ def menu(cursor, connection, player_level):
                 discover_recipe(cursor, connection, recipe_id)
 
         elif choix == "3":
-            craft_recipe(cursor)
+            craft_recipe(cursor, connection)
 
         elif choix == "4":
             display_inventory(cursor)

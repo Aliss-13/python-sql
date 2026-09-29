@@ -1,4 +1,4 @@
-from display import display_all_recipes, display_all_affinities, display_all_discoveries
+from display import display_all_recipes, display_all_affinities, display_all_discoveries, COLORS, RESET
 from utils import id_exists, ask_positive_int, ask_positive_float_0_1
 from affinities import get_affinity_recipe_discovery_total_points
 
@@ -200,6 +200,9 @@ def reset_discovery_affinities(cursor, connection):
     print("Affinités de l'ingrédient supprimées.")
 
 
+
+
+
 def discover_recipe(cursor, connection, recipe_id):
 
     cursor.execute("""
@@ -213,14 +216,21 @@ def discover_recipe(cursor, connection, recipe_id):
     if recipe_id not in player_recipes:
         
         cursor.execute("""
-            SELECT name
+            SELECT 
+                recipes.name,
+                rarities.color
             FROM recipes
-            WHERE id = ?
+            JOIN rarities
+                ON rarities.id = recipes.rarity_id
+            WHERE recipes.id = ?
         """, (recipe_id,))
 
-        name = cursor.fetchone()[0]
+        recipe_nc = cursor.fetchone()
+        recipe_name = recipe_nc[0]
+        recipe_color = recipe_nc[1]
 
-        print(f"Vous découvrez {name} !")
+        print(f"Vous découvrez {COLORS[recipe_color]}{recipe_name}{RESET} !")
+        print()
     
         cursor.execute("""
             INSERT INTO player_recipes (recipe_id)

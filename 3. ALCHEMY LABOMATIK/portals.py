@@ -20,8 +20,6 @@ def menu_portal(cursor, connection, player_level):
         if choix.isdigit() and id_exists(cursor, "affinities", int(choix)):
             portal = int(choix)
             harvest_portal(cursor, connection, portal, player_level)
-            
-            display_inventory(cursor)
 
         elif choix == "r":
             return

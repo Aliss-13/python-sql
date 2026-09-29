@@ -1,4 +1,4 @@
-from display import display_player_recipes_join_id_to_list_numbering
+from display import display_player_recipes_join_id_to_list_numbering, COLORS, RESET
 
 
 def pick_recipe(cursor):
@@ -10,8 +10,11 @@ def pick_recipe(cursor):
     # choix du joueur
 
     while True:
-            
-        choix = input("Recette choisie : ")
+                 
+        choix = input("Recette choisie (q pour revenir) : ") 
+
+        if choix.lower() == "q":
+            return None
 
         # récupération de l'identifiant de la recette
 
@@ -58,6 +61,8 @@ def check_fire(cursor, recipe_id): # vérification feu dans l'équipement du jou
                     
         if not fire_found:
             player_equipment_has_required_fire = False
+            print("Vous n'avez pas le feu requis pour cette recette.")
+            print()
 
     return player_equipment_has_required_fire
 
@@ -96,6 +101,8 @@ def check_melting_pot(cursor, recipe_id):  # vérification creuset dans l'équip
                              
         if not melting_pot_found:
             player_equipment_has_required_melting_pot = False
+            print("Vous n'avez pas le creuset requis pour cette recette.")
+            print()
 
     return player_equipment_has_required_melting_pot
 
@@ -128,16 +135,28 @@ def check_inventory_for_ingredients_and_quantity(cursor, recipe_id):  # vérific
     # | for a, b in liste_de_tuples: | signifie : « Pour chaque tuple de deux éléments, mets le premier dans a et le second dans b. »
         
         ingredient_found = False
-
+        ingredient_has_required_quantity = False
+        
         for inventory_ingredient_id, inventory_quantity in result_inventory: 
             
-            if ingredient_id == inventory_ingredient_id: 
-                if required_quantity <= inventory_quantity:
-                    ingredient_found = True
-                 
-        if not ingredient_found:
-            inventory_has_required_ingredients = False
+            if ingredient_id == inventory_ingredient_id:
+                ingredient_found = True 
 
+                if required_quantity <= inventory_quantity:
+                    ingredient_has_required_quantity = True
+                   
+        
+    if not ingredient_found:
+        inventory_has_required_ingredients = False
+        print("Vous n'avez pas les ingrédients requis pour cette recette.")
+        print()
+
+    else:
+        if not ingredient_has_required_quantity:
+            inventory_has_required_ingredients = False
+            print("Vous n'avez pas assez d'ingrédients pour cette recette.")
+            print()
+            
     return inventory_has_required_ingredients, result_recipe_ingredients
 
 
@@ -176,6 +195,8 @@ def check_container_inventory_for_containers_and_quantity(cursor, recipe_id):
                      
     if not container_found:
         container_inventory_has_required_containers = False
+        print("Vous n'avez pas le contenant requis pour cette recette.")
+        print()
 
     return container_inventory_has_required_containers, container_equipment_id
 
@@ -259,6 +280,23 @@ def craft_recipe(cursor, connection):
 
     recipe_id = pick_recipe(cursor)
 
+    if recipe_id is None:
+        return
+    
+    cursor.execute("""
+        SELECT 
+            recipes.name,
+            rarities.color
+        FROM recipes
+        JOIN rarities
+            ON rarities.id = recipes.rarity_id
+        WHERE recipes.id = ?
+        """, (recipe_id,))
+
+    recipe_nc = cursor.fetchone()
+    recipe_name = recipe_nc[0]
+    recipe_color = recipe_nc[1]
+
     player_equipment_has_required_fire = check_fire(cursor, recipe_id)
 
     player_equipment_has_required_melting_pot = check_melting_pot(cursor, recipe_id)
@@ -271,6 +309,8 @@ def craft_recipe(cursor, connection):
         if player_equipment_has_required_melting_pot:
             if inventory_has_required_ingredients:
                 if container_inventory_has_required_containers:
+                    print(f"Vous fabriquez {COLORS[recipe_color]}{recipe_name}{RESET} !")
+                    print()
 
                     pick_product_destination(cursor, recipe_id)
 

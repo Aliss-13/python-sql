@@ -274,14 +274,14 @@ def display_recipe_ingredients(recipe_ingredients):
             
             if current_recipe is not None:
 
-                ingredient_color = COLORS[current_recipe[4]]
+                color = COLORS[current_recipe[4]]
 
                 ingredient_text = ""
                 
-                for name, quantity in ingredient_list:
+                for name, quantity, color in ingredient_list:
                     if ingredient_text:
                         ingredient_text += " - "
-                    ingredient_text += f"{ingredient_color}{name}{RESET} x{quantity}"
+                    ingredient_text += f"{color}{name}{RESET} x{quantity}"
 
                 print(
                     f'{current_recipe[0]} - {COLORS[current_recipe[3]]}{current_recipe[1]}{RESET} - '
@@ -294,18 +294,19 @@ def display_recipe_ingredients(recipe_ingredients):
 
         name = recipe[2]
         quantity = recipe[5]
+        color = COLORS[recipe[4]]
 
         if name is not None:
-            ingredient_list.append((name, quantity))
+            ingredient_list.append((name, quantity, color))
 
-    ingredient_color = COLORS[current_recipe[4]]
+    color = COLORS[current_recipe[4]]
 
     ingredient_text = ""
                             
-    for name, quantity in ingredient_list:
+    for name, quantity, color in ingredient_list:
         if ingredient_text:
             ingredient_text += " - "
-        ingredient_text += f"{ingredient_color}{name}{RESET} x{quantity}"
+        ingredient_text += f"{color}{name}{RESET} x{quantity}"
 
     print(
         f'{current_recipe_id} - {COLORS[current_recipe[3]]}{current_recipe[1]}{RESET} - '
@@ -956,7 +957,7 @@ def display_product_from_product_inventory(product_inventory):
         if current_id != product_id:
             if current_product is not None:
                 product_color = COLORS[current_product[2]]
-                print(f"{display_number} - {product_color}{current_product[1]}{RESET} {YELLOW}x{current_product[4]}{RESET} - {DIM}x{current_product[3]}{RESET}")
+                print(f"{display_number} - {product_color}{current_product[1]}{RESET} {YELLOW}x{current_product[4]}{RESET} - {DIM}{current_product[3]}{RESET}")
 
             current_id = product_id
             current_product = product
@@ -964,4 +965,4 @@ def display_product_from_product_inventory(product_inventory):
 
     if current_product is not None:
         product_color = COLORS[current_product[2]]
-        print(f"{display_number} - {product_color}{current_product[1]}{RESET} {YELLOW}x{current_product[4]}{RESET} - {DIM}x{current_product[3]}{RESET}")
+        print(f"{display_number} - {product_color}{current_product[1]}{RESET} {YELLOW}x{current_product[4]}{RESET} - {DIM}{current_product[3]}{RESET}")

@@ -1,50 +1,44 @@
-#blend_ingredients()
-#│
-#├── afficher inventaire
-#├── choisir ingrédient 1
-#├── choisir ingrédient 2
-#└── retourner le mélange
-#[4, 14]
-   #↓
-#récupérer les affinités de 4
-#récupérer les affinités de 14
-   #↓
-#calculer l'affinité finale du mélange
-   #↓
-#???
-
-
 from display import display_inventory_join_id_to_list_numbering, display_mixing_tools_join_id_to_list_numbering, COLORS, RESET
 
 
-def blending_ingredients(cursor):
+def pick_mixing_tool(cursor):
 
-    # affichage des mélangeurs
     mixing_tools_numbering = display_mixing_tools_join_id_to_list_numbering(cursor)
     print()
-
-    # choix du joueur
+    
     while True:
-        
-        choix = input("Instrument de mélange choisi : ")
+            
+        choix = input("Instrument de mélange choisi (q pour revenir) : ")
 
+        if choix.lower() == "q":
+            return None
+    
         # récupération de l'equipment_id
         if choix.isdigit() and int(choix) in mixing_tools_numbering:
             mixing_tool_id = mixing_tools_numbering[int(choix)]
             break
-
+    
         print("choix invalide")
+    return mixing_tool_id
+
+
+def return_mixing_tool_capacity(cursor, mixing_tool_id):
 
     # récupération capacity
-    cursor.execute("""
-        SELECT capacity
-        FROM mixing_tools
-        WHERE equipment_id = ?
-        """, (mixing_tool_id,))
-            
-    result = cursor.fetchone()
-    capacity = result[0]
-            
+        cursor.execute("""
+            SELECT capacity
+            FROM mixing_tools
+            WHERE equipment_id = ?
+            """, (mixing_tool_id,))
+                
+        result = cursor.fetchone()
+        capacity = result[0]
+        return capacity
+
+
+
+def pick_ingredients_to_blend(cursor, capacity):
+
     numbering = display_inventory_join_id_to_list_numbering(cursor)
     print()
 
@@ -85,7 +79,10 @@ def blending_ingredients(cursor):
 
     print(f"ID ingrédients du mélange : {blending_ingredients}")
     print()
-    
+    return blending_ingredients
+
+
+def blend_affinities_result(cursor, capacity, blending_ingredients):
 
     blending_affinities = {}
 
@@ -120,12 +117,29 @@ def blending_ingredients(cursor):
     for affinity_id, (value, icon) in blending_affinities.items():
         print(f"{icon} : {value}")
 
+    return blending_affinities
+
+
+
+def blending(cursor):
+
+    mixing_tool_id = pick_mixing_tool(cursor)
+
+    if mixing_tool_id is None:
+        return None, None
+
+    capacity = return_mixing_tool_capacity(cursor, mixing_tool_id)
+
+    blending_ingredients = pick_ingredients_to_blend(cursor, capacity)
+
+    blending_affinities = blend_affinities_result(cursor, capacity, blending_ingredients)
+
     return blending_affinities, capacity
 
 
 def join_corresponding_recipe_to_blend(cursor):
 
-    blending_affinities, capacity = blending_ingredients(cursor)
+    blending_affinities, capacity = blending(cursor)
 
     cursor.execute("""
         SELECT 
