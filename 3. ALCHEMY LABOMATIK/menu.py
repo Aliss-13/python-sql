@@ -33,7 +33,7 @@ def menu(cursor, connection, player_level):
         print("[6] 📓 Inventaire")
         print("[7] 🌀 Portails")
         print("[8] 🥣 Mélanger")
-        print("[9] 🧫 Crafter")
+        print("[9] 🧫 Fabriquer")
         print("")
         print("[q] 🔚 Quitter")
         print("")
