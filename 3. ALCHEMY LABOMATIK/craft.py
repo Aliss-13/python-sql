@@ -1,12 +1,3 @@
-#6. Si tout est OK → demander la destination
-               #↓
-       #┌──────────────┐
-       #↓              ↓
-#product_inventory  shop_inventory
-   
-#8. Marquer la recette comme fabriquée
-#9. COMMIT
-
 from display import display_player_recipes_join_id_to_list_numbering
 
 
@@ -255,6 +246,15 @@ def pick_product_destination(cursor, recipe_id):
         print("Choix invalide.")
 
 
+def crafted_is_true(cursor, recipe_id):
+
+    cursor.execute("""
+        UPDATE player_recipes
+        SET crafted = 1
+    WHERE recipe_id = ?
+    """, (recipe_id,))
+
+
 def craft_recipe(cursor, connection):
 
     recipe_id = pick_recipe(cursor)
@@ -272,9 +272,9 @@ def craft_recipe(cursor, connection):
             if inventory_has_required_ingredients:
                 if container_inventory_has_required_containers:
 
-                    for ingredient_id, required_quantity in result_recipe_ingredients:
+                    pick_product_destination(cursor, recipe_id)
 
-                        pick_product_destination(cursor, recipe_id)
+                    for ingredient_id, required_quantity in result_recipe_ingredients:
 
                         cursor.execute("""
                             UPDATE inventory
@@ -287,5 +287,7 @@ def craft_recipe(cursor, connection):
                         SET quantity = quantity - ?
                         WHERE equipment_id = ?
                     """, (1, container_equipment_id))
-                        
+
+                    crafted_is_true(cursor, recipe_id)
+
                     connection.commit()

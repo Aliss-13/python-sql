@@ -1,7 +1,7 @@
 from pathlib import Path
 import sqlite3
 from menu import menu
-from display import display_tables, display_tables_info, display_new_table_contents, display_FK
+from display import display_tables, display_tables_info, display_new_table_contents, display_FK, YELLOW, RESET
 from inventory import add_container_to_inventory
 
 
@@ -216,24 +216,17 @@ connection.commit()
 
 #------------------------------------------ code temporaire -----------------------------
 
-#------------------------------------------ affichage des tables et des colonnes -----------------------------
-
-print("======= SQL database info =======")
-print()
-display_tables(cursor)
-display_tables_info(cursor)
-#display_new_table_contents(cursor)
-display_FK(cursor)
-print("=================================")
-
 #------------------------------------------ menu -----------------------------
 
 print()
 print("   ┌──────────────────────┐   ")
 print("   | Alchemy Lab-o-Matik  |   ")
 print("   └──────────────────────┘   ")
+print("Votre magie, notre logistique®.")
 print()
-
+print()
+print(f"Accès menu gestion base de données : {YELLOW}bdd_forever{RESET}")
+print()
 menu(cursor, connection, player_level)
 
 

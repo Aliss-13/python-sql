@@ -3,6 +3,7 @@ from affinities import add_affinity_to_ingredient
 from display import display_all_affinities, display_all_ingredients, display_inventory, display_all_equipment
 from display import display_all_equipment_crafts, display_all_recipes, display_all_discoveries
 from display import display_all_recipes_ingredients
+from display import display_tables_info, display_tables, display_new_table_contents, display_FK
 
 from ingredients import add_ingredient, menu_update_ingredient, reset_ingredient_affinities
 from portals import menu_portal
@@ -12,30 +13,21 @@ from recipes import add_recipe, menu_update_recipe, add_recipe_ingredients, rese
 from discoveries import add_recipe_discovery, menu_update_discovery, discover_recipe
 from craft import craft_recipe
 
-
-
-def menu(cursor, connection, player_level):
+def menu_database_management(cursor, connection):
 
     while True:
-
-        print("       = MENU =        ")
         print("")
-        print("  - Base de données -  ")
+        print("       = MENU GESTION BASE DE DONNÉES =        ")
+        print("Mets le souk dedans, je te démonte. Bisous ❤️.")
         print("")
         print("[1] 🫟 Ingrédients") 
         print("[2] 🧬 Affinités")
         print("[3] ⚗️ Matériel")
         print("[4] 📜 Recettes")
         print("[5] 💡 Découvertes")
+        print("[6] 🪑 Tables")
         print("")
-        print("      - Jeu -     ")
-        print("")
-        print("[6] 📓 Inventaire")
-        print("[7] 🌀 Portails")
-        print("[8] 🥣 Mélanger")
-        print("[9] 🧫 Fabriquer")
-        print("")
-        print("[q] 🔚 Quitter")
+        print("[r] 🔚 Retour")
         print("")
 
         choix = input("> ")
@@ -56,20 +48,58 @@ def menu(cursor, connection, player_level):
             menu_discoveries(cursor, connection)
 
         elif choix == "6":
-            display_inventory(cursor)
+            print("======= SQL database info =======")
             print()
+            display_tables(cursor)
+            display_tables_info(cursor)
+            #display_new_table_contents(cursor)
+            display_FK(cursor)
+            print("=================================")
 
-        elif choix == "7":
+        elif choix == "r":
+            return
+        
+        else:
+            print("Choix invalide")
+
+def menu(cursor, connection, player_level):
+
+    while True:
+
+        print("       = MENU =        ")
+        print("")
+        print("[1] 🌀 Portails")
+        print("[2] 🥣 Mélanger")
+        print("[3] 🧫 Fabriquer")
+        print("[4] 📓 Inventaire")
+        print("[5] 💰 Boutique")
+        print("")
+        print("[q] 🔚 Quitter")
+        print("")
+
+        choix = input("> ")
+
+        if choix == "bdd_forever":
+            menu_database_management(cursor, connection)
+
+        elif choix == "1":
             menu_portal(cursor, connection, player_level)
-
-        elif choix == "8":
+        
+        elif choix == "2":
             recipe_id = join_corresponding_recipe_to_blend(cursor)
 
             if recipe_id is not None:
                 discover_recipe(cursor, connection, recipe_id)
 
-        elif choix == "9":
+        elif choix == "3":
             craft_recipe(cursor)
+
+        elif choix == "4":
+            display_inventory(cursor)
+            print()
+
+        elif choix == "5":
+            print("💰 Boutique en construction")
 
         elif choix == "q":
             return
