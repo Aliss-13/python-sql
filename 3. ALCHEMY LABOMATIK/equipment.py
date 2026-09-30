@@ -306,9 +306,9 @@ def add_equipment_craft(cursor, connection):
             connection.rollback()
             return
 
-        quantity = ask_positive_int("Quantité (q pour quitter) : ")
+        quantity = ask_positive_int("Quantité (666 pour quitter) : ")
 
-        if quantity == "q":
+        if quantity == "666":
             return
 
         cursor.execute("""
