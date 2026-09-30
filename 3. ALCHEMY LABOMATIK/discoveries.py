@@ -116,6 +116,7 @@ def add_recipe_discovery(cursor, connection):
                 break
 
             print("Choix invalide.")
+            return
 
     # points à attribuer entre 0 et 1
 

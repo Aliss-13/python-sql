@@ -5,11 +5,20 @@ from display import display_all_equipment, display_all_ingredients, display_all_
 
 def add_equipment(cursor, connection):
 
+    print()
+    print("À chaque étape : q pour quitter.")
+
     # =============================== NAME, DESCRIPTION
 
     name = input("Nom : ")
 
+    if name == "q":
+        return
+
     description = input("Description : ")
+
+    if description == "q":
+        return
 
     # =============================== CATEGORIES
 
@@ -27,13 +36,14 @@ def add_equipment(cursor, connection):
         for category in categories:
             print(f"[{category[0]}] {category[1]}")
     
-        choix = input("> ")
+        choice = input("> ")
     
-        if choix.isdigit() and 1 <= int(choix) <= len(categories):
-            new_category_id = int(choix)
+        if choice.isdigit() and 1 <= int(choice) <= len(categories):
+            new_category_id = int(choice)
             break
     
         print("Choix invalide.")
+        return
 
     # =============================== RARITIES
 
@@ -50,13 +60,14 @@ def add_equipment(cursor, connection):
         for rarity in rarities:
             print(f"[{rarity[0]}] {rarity[1]}")
 
-        choix = input("> ")
+        choice = input("> ")
 
-        if choix.isdigit() and 1 <= int(choix) <= len(rarities):
-            rarity_id = int(choix)
+        if choice.isdigit() and 1 <= int(choice) <= len(rarities):
+            rarity_id = int(choice)
             break
 
         print("Choix invalide.")
+        return
 
     # =============================== COMMIT
     
@@ -110,16 +121,19 @@ def update_equipment_name(cursor, connection):
     
     while True:
     
-        choix = input("Matériel choisi : ")
+        choice = input("Matériel choisi : ")
     
-        if choix.isdigit() and id_exists(cursor, "equipment", int(choix)):
-            equipment_id = int(choix)
+        if choice.isdigit() and id_exists(cursor, "equipment", int(choice)):
+            equipment_id = int(choice)
             break
     
         print("Choix invalide.")
         return
 
-    new_name = input("Nouveau nom : ")
+    new_name = input("Nouveau nom (q pour quitter) : ")
+
+    if new_name == "q":
+        return
 
     try:
         cursor.execute("""
@@ -141,16 +155,19 @@ def update_equipment_description(cursor, connection):
     
     while True:
     
-        choix = input("Matériel choisi : ")
+        choice = input("Matériel choisi : ")
     
-        if choix.isdigit() and id_exists(cursor, "equipment", int(choix)):
-            equipment_id = int(choix)
+        if choice.isdigit() and id_exists(cursor, "equipment", int(choice)):
+            equipment_id = int(choice)
             break
     
         print("Choix invalide.")
         return
 
-    new_description = input("Nouveau descriptif : ")
+    new_description = input("Nouveau descriptif (q pour quitter) : ")
+
+    if new_description == "q":
+        return
 
     cursor.execute("""
         UPDATE equipment
@@ -168,10 +185,10 @@ def update_equipment_rarity(cursor, connection):
     
     while True:
     
-        choix = input("Matériel choisi : ")
+        choice = input("Matériel choisi : ")
     
-        if choix.isdigit() and id_exists(cursor, "equipment", int(choix)):
-            equipment_id = int(choix)
+        if choice.isdigit() and id_exists(cursor, "equipment", int(choice)):
+            equipment_id = int(choice)
             break
     
         print("Choix invalide.")
@@ -197,6 +214,7 @@ def update_equipment_rarity(cursor, connection):
             break
     
         print("Choix invalide.")
+        return
 
     cursor.execute("""
         UPDATE equipment
@@ -214,10 +232,10 @@ def update_equipment_category(cursor, connection):
     
     while True:
     
-        choix = input("Matériel choisi : ")
+        choice = input("Matériel choisi : ")
     
-        if choix.isdigit() and id_exists(cursor, "equipment", int(choix)):
-            equipment_id = int(choix)
+        if choice.isdigit() and id_exists(cursor, "equipment", int(choice)):
+            equipment_id = int(choice)
             break
     
         print("Choix invalide.")
@@ -243,6 +261,7 @@ def update_equipment_category(cursor, connection):
             break
     
         print("Choix invalide.")
+        return
 
     cursor.execute("""
         UPDATE equipment
@@ -257,7 +276,11 @@ def update_equipment_category(cursor, connection):
 def add_equipment_craft(cursor, connection):
 
     display_all_equipment(cursor)
-    equipment_id = ask_positive_int("Matériel : ")
+
+    equipment_id = ask_positive_int("Matériel (q pour quitter) : ")
+
+    if equipment_id == "q":
+        return
 
     if not id_exists(cursor, "equipment", equipment_id):
         print("Matériel introuvable.")
@@ -268,6 +291,7 @@ def add_equipment_craft(cursor, connection):
     while True:
 
         display_all_ingredients(cursor)
+        
         ingredient_id = ask_int("Ingrédients pour le craft (0 = terminer) : ")
 
         if ingredient_id == 0:
@@ -282,7 +306,10 @@ def add_equipment_craft(cursor, connection):
             connection.rollback()
             return
 
-        quantity = ask_positive_int("Quantité : ")
+        quantity = ask_positive_int("Quantité (q pour quitter) : ")
+
+        if quantity == "q":
+            return
 
         cursor.execute("""
             INSERT INTO equipment_craft (equipment_id, ingredient_id, quantity)
@@ -315,6 +342,7 @@ def reset_equipment_craft(cursor, connection):
             break
 
         print("Choix invalide.")
+        return
 
     cursor.execute("""  
         DELETE FROM equipment_craft

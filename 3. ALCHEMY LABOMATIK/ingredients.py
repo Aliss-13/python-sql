@@ -4,12 +4,23 @@ from utils import ask_positive_int, id_exists
 
 
 def add_ingredient(cursor, connection):
+    print()
+    print("À chaque étape : q pour quitter.")
 
-    name = input("Nom : ")
+    name = input("Nom : ") 
+
+    if name == "q":
+        return
 
     description = input("Description : ")
 
-    niveau = ask_positive_int("Niveau : ")
+    if description == "q":
+        return
+
+    level = ask_positive_int("Niveau : ")
+
+    if level == "q":
+        return
 
     cursor.execute("""
         SELECT id, name
@@ -24,19 +35,20 @@ def add_ingredient(cursor, connection):
         for rarity in rarities:
             print(f"[{rarity[0]}] {rarity[1]}")
 
-        choix = input("> ")
+        choice = input("> ")
 
-        if choix.isdigit() and 1 <= int(choix) <= len(rarities):
-            rarity_id = int(choix)
+        if choice.isdigit() and 1 <= int(choice) <= len(rarities):
+            rarity_id = int(choice)
             break
 
         print("Choix invalide.")
+        return
 
     try:
         cursor.execute("""
             INSERT INTO ingredients (name, description, level, rarity_id)
             VALUES (?, ?, ?, ?)
-        """, (name, description, niveau, rarity_id))
+        """, (name, description, level, rarity_id))
 
         connection.commit()
 
@@ -92,7 +104,10 @@ def update_ingredient_name(cursor, connection):
         print("Choix invalide.")
         return
 
-    new_name = input("Nouveau nom : ")
+    new_name = input("Nouveau nom (q pour quitter) : ")
+
+    if new_name == "q": 
+        return
 
     try:
         cursor.execute("""
@@ -123,7 +138,10 @@ def update_ingredient_description(cursor, connection):
         print("Choix invalide.")
         return
 
-    new_description = input("Nouveau descriptif : ")
+    new_description = input("Nouveau descriptif (q pour quitter) : ")
+
+    if new_description == "q": 
+        return
 
     cursor.execute("""
         UPDATE ingredients
@@ -150,7 +168,10 @@ def update_ingredient_level(cursor, connection):
         print("Choix invalide.")
         return
 
-    new_level = ask_positive_int("Nouveau niveau : ")
+    new_level = ask_positive_int("Nouveau niveau (q pour quitter) : ")
+
+    if new_level == "q": 
+        return
 
     cursor.execute("""
         UPDATE ingredients
@@ -197,6 +218,7 @@ def update_ingredient_rarity(cursor, connection):
             break
     
         print("Choix invalide.")
+        return
 
     cursor.execute("""
         UPDATE ingredients

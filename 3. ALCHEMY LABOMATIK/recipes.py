@@ -179,6 +179,7 @@ def update_recipe_rarity(cursor, connection):
             break
     
         print("Choix invalide.")
+        return
 
     cursor.execute("""
         UPDATE recipes
@@ -225,6 +226,7 @@ def update_recipe_category(cursor, connection):
             break
     
         print("Choix invalide.")
+        return
 
     cursor.execute("""
         UPDATE recipes
@@ -271,6 +273,7 @@ def update_recipe_target(cursor, connection):
             break
     
         print("Choix invalide.")
+        return
 
     cursor.execute("""
         UPDATE recipes
@@ -329,6 +332,7 @@ def update_recipe_fire(cursor, connection):
             break
     
         print("Choix invalide.")
+        return
 
     cursor.execute("""
         UPDATE recipes
@@ -388,6 +392,7 @@ def update_recipe_melting_pot(cursor, connection):
             break
             
         print("Choix invalide.")
+        return
 
     cursor.execute("""
         UPDATE recipes
@@ -447,6 +452,7 @@ def update_recipe_container(cursor, connection):
             break
                         
         print("Choix invalide.")
+        return
 
     cursor.execute("""
         UPDATE recipes
@@ -460,13 +466,25 @@ def update_recipe_container(cursor, connection):
 
 def add_recipe(cursor, connection):
 
+    print()
+    print("À chaque étape : q pour quitter.")
+
     # ========================================= NAME, DESCRIPTION, EFFECT
 
     name = input("Nom : ")
 
+    if name == "q":
+        return
+
     description = input("Description : ")
 
+    if description == "q":
+        return
+
     effect = input("Effet : ")
+
+    if effect == "q":
+        return
 
 # ========================================= TARGET
 
@@ -484,13 +502,14 @@ def add_recipe(cursor, connection):
         for target in targets:
             print(f"{target[0]} - {target[1]}")
     
-        choix = input("> ")
+        choice = input("> ")
 
-        if choix.isdigit() and 1 <= int(choix) <= len(targets):
-            target_id = int(choix)
+        if choice.isdigit() and 1 <= int(choice) <= len(targets):
+            target_id = int(choice)
             break
     
         print("Choix invalide.")
+        return
 
     # ========================================= TYPE : POTION, ELIXIR, PENTAGRAMME
 
@@ -508,13 +527,14 @@ def add_recipe(cursor, connection):
         for recipe_type in recipe_types:
             print(f"{recipe_type[0]} - {recipe_type[1]}")
 
-        choix = input("> ")
+        choice = input("> ")
 
-        if choix.isdigit() and 1 <= int(choix) <= len(recipe_types):
-            recipe_type_id = int(choix)
+        if choice.isdigit() and 1 <= int(choice) <= len(recipe_types):
+            recipe_type_id = int(choice)
             break
 
         print("Choix invalide.")
+        return
 
     # ========================================= RARITY
 
@@ -532,13 +552,14 @@ def add_recipe(cursor, connection):
         for rarity in rarities:
             print(f"{rarity[0]} - {rarity[1]}")
 
-        choix = input("> ")
+        choice = input("> ")
 
-        if choix.isdigit() and 1 <= int(choix) <= len(rarities):
-            rarity_id = int(choix)
+        if choice.isdigit() and 1 <= int(choice) <= len(rarities):
+            rarity_id = int(choice)
             break
 
         print("Choix invalide.")
+        return
 
     # ========================================= FIRE EQUIPMENT
 
@@ -564,17 +585,18 @@ def add_recipe(cursor, connection):
             print(f"{fire[0]} - {COLORS[fire[2]]}{fire[1]}{RESET}")
         print("[0] Aucun")
     
-        choix = input("> ")
+        choice = input("> ")
     
-        if choix == "0":
+        if choice == "0":
             fire_id = None
             break
 
-        if choix.isdigit() and int(choix) in fire_ids:
-            fire_id = int(choix)
+        if choice.isdigit() and int(choice) in fire_ids:
+            fire_id = int(choice)
             break
     
         print("Choix invalide.")
+        return
 
     # ========================================= MELTING POT EQUIPMENT
 
@@ -600,18 +622,18 @@ def add_recipe(cursor, connection):
             print(f"{melting_pot[0]} - {COLORS[melting_pot[2]]}{melting_pot[1]}{RESET}")
         print("[0] Aucun")
                 
-        choix = input("> ")
+        choice = input("> ")
 
-        if choix == "0":
+        if choice == "0":
             melting_pot_id = None
             break
 
-        if choix.isdigit() and int(choix) in melting_pot_ids:
-            melting_pot_id = int(choix)
+        if choice.isdigit() and int(choice) in melting_pot_ids:
+            melting_pot_id = int(choice)
             break
                 
         print("Choix invalide.")
-
+        return
 
     # ========================================= CONTAINER EQUIPMENT
     
@@ -637,17 +659,18 @@ def add_recipe(cursor, connection):
             print(f"{container[0]} - {COLORS[container[2]]}{container[1]}{RESET}")
         print("[0] Aucun")
                     
-        choix = input("> ")
+        choice = input("> ")
     
-        if choix == "0":
+        if choice == "0":
             container_id = None
             break
     
-        if choix.isdigit() and int(choix) in containers_ids:
-            container_id = int(choix)
+        if choice.isdigit() and int(choice) in containers_ids:
+            container_id = int(choice)
             break
                     
         print("Choix invalide.")
+        return
 
     try:
         cursor.execute("""
@@ -663,6 +686,9 @@ def add_recipe(cursor, connection):
 
 
 def add_recipe_ingredients(cursor, connection):
+
+    print()
+    print("À chaque étape : q pour quitter.")
 
 # ========================================= choix recette
 
@@ -693,6 +719,7 @@ def add_recipe_ingredients(cursor, connection):
             break
 
         print("Choix invalide.")
+        return
 
     # ========================================= choix ingrédients + quantité
     recipe_has_ingredients = False
@@ -704,6 +731,9 @@ def add_recipe_ingredients(cursor, connection):
         print("[0] = Terminer")
 
         choice = input("> ")
+
+        if choice == "q":
+            return
     
         if choice == "0":
             if not recipe_has_ingredients:
@@ -719,9 +749,11 @@ def add_recipe_ingredients(cursor, connection):
             print("Choix invalide.")
             continue
 
-        quantity = ask_positive_int("Quantité : ")
+        quantity = ask_positive_int("Quantité (q pour quitter) : ")
 
-        
+        if quantity == "q": 
+            return
+
         try:
             cursor.execute("""
                 INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity)
@@ -757,6 +789,7 @@ def reset_recipe_ingredients(cursor, connection):
             break
     
         print("Choix invalide.")
+        return
 
     cursor.execute("""  
         DELETE FROM recipe_ingredients
