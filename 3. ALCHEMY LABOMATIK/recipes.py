@@ -1,6 +1,6 @@
 import sqlite3
 
-from display import display_all_recipes, display_all_recipes_ingredients, COLORS, RESET, display_all_ingredients
+from display import display_all_recipes, display_all_recipes_ingredients, COLORS, RESET, display_all_ingredients, display_all_recipes_products
 from utils import id_exists, ask_positive_int
 
 
@@ -768,6 +768,89 @@ def add_recipe_ingredients(cursor, connection):
     connection.commit()
 
 
+def add_recipe_products(cursor, connection):
+
+    print()
+    print("À chaque étape : q pour quitter.")
+
+# ========================================= choix recette
+
+    cursor.execute("""
+        SELECT 
+            recipes.id, 
+            recipes.name, 
+            rarities.color
+        FROM recipes
+        JOIN rarities
+            ON rarities.id = recipes.rarity_id
+        ORDER BY recipes.rarity_id ASC
+    """)
+
+    recipes = cursor.fetchall()
+
+    while True:
+        print()
+        print("--- Recettes ---")
+
+        for recipe in recipes:
+            print(f"{recipe[0]} - {COLORS[recipe[2]]}{recipe[1]}{RESET}")
+
+        choice = input("> ")
+
+        if choice.isdigit() and id_exists(cursor, "recipes", int(choice)):
+            recipe_id = int(choice)
+            break
+
+        print("Choix invalide.")
+        return
+
+    # ========================================= choix produits + quantité
+    recipe_has_products = False
+    
+    while True:
+
+        display_all_recipes(cursor)
+        print()
+        print("[0] = Terminer")
+
+        choice = input("> ")
+
+        if choice == "q":
+            return
+    
+        if choice == "0":
+            if not recipe_has_products:
+                connection.rollback()
+                print("Saisie annulée.")
+                return
+            break
+
+        if choice.isdigit() and id_exists(cursor, "recipes", int(choice)):
+            product_id = int(choice)
+
+        else:
+            print("Choix invalide.")
+            continue
+
+        quantity = ask_positive_int("Quantité (666 pour quitter) : ")
+
+        if quantity == "666": 
+            return
+
+        try:
+            cursor.execute("""
+                INSERT INTO recipe_products (recipe_id, product_recipe_id, quantity)
+                VALUES (?, ?, ?)
+            """, (recipe_id, product_id, quantity))
+            
+            recipe_has_products = True
+            
+        except sqlite3.IntegrityError:
+            print("Ce produit est déjà répertorié dans cette recette.")
+        
+    connection.commit()
+
+
 def reset_recipe_ingredients(cursor, connection):
 
     display_all_recipes_ingredients(cursor)
@@ -798,5 +881,37 @@ def reset_recipe_ingredients(cursor, connection):
 
     connection.commit()
     print("Ingrédients supprimés de la recette.")
+
+
+def reset_recipe_products(cursor, connection):
+
+    display_all_recipes_products(cursor)
+
+    while True:
+            
+        recipe_id = input("Recette choisie : ")
+
+        cursor.execute("""
+            SELECT recipe_id
+            FROM recipe_products
+            WHERE recipe_id = ?
+        """, (recipe_id,))
+                
+        result = cursor.fetchone()
+        
+        if recipe_id.isdigit() and recipe_id is not None:
+            recipe_id = int(recipe_id)
+            break
+    
+        print("Choix invalide.")
+        return
+
+    cursor.execute("""  
+        DELETE FROM recipe_products
+        WHERE recipe_id = ?
+        """, (recipe_id,))
+
+    connection.commit()
+    print("Produits supprimés de la recette.")
         
         

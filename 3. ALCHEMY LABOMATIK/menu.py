@@ -2,7 +2,7 @@ from affinities import add_affinity_to_ingredient
 
 from display import display_all_affinities, display_all_ingredients, display_inventory, display_all_equipment
 from display import display_all_equipment_crafts, display_all_recipes, display_all_discoveries
-from display import display_all_recipes_ingredients, display_container_inventory, display_product_inventory
+from display import display_all_recipes_ingredients, display_all_recipes_products, display_container_inventory, display_product_inventory
 from display import display_tables_info, display_tables, display_new_table_contents, display_FK
 from display import DIM, RESET
 
@@ -10,7 +10,7 @@ from ingredients import add_ingredient, menu_update_ingredient, reset_ingredient
 from portals import menu_portal
 from equipment import add_equipment, menu_update_equipment, add_equipment_craft, reset_equipment_craft
 from blending import join_corresponding_recipe_to_blend
-from recipes import add_recipe, menu_update_recipe, add_recipe_ingredients, reset_recipe_ingredients
+from recipes import add_recipe, menu_update_recipe, add_recipe_ingredients, add_recipe_products, reset_recipe_ingredients, reset_recipe_products
 from discoveries import add_recipe_discovery, menu_update_discovery, discover_recipe
 from craft import craft_recipe
 
@@ -148,12 +148,16 @@ def menu_recipes(cursor, connection):
     
         print()
         print("📜 RECETTES")
+        print()
         print("[1] Liste recettes")
         print("[2] Ajouter recette")
         print("[3] Modifier recette")
-        print("[4] Afficher recettes et ingrédients")
-        print("[5] Ajouter ingrédient(s) à une recette")
-        print("[6] Supprimer ingrédient(s) d'une recette")
+        print()
+        print("[4] Afficher les ingrédients et produits d'une recette")
+        print("[5] Ajouter ingrédients à une recette")
+        print("[6] Ajouter produits à une recette")
+        print("[7] Réinitialiser ingrédients d'une recette")
+        print("[8] Réinitialiser produits d'une recette")
             
         print("[r] Retour")
     
@@ -170,12 +174,19 @@ def menu_recipes(cursor, connection):
 
         elif choix == "4":
             display_all_recipes_ingredients(cursor)
+            display_all_recipes_products(cursor)
 
         elif choix == "5":
             add_recipe_ingredients(cursor, connection)
 
         elif choix == "6":
+            add_recipe_products(cursor, connection)
+
+        elif choix == "7":
             reset_recipe_ingredients(cursor, connection)
+
+        elif choix == "8":
+            reset_recipe_products(cursor, connection)
 
         elif choix == "r":
             return

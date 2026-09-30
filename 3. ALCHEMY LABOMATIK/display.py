@@ -18,6 +18,107 @@ COLORS = {
     "reset": "\033[0m",
 }
 
+
+def group_data_under_same_id(items):
+
+    groups = []
+    current_item_id = None
+    current_group = []
+
+    for item in items:
+
+        item_id = item[0]
+
+        if current_item_id is None:
+            current_item_id = item_id
+
+        if current_item_id != item_id:
+            groups.append(current_group)
+            current_item_id = item_id
+            current_group = []
+        
+        current_group.append((item))
+
+    groups.append(current_group)
+
+    return groups
+
+
+def create_id_numbering(item_list):
+
+    numbering = {}
+
+    display_number = 1
+    current_id = None
+
+    for item in item_list:
+        item_id = item[0]
+
+        if current_id is None:
+            current_id = item_id
+            numbering[display_number] = item_id
+
+        if current_id != item_id:
+            current_id = item_id
+            display_number += 1
+            numbering[display_number] = item_id
+
+    return numbering
+
+
+def format_recipe_items(item_list):
+
+    item_text = ""  # on liste les items
+
+    if not item_list:
+        item_text = "Aucun"
+                        
+    else:
+        for (item_name, item_quantity, item_color) in item_list:
+            if item_text:
+                item_text += " - "
+            item_text += f"{COLORS[item_color]}{item_name}{RESET} x{item_quantity}"
+
+    return item_text
+
+
+def format_affinity_and_craft_items(ac_list):
+
+    ac_text = ""
+
+    if not ac_list:
+        ac_text = "Aucun"
+                        
+    else:
+        for first, second in ac_list:
+            if ac_text:
+                ac_text += " - "
+            ac_text += f"{first} {second}"
+
+    return ac_text
+
+
+def display_one_recipe(current_recipe, ingredient_list, product_list, display_number):
+
+    ingredient_text = format_recipe_items(ingredient_list)
+    product_text = format_recipe_items(product_list)
+
+    print(f'[{display_number}] {COLORS[current_recipe[6]]}{current_recipe[1]}{RESET}')
+
+    print(f'    {YELLOW}{current_recipe[2]}{RESET} - {current_recipe[5]} ({current_recipe[3]})')
+    
+    print(
+            f'    {RED}Feu : {current_recipe[13] or "Aucun"}{RESET} - {LIGHT_PINK}Creuset : {current_recipe[14] or "Aucun"}{RESET} - '
+            f'{CYAN}Contenant : {current_recipe[15] or "Aucun"}{RESET}'
+    )
+
+    print()
+    print(f"    {ingredient_text}")
+    print(f"    {product_text}")
+    print()
+    print(f"    {DIM}{current_recipe[4]}{RESET}")
+    print()
+
 #----------------------------------------------- SQL INFO ----------------------------------------------------
 
 def display_tables(cursor):
@@ -37,7 +138,8 @@ def display_tables_info(cursor):
 
     for table in ["rarities", "affinities", "ingredients", "ingredient_affinities", "inventory", "product_inventory",
                   "container_inventory", "shop_inventory", "equipment", "equipment_categories", "equipment_craft", "mixing_tools", 
-                  "player_equipment", "recipes", "recipe_types", "recipe_discovery", "player_recipes", "recipe_ingredients"]:
+                  "player_equipment", "recipes", "recipe_types", "recipe_discovery", "player_recipes", "recipe_ingredients",
+                  "recipe_products"]:
         print(f"\n--- {table} ---")
 
         cursor.execute(f"PRAGMA table_info({table})")
@@ -56,9 +158,9 @@ def display_new_table_contents(cursor):
 
 def display_FK(cursor):
     print()
-    print("=> Liste clés étrangères player_equipment")
+    print("=> Liste clés étrangères recipe_products")
     cursor.execute("""
-        PRAGMA foreign_key_list(player_equipment)
+        PRAGMA foreign_key_list(recipe_products)
     """)
 
     for row in cursor.fetchall():
@@ -81,6 +183,9 @@ def display_all_player_recipes(cursor):
             ingredients.name,
             ingredient_color.color,
             recipe_ingredients.quantity,
+            recipe_products.name,
+            recipe_products_color.color,
+            recipe_products.quantity,
             fire.name,
             melting_pot.name,
             container.name
@@ -107,6 +212,15 @@ def display_all_player_recipes(cursor):
 
         JOIN rarities AS ingredient_color
             ON ingredients.rarity_id = ingredient_color.id
+        
+        LEFT JOIN recipe_products 
+            ON recipe_products.recipe_id = recipes.id
+        
+        LEFT JOIN recipes AS products
+            ON products.id = recipe_products.product_recipe_id
+        
+        LEFT JOIN rarities AS recipe_products_color
+            ON products.rarity_id = recipe_products_color.id
             
         LEFT JOIN equipment AS fire
             ON recipes.fire_equipment_id = fire.id
@@ -126,11 +240,14 @@ def display_all_player_recipes(cursor):
 def display_player_recipe(player_recipes):
 
     ingredient_list = []
+    product_list = []
     current_recipe_id = None
     current_recipe = None
     display_number = 1
 
     for recipe in player_recipes: # boucle principale, ligne actuelle parcourue
+
+        #---------------------recette
         recipe_id = recipe[0]
         recipe_name = recipe[1]
         recipe_type = recipe[2]
@@ -138,12 +255,21 @@ def display_player_recipe(player_recipes):
         description = recipe[4]
         effect = recipe[5]
         recipe_color = recipe[6]
+
+        #---------------------ingrédients
         ingredient_name = recipe[7]
         ingredient_color = recipe[8]
         ingredient_quantity = recipe[9]
-        fire = recipe[10]
-        melting_pot = recipe[11]
-        container = recipe[12]
+
+        #---------------------produits
+        product_name = recipe[10]
+        product_color = recipe[11]
+        product_quantity = recipe[12]
+
+        #---------------------équipement
+        fire = recipe[13]
+        melting_pot = recipe[14]
+        container = recipe[15]
 
         if current_recipe_id is None:
             current_recipe_id = recipe_id
@@ -153,56 +279,25 @@ def display_player_recipe(player_recipes):
             
             if current_recipe is not None:
 
-                ingredient_text = ""
-                
-                for (ingredient_name, ingredient_quantity, ingredient_color) in ingredient_list:
-                    if ingredient_text:
-                        ingredient_text += " - "
-                    ingredient_text += f"{COLORS[ingredient_color]}{ingredient_name}{RESET} x{ingredient_quantity}"
-
-    
-                print(f'[{display_number}] {COLORS[current_recipe[6]]}{current_recipe[1]}{RESET}')
-                print(f'    {YELLOW}{current_recipe[2]}{RESET} - {current_recipe[5]} ({current_recipe[3]})')
-
-                print(
-                        f'    {RED}Feu : {current_recipe[10] or "Aucun"}{RESET} - {LIGHT_PINK}Creuset : {current_recipe[11] or "Aucun"}{RESET} - '
-                        f'{CYAN}Contenant : {current_recipe[12] or "Aucun"}{RESET}'
-                )
-                print()
-                print(f"    {ingredient_text}")
-                print()
-                print(f"    {DIM}{current_recipe[4]}{RESET}")
-                print()
+                display_one_recipe(current_recipe, ingredient_list, product_list, display_number)
 
             ingredient_list = []   # on vide les ingrédients de l'ancienne recette
+            product_list = []  # on vide les produits de l'ancienne recette
             current_recipe_id = recipe_id
             current_recipe = recipe
             display_number += 1
 
-        if ingredient_name is not None:
+
+        if ingredient_name is not None: # on ajoute les ingrédients dans la liste
             ingredient_list.append((ingredient_name, ingredient_quantity, ingredient_color))
 
+        if product_name is not None: # on ajoute les produits dans la liste
+            product_list.append((product_name, product_quantity, product_color))
+
+
     if current_recipe is not None:
-        ingredient_text = ""
-                    
-        for (ingredient_name, ingredient_quantity, ingredient_color) in ingredient_list:
-            if ingredient_text:
-                ingredient_text += " - "
-            ingredient_text += f"{COLORS[ingredient_color]}{ingredient_name}{RESET} x{ingredient_quantity}"
-    
-        
-        print(f'[{display_number}] {COLORS[current_recipe[6]]}{current_recipe[1]}{RESET}')
-        print(f'    {YELLOW}{current_recipe[2]}{RESET} - {current_recipe[5]} ({current_recipe[3]})')
-        
-        print(
-                f'    {RED}Feu : {current_recipe[10] or "Aucun"}{RESET} - {LIGHT_PINK}Creuset : {current_recipe[11] or "Aucun"}{RESET} - '
-                f'{CYAN}Contenant : {current_recipe[12] or "Aucun"}{RESET}'
-        )
-        print()
-        print(f"    {ingredient_text}")
-        print()
-        print(f"    {DIM}{current_recipe[4]}{RESET}")
-        print()
+
+        display_one_recipe(current_recipe, ingredient_list, product_list, display_number)
 
 
 
@@ -210,24 +305,62 @@ def display_player_recipes_join_id_to_list_numbering(cursor):
 
     player_recipes = display_all_player_recipes(cursor)
 
-    numbering = {}
+    return create_id_numbering(player_recipes)
 
-    display_number = 1
-    current_id = None
+#----------------------------------------------- RECIPE_PRODUCTS ----------------------------------------------------
 
-    for player_recipe in player_recipes:
-        player_recipe_id = player_recipe[0]
+def display_all_recipes_products(cursor):
 
-        if current_id is None:
-            current_id = player_recipe_id
-            numbering[display_number] = player_recipe_id
+    cursor.execute("""
+    SELECT
+        recipes.id,
+        recipes.name,
+        product_recipe.name,
+        recipe_rarity.color,
+        product_rarity.color,
+        recipe_products.quantity
+    FROM recipes
+    LEFT JOIN recipe_products
+        ON recipe_products.recipe_id = recipes.id
+    LEFT JOIN recipes AS product_recipe
+        ON product_recipe.id = recipe_products.product_recipe_id
+    JOIN rarities AS recipe_rarity
+        ON recipe_rarity.id = recipes.rarity_id
+    LEFT JOIN rarities AS product_rarity
+        ON product_rarity.id = product_recipe.rarity_id
+    ORDER BY recipe_rarity.id ASC
+    """)
+   
+    result = cursor.fetchall()
+    display_recipe_product(result)
+    return(result)
 
-        if current_id != player_recipe_id:
-            current_id = player_recipe_id
-            display_number += 1
-            numbering[display_number] = player_recipe_id
 
-    return numbering
+def display_recipe_product(recipe_products):
+  
+    groups = group_data_under_same_id(recipe_products)
+
+    for group in groups:
+
+        product_list = []
+
+        for recipe_product in group:
+        
+            name = recipe_product[2]
+            quantity = recipe_product[5]
+            color = recipe_product[4]
+
+            if name is not None:
+                product_list.append((name, quantity, color))
+            
+            product_text = format_recipe_items(product_list)
+            
+        print(
+                f'{group[0][0]} - '
+                f'{COLORS[group[0][3]]}{group[0][1]}{RESET} - '
+                f'{product_text}'
+        )
+
 #----------------------------------------------- RECIPE_INGREDIENTS ----------------------------------------------------
 
 def display_all_recipes_ingredients(cursor):
@@ -276,12 +409,7 @@ def display_recipe_ingredients(recipe_ingredients):
 
                 color = COLORS[current_recipe[4]]
 
-                ingredient_text = ""
-                
-                for name, quantity, color in ingredient_list:
-                    if ingredient_text:
-                        ingredient_text += " - "
-                    ingredient_text += f"{color}{name}{RESET} x{quantity}"
+                ingredient_text = format_recipe_items(ingredient_list)
 
                 print(
                     f'{current_recipe[0]} - {COLORS[current_recipe[3]]}{current_recipe[1]}{RESET} - '
@@ -299,14 +427,13 @@ def display_recipe_ingredients(recipe_ingredients):
         if name is not None:
             ingredient_list.append((name, quantity, color))
 
-    color = COLORS[current_recipe[4]]
 
-    ingredient_text = ""
-                            
-    for name, quantity, color in ingredient_list:
-        if ingredient_text:
-            ingredient_text += " - "
-        ingredient_text += f"{color}{name}{RESET} x{quantity}"
+    if current_recipe is not None:
+        color = COLORS[current_recipe[4]]
+    else:
+        return
+
+    ingredient_text = format_recipe_items(ingredient_list)
 
     print(
         f'{current_recipe_id} - {COLORS[current_recipe[3]]}{current_recipe[1]}{RESET} - '
@@ -359,13 +486,7 @@ def display_discovery(recipe_discovery):
             if current_discovery is not None:
                 color = COLORS[current_discovery[2]]
 
-                affinity_text = ""
-
-                for icon, value in affinity_list:
-                    if affinity_text:
-                        affinity_text += " - "
-
-                    affinity_text += f"{icon} {value}"
+                affinity_text = format_affinity_and_craft_items(affinity_list)
 
                 print(f'{current_discovery[0]} - {color}{current_discovery[1]}{RESET} - '
                         f'{YELLOW}Ingrédients : {current_discovery[3]}{RESET} - '
@@ -382,15 +503,12 @@ def display_discovery(recipe_discovery):
         if icon is not None:
             affinity_list.append((icon, value))
 
-    color = COLORS[current_discovery[2]]
+
+    if current_discovery is not None:
+
+        color = COLORS[current_discovery[2]]
                 
-    affinity_text = ""
-                
-    for icon, value in affinity_list:
-        if affinity_text:
-            affinity_text += " - "
-                
-        affinity_text += f"{icon} {value}"
+        affinity_text = format_affinity_and_craft_items(affinity_list)
                 
     print(
         f'{current_discovery[0]} - {color}{current_discovery[1]}{RESET} - '
@@ -494,13 +612,7 @@ def display_ingredient(ingredients):
                 
                 ingredient_color = COLORS[current_ingredient[4]]
 
-                affinity_text = ""
-                for icon, value in affinity_list:
-
-                    if affinity_text:
-                        affinity_text += " - "
-
-                    affinity_text += f"{icon} {value}"
+                affinity_text = format_affinity_and_craft_items(affinity_list)
                     
                 print(f"{current_ingredient[0]} - {ingredient_color}{current_ingredient[1]}\033[0m ({affinity_text}) - Niv. {current_ingredient[3]}")
                 print(f"{DIM}{current_ingredient[2]}{RESET}")
@@ -515,13 +627,12 @@ def display_ingredient(ingredients):
         if icon is not None:
             affinity_list.append((icon, value))
 
-    ingredient_color = COLORS[ingredient[4]]
+
+    if current_ingredient is not None:
+
+        ingredient_color = COLORS[ingredient[4]]
         
-    affinity_text = ""
-    for icon, value in affinity_list:
-        if affinity_text:
-            affinity_text += " - "
-        affinity_text += f"{icon} {value}"
+        affinity_text = format_affinity_and_craft_items(affinity_list)
         
     print(f"{current_ingredient[0]} - {ingredient_color}{current_ingredient[1]}\033[0m ({affinity_text}) - Niv. {current_ingredient[3]}")
     print(f"{DIM}{current_ingredient[2]}{RESET}")
@@ -602,13 +713,7 @@ def display_ingredient_from_inventory(inventory):
                 
                 ingredient_color = COLORS[current_ingredient[5]]
 
-                affinity_text = ""
-                for icon, value in affinity_list:
-
-                    if affinity_text:
-                        affinity_text += " - "
-
-                    affinity_text += f"{icon} {value}"
+                affinity_text = format_affinity_and_craft_items(affinity_list)
                     
                 print(f"{display_number} - {ingredient_color}{current_ingredient[1]}{RESET} {YELLOW}x{current_ingredient[2]}{RESET} ({affinity_text}) - Niv. {current_ingredient[3]} - {DIM}{current_ingredient[4]}{RESET}")
 
@@ -623,39 +728,19 @@ def display_ingredient_from_inventory(inventory):
         if icon is not None:
             affinity_list.append((icon, value))
 
-    ingredient_color = COLORS[current_ingredient[5]]
+    if current_ingredient is not None:
+
+        ingredient_color = COLORS[current_ingredient[5]]
         
-    affinity_text = ""
-    for icon, value in affinity_list:
-        if affinity_text:
-            affinity_text += " - "
-        affinity_text += f"{icon} {value}"
+        affinity_text = format_affinity_and_craft_items(affinity_list)
         
     print(f"{display_number} - {ingredient_color}{current_ingredient[1]}{RESET} {YELLOW}x{current_ingredient[2]}{RESET} ({affinity_text}) - Niv. {current_ingredient[3]} - {DIM}{current_ingredient[4]}{RESET}")
 
 
 def display_inventory_join_id_to_list_numbering(cursor):
-
     inventory = display_inventory(cursor)
+    return create_id_numbering(inventory)
 
-    numbering = {}
-
-    display_number = 1
-    current_id = None
-
-    for ingredient in inventory:
-        ingredient_id = ingredient[0]
-
-        if current_id is None:
-            current_id = ingredient_id
-            numbering[display_number] = ingredient_id
-
-        if current_id != ingredient_id:
-            current_id = ingredient_id
-            display_number += 1
-            numbering[display_number] = ingredient_id
-
-    return numbering
 #----------------------------------------------- PORTALS ----------------------------------------------------
 
 def display_harvest_portal(cursor, quantity, ingredient_id):
@@ -750,14 +835,7 @@ def display_equipment_craft(equipment_craft):
             if current_equipment is not None:  
                 equipment_color = COLORS[current_equipment[3]]
     
-                craft_text = ""
-
-                for ingredient, quantity in craft_list:
-
-                    if craft_text:
-                        craft_text += " - "
-
-                    craft_text += f"{ingredient} x{quantity}"
+                craft_text = format_affinity_and_craft_items(craft_list)
                         
                 print(f"{current_equipment[0]} - {equipment_color}{current_equipment[1]}{RESET} : {craft_text}")
     
@@ -770,14 +848,12 @@ def display_equipment_craft(equipment_craft):
     
         if ingredient is not None:
             craft_list.append((ingredient, quantity))
-    
-    equipment_color = COLORS[current_equipment[3]]
+
+    if current_equipment is not None:
+
+        equipment_color = COLORS[current_equipment[3]]
             
-    craft_text = ""
-    for ingredient, quantity in craft_list:
-        if craft_text:
-            craft_text += " - "
-        craft_text += f"{ingredient} x{quantity}"
+        craft_text = format_affinity_and_craft_items(craft_list)
                                 
     print(f"{equipment[0]} - {equipment_color}{equipment[1]}{RESET} : {craft_text}")
 
@@ -833,30 +909,10 @@ def display_mixing_tool(mixing_tools):
         
     
 def display_mixing_tools_join_id_to_list_numbering(cursor):
-
     mixing_tools = display_all_mixing_tools(cursor)
-
-    numbering = {}
-
-    display_number = 1
-    current_id = None
-
-    for mixing_tool in mixing_tools:
-        mixing_tool_id = mixing_tool[0]
-
-        if current_id is None:
-            current_id = mixing_tool_id
-            numbering[display_number] = mixing_tool_id
-
-        if current_id != mixing_tool_id:
-            current_id = mixing_tool_id
-            display_number += 1
-            numbering[display_number] = mixing_tool_id
-
-    return numbering
+    return create_id_numbering(mixing_tools)
 
 #----------------------------------------------- CONTAINER_INVENTORY ----------------------------------------------------
-
 
 def display_container_inventory(cursor):
 

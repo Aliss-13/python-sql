@@ -14,3 +14,6 @@ __pycache__/
 
 # Base de données
 *.db
+
+# Fichiers de test
+test.py

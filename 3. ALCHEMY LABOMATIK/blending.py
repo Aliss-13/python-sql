@@ -76,6 +76,7 @@ def pick_ingredients_to_blend(cursor, capacity):
                 break
 
             print("choix invalide")
+            return
 
     print(f"ID ingrédients du mélange : {blending_ingredients}")
     print()

@@ -210,6 +210,22 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS recipe_ingredients (
     FOREIGN KEY (ingredient_id) REFERENCES ingredients(id)
 )""")
 
+#------------------------------------------ recipe_products -----------------------------
+
+cursor.execute("""CREATE TABLE IF NOT EXISTS recipe_products (
+    recipe_id INTEGER NOT NULL,
+    product_recipe_id INTEGER NOT NULL,
+    quantity INTEGER NOT NULL,
+
+    PRIMARY KEY (recipe_id, product_recipe_id),
+
+    FOREIGN KEY (recipe_id)
+        REFERENCES recipes(id),
+
+    FOREIGN KEY (product_recipe_id)
+        REFERENCES recipes(id)
+)""")
+
 #------------------------------------------ commit -----------------------------
 
 connection.commit()
