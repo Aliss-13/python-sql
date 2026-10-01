@@ -7,8 +7,6 @@ def pick_recipe(cursor):
 # affichage des recettes connues  
 
     recipe_infos = display_recipe_ingredients_products_and_equipments(cursor)
-    print("DEBUG :", recipe_infos)
-    print("TYPE :", type(recipe_infos))
 
     print()
 
