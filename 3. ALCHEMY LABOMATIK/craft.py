@@ -6,26 +6,28 @@ def pick_recipe(cursor):
 
 # affichage des recettes connues  
 
-    player_recipes = display_recipe_ingredients_products_and_equipments(cursor)
+    recipe_infos = display_recipe_ingredients_products_and_equipments(cursor)
+    print("DEBUG :", recipe_infos)
+    print("TYPE :", type(recipe_infos))
+
+    print()
 
     # choix du joueur
 
     while True:
                  
-        choix = input("Recette choisie (q pour revenir) : ") 
+        choice = input("Recette choisie (q pour revenir) : ") 
 
-        if choix.lower() == "q":
+        if choice.lower() == "q":
             return None
 
         # récupération de l'identifiant de la recette
 
-        if choix.isdigit() and 1 <= int(choix) <= len(player_recipes):
-            recipe_id = player_recipes[int(choix)]
-            break
-            
+        if choice.isdigit() and 1 <= int(choice) <= len(recipe_infos):
+            recipe_id = recipe_infos[int(choice) - 1][0]
+            return recipe_id
+    
         print("Choix invalide.")
-
-    return recipe_id
 
 
 def check_fire(cursor, recipe_id): # vérification feu dans l'équipement du joueur (player_equipment)

@@ -67,7 +67,7 @@ def display_ingredient_from_inventory(inventory):
         affinity_text = format_affinity_items(affinity_list)
 
         
-        print(f"{display_number:<2} - {COLORS[color]}{name}{RESET} {YELLOW}x{quantity}{RESET} ({affinity_text}) - Niv. {level} - {DIM}{description}{RESET}")
+        print(f"{display_number:<2} - {COLORS[color]}{name}{RESET} {YELLOW}x{quantity}{RESET} {affinity_text} - {DIM}{description}{RESET}")
 
 #----------------------------------------------- CONTAINER_INVENTORY ----------------------------------------------------
 

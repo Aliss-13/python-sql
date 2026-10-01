@@ -23,8 +23,8 @@ def get_all_recipes_infos(cursor):
         ORDER BY recipe_types.id ASC, recipe_rarity.id ASC, recipes.id ASC
     """)
 
-    recipes_infos = cursor.fetchall()
-    return recipes_infos
+    recipes_datas = cursor.fetchall()
+    return recipes_datas
 
 
 def get_all_recipes_ingredients(cursor):
@@ -150,20 +150,20 @@ def display_all_recipes_equipments(cursor):
     display_recipe_equipments(result)
     return result
 
-
-def return_recipe_ingredients_products_and_equipments(cursor):
+#------------------------------------------------------------------------------------------------------------------------
+def return_all_recipes_ingredients_products_and_equipments(cursor):
 
     ingredients = get_all_recipes_ingredients(cursor)
     products = get_all_recipes_products(cursor)
     equipments = get_all_recipes_equipments(cursor)
-    recipes_infos = get_all_recipes_infos(cursor)
+    recipes_datas = get_all_recipes_infos(cursor)
 
-    return ingredients, products, equipments, recipes_infos
-
+    return ingredients, products, equipments, recipes_datas
+#------------------------------------------------------------------------------------------------------------------------
 
 def display_recipe_ingredients_products_and_equipments(cursor):
 
-    ingredients, products, equipments, recipes_infos = return_recipe_ingredients_products_and_equipments(cursor)
+    ingredients, products, equipments, recipes_datas = return_all_recipes_ingredients_products_and_equipments(cursor)
 
     ingredient_groups = group_data_under_same_id(ingredients)
     product_groups = group_data_under_same_id(products)
@@ -212,20 +212,21 @@ def display_recipe_ingredients_products_and_equipments(cursor):
     for equipment in equipments: # 3. construction du dictionnaire des équipements par recette
 
         recipe_id = equipment[0]
-            
+                
         fire = equipment[3]
         melting_pot = equipment[4]
         container = equipment[5]
 
         equipment_by_recipe[recipe_id] = {"fire": fire, "melting_pot": melting_pot, "container": container}
 
-    for recipe_info in recipes_infos: # 4. affichage des recettes avec leurs ingrédients et produits
+    for recipe_infos in recipes_datas: # 4. affichage des recettes avec leurs ingrédients et produits
 
-        recipe_id = recipe_info[0]
-        recipe_name = recipe_info[1]
-        recipe_description = recipe_info[2]
-        recipe_type = recipe_info[3]
-        recipe_color = recipe_info[4]
+        recipe_id = recipe_infos[0]
+        recipe_name = recipe_infos[1]
+        recipe_description = recipe_infos[2]
+        recipe_type = recipe_infos[3]
+        recipe_color = recipe_infos[4]
+
         display_number += 1
 
         # récupération des ingrédients
@@ -245,11 +246,11 @@ def display_recipe_ingredients_products_and_equipments(cursor):
         product_text = format_recipe_and_craft_items(product_list)
         ingredient_text = format_recipe_and_craft_items(ingredient_list)
         equipment_text = (
-                                f'     {RED}Feu : {fire or "Aucun"}{RESET} - ' 
-                                f'{LIGHT_PINK}Creuset : {melting_pot or "Aucun"}{RESET} - '
-                                f'{CYAN}Contenant : {container or "Aucun"}{RESET}'
-                            )
-          
+                            f'     {RED}Feu : {fire or "Aucun"}{RESET} - ' 
+                            f'{LIGHT_PINK}Creuset : {melting_pot or "Aucun"}{RESET} - '
+                            f'{CYAN}Contenant : {container or "Aucun"}{RESET}'
+                        )
+            
         print(f'{display_number:>2} - {COLORS[recipe_color]}{recipe_name}{RESET} {YELLOW}[{recipe_type}]{RESET}')
         print(equipment_text)
         print()
@@ -258,6 +259,8 @@ def display_recipe_ingredients_products_and_equipments(cursor):
         print()
         print(f'     {DIM}{recipe_description}{RESET}')
         print()
+
+    return recipes_datas
 
 #----------------------------------------------- RECIPE_PRODUCTS ----------------------------------------------------
 

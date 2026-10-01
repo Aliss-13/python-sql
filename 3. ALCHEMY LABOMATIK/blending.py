@@ -85,9 +85,9 @@ def pick_ingredients_to_blend(cursor, capacity):
 
         print(f"ID ingrédients du mélange : {blending_ingredients}")
         print()
+
     return blending_ingredients
     
-
 
 def blend_affinities_result(cursor, capacity, blending_ingredients):
 
@@ -123,6 +123,7 @@ def blend_affinities_result(cursor, capacity, blending_ingredients):
 
     for affinity_id, (value, icon) in blending_affinities.items():
         print(f"{icon} : {value}")
+    print()
 
     return blending_affinities
 
