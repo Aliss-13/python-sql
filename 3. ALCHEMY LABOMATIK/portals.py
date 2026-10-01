@@ -1,7 +1,11 @@
-from display import display_all_affinities, display_inventory, display_harvest_portal
-from utils import id_exists
-from inventory import add_ingredient_to_inventory
 import random
+
+from display_affinities_and_portals import display_all_affinities, display_harvest_portal
+
+from utils import id_exists
+
+from inventory import add_ingredient_to_inventory
+
 
 
 def menu_portal(cursor, connection, player_level):

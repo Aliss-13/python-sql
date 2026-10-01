@@ -1,9 +1,11 @@
 import sqlite3
 
-from display import display_all_recipes, display_all_recipes_ingredients, COLORS, RESET, display_all_ingredients, display_all_recipes_products
+from display_colors_and_rarities import COLORS, RESET
+from display_ingredients import display_all_ingredients
+from display_recipes import display_all_recipes
+from display_recipe_ingredients_and_products import display_all_recipes_ingredients, display_all_recipes_products
+
 from utils import id_exists, ask_positive_int
-
-
 
 
 def menu_update_recipe(cursor, connection):

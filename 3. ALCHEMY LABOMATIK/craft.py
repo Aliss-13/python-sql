@@ -1,11 +1,12 @@
-from display import display_player_recipes_join_id_to_list_numbering, COLORS, RESET
+from display_player_recipes import display_recipe_ingredients_products_and_equipments
+from display_colors_and_rarities import COLORS, RESET
 
 
 def pick_recipe(cursor):
 
 # affichage des recettes connues  
 
-    player_recipes = display_player_recipes_join_id_to_list_numbering(cursor)
+    player_recipes = display_recipe_ingredients_products_and_equipments(cursor)
 
     # choix du joueur
 

@@ -1,5 +1,6 @@
 import sqlite3
-from display import display_all_ingredients, display_all_affinities
+from display_ingredients import display_all_ingredients
+from display_affinities_and_portals import display_all_affinities
 from utils import id_exists, ask_positive_float_0_1
 
 

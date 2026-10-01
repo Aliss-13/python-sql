@@ -1,7 +1,7 @@
 from pathlib import Path
 import sqlite3
 from menu import menu
-from display import display_tables, display_tables_info, display_new_table_contents, display_FK, YELLOW, RESET
+from display_colors_and_rarities import YELLOW, RESET
 from inventory import add_container_to_inventory
 
 

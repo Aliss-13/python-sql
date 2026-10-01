@@ -1,6 +1,8 @@
 import sqlite3
 from utils import id_exists, ask_positive_int, ask_int
-from display import display_all_equipment, display_all_ingredients, display_all_equipment_crafts
+
+from display_equipment_and_equipment_craft import display_all_equipment, display_all_equipment_crafts
+from display_ingredients import display_all_ingredients
 
 
 def add_equipment(cursor, connection):

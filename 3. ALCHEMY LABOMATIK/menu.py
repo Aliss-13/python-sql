@@ -1,10 +1,16 @@
 from affinities import add_affinity_to_ingredient
 
-from display import display_all_affinities, display_all_ingredients, display_inventory, display_all_equipment
-from display import display_all_equipment_crafts, display_all_recipes, display_all_discoveries
-from display import display_all_recipes_ingredients, display_all_recipes_products, display_container_inventory, display_product_inventory
-from display import display_tables_info, display_tables, display_new_table_contents, display_FK
-from display import DIM, RESET
+from display_affinities_and_portals import display_all_affinities
+from display_discoveries import display_all_discoveries
+from display_inventories import display_inventory, display_container_inventory, display_product_inventory
+from display_ingredients import display_all_ingredients
+from display_recipe_ingredients_and_products import display_recipe_ingredients_and_products
+from display_equipment_and_equipment_craft import display_all_equipment_crafts, display_all_equipment
+from display_recipes import display_all_recipes
+
+from display_sql_info import display_tables_info, display_tables, display_new_table_contents, display_FK
+
+from display_colors_and_rarities import DIM, RESET
 
 from ingredients import add_ingredient, menu_update_ingredient, reset_ingredient_affinities
 from portals import menu_portal
@@ -21,7 +27,7 @@ def menu_database_management(cursor, connection):
         print("       = MENU GESTION BASE DE DONNÉES =        ")
         print("Mets le souk dedans, je te démonte. Bisous ❤️.")
         print("")
-        print("[1] 🫟 Ingrédients") 
+        print("[1] 🫧 Ingrédients") 
         print("[2] 🧬 Affinités")
         print("[3] ⚗️ Matériel")
         print("[4] 📜 Recettes")
@@ -173,8 +179,7 @@ def menu_recipes(cursor, connection):
             menu_update_recipe(cursor, connection)
 
         elif choix == "4":
-            display_all_recipes_ingredients(cursor)
-            display_all_recipes_products(cursor)
+            display_recipe_ingredients_and_products(cursor)
 
         elif choix == "5":
             add_recipe_ingredients(cursor, connection)
@@ -201,7 +206,7 @@ def menu_ingredients(cursor, connection):
     while True:
     
             print()
-            print("🫟 INGRÉDIENTS")
+            print("🫧 INGRÉDIENTS")
             print("[1] Liste ingrédients")
             print("[2] Ajouter ingrédient")
             print("[3] Modifier ingrédient") 

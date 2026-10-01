@@ -1,6 +1,12 @@
-from display import display_all_recipes, display_all_affinities, display_all_discoveries, COLORS, RESET
+from display_affinities_and_portals import display_all_affinities
+from display_recipes import display_all_recipes
+from display_discoveries import display_all_discoveries
+from display_colors_and_rarities import COLORS, RESET
+
 from utils import id_exists, ask_positive_int, ask_positive_float_0_1
+
 from affinities import get_affinity_recipe_discovery_total_points
+
 
 def menu_update_discovery(cursor, connection):
 
