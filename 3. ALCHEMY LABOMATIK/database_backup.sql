@@ -15,7 +15,7 @@ CREATE TABLE container_inventory (
     FOREIGN KEY (equipment_id) REFERENCES equipment(id)
 );
 INSERT INTO "container_inventory" VALUES(4,2);
-INSERT INTO "container_inventory" VALUES(5,3);
+INSERT INTO "container_inventory" VALUES(5,2);
 CREATE TABLE equipment (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
@@ -30,7 +30,7 @@ INSERT INTO "equipment" VALUES(5,'Fiole piriforme',2,'Un joli contenant en forme
 INSERT INTO "equipment" VALUES(6,'Mortier d''alchimiste',1,'Un mélangeur semi-professionnel.',1);
 INSERT INTO "equipment" VALUES(7,'Mixeur arcanique',2,'Destructure l''intemporalité grâce à la technologie Brushless® de ses lames rotatives.',1);
 INSERT INTO "equipment" VALUES(8,'Moulingex Baby Cook®',3,'Indispensable pour tout alchimiste qui se respecte. Prépare aussi facilement et rapidement les repas de Bébé.',1);
-INSERT INTO "equipment" VALUES(9,'Thermomix 9000 DolbyTHX',4,'Le mixeur testostéroné qui fait pas dans la dentelle. Si vous pouvez tacher moyen de vous éloigner de vingt-cinq pieds, bon pieds hein parce que ça va gicler un peu.',1);
+INSERT INTO "equipment" VALUES(9,'Thermomix 9000 DolbyTHX',4,'Si vous pouvez tâcher moyen de vous éloigner de vingt-cinq pieds, bon pieds hein, parce que ça va gicler un peu.',1);
 INSERT INTO "equipment" VALUES(10,'Gazinière cryogénique',2,'Frissons garantis !',3);
 INSERT INTO "equipment" VALUES(11,'Générateur de courant alternatif',2,'Bien charger en plutonium avant utilisation.',3);
 INSERT INTO "equipment" VALUES(12,'Mini trou noir portatif',3,'Ne pas avaler.',3);
@@ -57,7 +57,7 @@ INSERT INTO "equipment" VALUES(32,'Poche à perfusion',3,'Pour toute administrat
 INSERT INTO "equipment" VALUES(33,'Tireuse à bière',4,'Sert votre potion ou élixir à pression optimale.',4);
 INSERT INTO "equipment" VALUES(34,'Flacon Oeil-de-Dragon',4,'Baisse les yeux.',4);
 INSERT INTO "equipment" VALUES(35,'Cuir tanné',1,'Non vegan. Provenance couverte par notre clause de confidentialité.',4);
-INSERT INTO "equipment" VALUES(36,'Parchemin maudit',1,'Issu de la synergie parfaite entre nos chaînes de montage et du savoir-faire millénaire de création de poisse et emmerdements en tout genre de nos partenaires. ',4);
+INSERT INTO "equipment" VALUES(36,'Parchemin maudit',1,'Issu de la synergie de nos chaînes de montage hi-tech et du savoir-faire millénaire de nos partenaires en poisse et emmerdements. ',4);
 INSERT INTO "equipment" VALUES(37,'Serviette de table',1,'En coton bio éco-sourcé.',4);
 INSERT INTO "equipment" VALUES(38,'Carré de soie',1,'Son prix n''a d''égal que le prestige de la grande maison qui le fabrique.',4);
 INSERT INTO "equipment" VALUES(39,'Affiche électorale',2,'Tous bords politiques disponibles, sélectionnés selon le niveau d''enculade des promesses de campagne. ',4);
@@ -152,6 +152,8 @@ INSERT INTO "ingredient_affinities" VALUES(25,2,0.6);
 INSERT INTO "ingredient_affinities" VALUES(25,6,0.4);
 INSERT INTO "ingredient_affinities" VALUES(27,6,1.0);
 INSERT INTO "ingredient_affinities" VALUES(26,6,1.0);
+INSERT INTO "ingredient_affinities" VALUES(28,6,0.5);
+INSERT INTO "ingredient_affinities" VALUES(28,3,0.5);
 CREATE TABLE ingredients (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
@@ -180,7 +182,7 @@ INSERT INTO "ingredients" VALUES(16,'Minerai de cuivre','Chouette, un caillou qu
 INSERT INTO "ingredients" VALUES(17,'Sable fin','Il devait y avoir un cours d''eau ici.',1,1);
 INSERT INTO "ingredients" VALUES(18,'Menthe verte','La vie mettra de la menthe sur ton chemin. À toi de décider si tu en fais du thé ou des mojitos...',1,1);
 INSERT INTO "ingredients" VALUES(19,'Sauge rouge','Qui a de la sauge dans son jardin, n’a pas besoin de médecin.',1,2);
-INSERT INTO "ingredients" VALUES(20,'Écaille de poisson ailé','Ce poisson possède des nageoires pectorales très développées qui lui permettent de faire des vols planés hors de l''eau pour échapper aux prédateurs.',1,1);
+INSERT INTO "ingredients" VALUES(20,'Écaille de poisson ailé','Ce poisson possède des nageoires pectorales très développées qui lui permettent de faire des vols planés hors de l''eau.',1,1);
 INSERT INTO "ingredients" VALUES(21,'Graine de citrouille','Ptet''y va t''pousser un carrosse !',1,1);
 INSERT INTO "ingredients" VALUES(22,'Larme de sorcière','Cette plante tombante pousse au bord des mares d''eau stagnante.',1,2);
 INSERT INTO "ingredients" VALUES(23,'Cendre de feu follet','Forme des petits monticules légèrement rougeoyants.',1,3);
@@ -188,6 +190,7 @@ INSERT INTO "ingredients" VALUES(24,'Muguettine','Ses jolies clochettes argenté
 INSERT INTO "ingredients" VALUES(25,'Aconit','Aussi appelé napel ou tue-loup. Suis un peu tes cours de potions !',1,2);
 INSERT INTO "ingredients" VALUES(26,'Pavlovnia','Cette plante a de très bons réflexes.',1,3);
 INSERT INTO "ingredients" VALUES(27,'Vigne catcheuse','L''oeil du tigre. Tin-tin-tin, tin-tin-tiiiiinnnnnnn...',1,3);
+INSERT INTO "ingredients" VALUES(28,'Baies piquantes','Ça arrache un peu.',1,1);
 CREATE TABLE inventory (
         ingredient_id INTEGER PRIMARY KEY,
         quantity INTEGER NOT NULL DEFAULT 0,
@@ -195,30 +198,32 @@ CREATE TABLE inventory (
 );
 INSERT INTO "inventory" VALUES(1,5);
 INSERT INTO "inventory" VALUES(2,11);
-INSERT INTO "inventory" VALUES(3,14);
-INSERT INTO "inventory" VALUES(4,36);
-INSERT INTO "inventory" VALUES(5,8);
+INSERT INTO "inventory" VALUES(3,16);
+INSERT INTO "inventory" VALUES(4,42);
+INSERT INTO "inventory" VALUES(5,11);
 INSERT INTO "inventory" VALUES(6,8);
 INSERT INTO "inventory" VALUES(7,2);
-INSERT INTO "inventory" VALUES(8,16);
-INSERT INTO "inventory" VALUES(9,21);
-INSERT INTO "inventory" VALUES(10,7);
-INSERT INTO "inventory" VALUES(11,27);
-INSERT INTO "inventory" VALUES(12,23);
+INSERT INTO "inventory" VALUES(8,22);
+INSERT INTO "inventory" VALUES(9,16);
+INSERT INTO "inventory" VALUES(10,15);
+INSERT INTO "inventory" VALUES(11,26);
+INSERT INTO "inventory" VALUES(12,31);
 INSERT INTO "inventory" VALUES(13,5);
 INSERT INTO "inventory" VALUES(14,14);
 INSERT INTO "inventory" VALUES(15,17);
-INSERT INTO "inventory" VALUES(16,5);
+INSERT INTO "inventory" VALUES(16,11);
 INSERT INTO "inventory" VALUES(17,13);
-INSERT INTO "inventory" VALUES(18,11);
-INSERT INTO "inventory" VALUES(19,3);
+INSERT INTO "inventory" VALUES(18,13);
+INSERT INTO "inventory" VALUES(19,8);
 INSERT INTO "inventory" VALUES(20,2);
-INSERT INTO "inventory" VALUES(21,8);
+INSERT INTO "inventory" VALUES(21,11);
 INSERT INTO "inventory" VALUES(22,3);
 INSERT INTO "inventory" VALUES(23,1);
-INSERT INTO "inventory" VALUES(24,7);
-INSERT INTO "inventory" VALUES(25,12);
+INSERT INTO "inventory" VALUES(24,6);
+INSERT INTO "inventory" VALUES(25,14);
+INSERT INTO "inventory" VALUES(26,0);
 INSERT INTO "inventory" VALUES(27,8);
+INSERT INTO "inventory" VALUES(28,1);
 CREATE TABLE mixing_tools (
     equipment_id INTEGER PRIMARY KEY,
     capacity INTEGER,
@@ -245,6 +250,8 @@ CREATE TABLE player_recipes (
 INSERT INTO "player_recipes" VALUES(1,1);
 INSERT INTO "player_recipes" VALUES(2,0);
 INSERT INTO "player_recipes" VALUES(3,0);
+INSERT INTO "player_recipes" VALUES(5,1);
+INSERT INTO "player_recipes" VALUES(6,0);
 INSERT INTO "player_recipes" VALUES(7,0);
 INSERT INTO "player_recipes" VALUES(8,0);
 INSERT INTO "player_recipes" VALUES(9,0);
@@ -342,6 +349,27 @@ INSERT INTO "recipe_ingredients" VALUES(11,7,1);
 INSERT INTO "recipe_ingredients" VALUES(13,16,1);
 INSERT INTO "recipe_ingredients" VALUES(13,19,2);
 INSERT INTO "recipe_ingredients" VALUES(7,1,3);
+INSERT INTO "recipe_ingredients" VALUES(5,9,5);
+INSERT INTO "recipe_ingredients" VALUES(5,11,4);
+INSERT INTO "recipe_ingredients" VALUES(5,26,3);
+INSERT INTO "recipe_ingredients" VALUES(5,24,1);
+INSERT INTO "recipe_ingredients" VALUES(6,27,2);
+INSERT INTO "recipe_ingredients" VALUES(6,25,3);
+CREATE TABLE recipe_products (
+    recipe_id INTEGER NOT NULL,
+    product_recipe_id INTEGER NOT NULL,
+    quantity INTEGER NOT NULL,
+
+    PRIMARY KEY (recipe_id, product_recipe_id),
+
+    FOREIGN KEY (recipe_id)
+        REFERENCES recipes(id),
+
+    FOREIGN KEY (product_recipe_id)
+        REFERENCES recipes(id)
+);
+INSERT INTO "recipe_products" VALUES(5,1,1);
+INSERT INTO "recipe_products" VALUES(6,7,1);
 CREATE TABLE recipe_types (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL UNIQUE
@@ -373,17 +401,18 @@ INSERT INTO "recipes" VALUES(4,'Potion Source de vie',1,3,'Un soin chaleureux et
 INSERT INTO "recipes" VALUES(5,'Grande potion de soin',1,3,'L''effet d''un cri de guerre à Fort Boyard, l''hydratation en plus !','+100 points de vie',3,3,2,5);
 INSERT INTO "recipes" VALUES(6,'Potion de peau de cuir',1,1,'Vous êtes maintenant un vrai dur à cuir ! ','+20 points de défense pendant 3 tours',3,3,2,5);
 INSERT INTO "recipes" VALUES(7,'Potion de défense',1,1,'Pour encaisser les coups comme un bonhomme.','+10 points de défense pendant 2 tours',1,NULL,NULL,4);
-INSERT INTO "recipes" VALUES(8,'Élixir de vitesse',2,1,'Cours Forest, cours !','+5 points de vitesse pendant 15 minutes de jeu.',1,NULL,NULL,25);
-INSERT INTO "recipes" VALUES(9,'Élixir de peau de dragon',2,1,'Acide hyaluronique + rétinol A.','+8 points de défense pendant 15 minutes de jeu.',1,NULL,NULL,4);
-INSERT INTO "recipes" VALUES(10,'Pentagramme de Terreur',3,4,'BOUH.','Applique Peur pendant 2 tours.',1,NULL,NULL,37);
-INSERT INTO "recipes" VALUES(11,'Pentagramme de la Tatane',3,4,'Tu l''as pas volée, celle-là !','Applique Stun pendant 2 tours.',2,3,2,35);
-INSERT INTO "recipes" VALUES(12,'Pentagramme de la Conserve Périmée',3,4,'Boah, allez, je goûte...','Applique Poison pendant 2 tours.',1,NULL,NULL,37);
-INSERT INTO "recipes" VALUES(13,'Pentagramme du Pyromane',3,4,'Une allumette, charlipopette...','Applique Brûlure pendant 2 tours.',1,NULL,NULL,37);
+INSERT INTO "recipes" VALUES(8,'Élixir de vitesse',2,1,'Cours Forest, cours !','+5 points de vitesse pendant 15 minutes de jeu',1,NULL,NULL,25);
+INSERT INTO "recipes" VALUES(9,'Élixir de peau de dragon',2,1,'Acide hyaluronique + rétinol A.','+8 points de défense pendant 15 minutes de jeu',1,NULL,NULL,4);
+INSERT INTO "recipes" VALUES(10,'Pentagramme de Terreur',3,4,'BOUH.','Applique Peur pendant 2 tours',1,NULL,NULL,37);
+INSERT INTO "recipes" VALUES(11,'Pentagramme de la Tatane',3,4,'Tu l''as pas volée, celle-là !','Applique Stun pendant 2 tours',2,3,2,35);
+INSERT INTO "recipes" VALUES(12,'Pentagramme de la Conserve Périmée',3,4,'Boah, allez, je goûte...','Applique Poison pendant 2 tours',1,NULL,NULL,37);
+INSERT INTO "recipes" VALUES(13,'Pentagramme du Pyromane',3,4,'Une allumette, charlipopette...','Applique Brûlure pendant 2 tours',1,NULL,NULL,37);
 CREATE TABLE shop_inventory (
     recipe_id INTEGER PRIMARY KEY,
     quantity INTEGER NOT NULL DEFAULT 0,
     FOREIGN KEY (recipe_id) REFERENCES recipes(id)
 );
+INSERT INTO "shop_inventory" VALUES(5,1);
 CREATE TABLE targets (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL UNIQUE
