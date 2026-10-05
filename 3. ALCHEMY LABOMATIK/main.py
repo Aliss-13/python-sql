@@ -151,12 +151,14 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS recipes (
     description TEXT,
     effect TEXT,
     rarity_id INTEGER,
+    discovery_difficulty_id INTEGER,
     fire_equipment_id INTEGER,
     melting_pot_equipment_id INTEGER,
     container_equipment_id INTEGER,
     FOREIGN KEY (type_id) REFERENCES recipe_types(id),
     FOREIGN KEY (target_id) REFERENCES targets(id),
     FOREIGN KEY (rarity_id) REFERENCES rarities(id),
+    FOREIGN KEY (discovery_difficulty_id) REFERENCES recipe_discovery_difficulty(id),
     FOREIGN KEY (fire_equipment_id) REFERENCES equipment(id),
     FOREIGN KEY (melting_pot_equipment_id) REFERENCES equipment(id)
     FOREIGN KEY (container_equipment_id) REFERENCES equipment(id)
@@ -167,6 +169,14 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS recipes (
 cursor.execute("""CREATE TABLE IF NOT EXISTS recipe_types (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL UNIQUE
+)""")
+
+#------------------------------------------ recipe_discovery_difficulty -----------------------------
+
+cursor.execute("""CREATE TABLE IF NOT EXISTS recipe_discovery_difficulty (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE,
+    number_of_affinities INTEGER NOT NULL
 )""")
 
 #------------------------------------------ recipe_discovery -----------------------------

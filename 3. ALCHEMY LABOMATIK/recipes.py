@@ -1,6 +1,6 @@
 import sqlite3
 
-from display_colors_and_rarities import COLORS, RESET
+from display_colors_and_rarities import COLORS, RESET, dans_ton_q
 from display_ingredients import display_all_ingredients
 from display_recipes import display_all_recipes
 from display_recipe_ingredients_and_products import display_all_recipes_ingredients, display_all_recipes_products
@@ -19,9 +19,10 @@ def menu_update_recipe(cursor, connection):
         print("[4] Description")
         print("[5] Effet")
         print("[6] Rareté")
-        print("[7] Feu")
-        print("[8] Creuset")
-        print("[9] Contenant")
+        print("[7] Difficulté à découvrir")
+        print("[8] Feu")
+        print("[9] Creuset")
+        print("[10] Contenant")
         print("[r] Retour")
 
         choix = input("> ")
@@ -30,7 +31,7 @@ def menu_update_recipe(cursor, connection):
             update_recipe_name(cursor, connection)
 
         elif choix == "2":
-            update_recipe_category(cursor, connection)
+            update_recipe_type(cursor, connection)
 
         elif choix == "3":
             update_recipe_target(cursor, connection)   
@@ -45,12 +46,15 @@ def menu_update_recipe(cursor, connection):
             update_recipe_rarity(cursor, connection)
 
         elif choix == "7":
-            update_recipe_fire(cursor, connection)
+            update_recipe_discovery_difficulty(cursor, connection)
 
         elif choix == "8":
-            update_recipe_melting_pot(cursor, connection)
+            update_recipe_fire(cursor, connection)
 
         elif choix == "9":
+            update_recipe_melting_pot(cursor, connection)
+
+        elif choix == "10":
             update_recipe_container(cursor, connection)
             
         elif choix == "r":
@@ -60,21 +64,27 @@ def menu_update_recipe(cursor, connection):
             print("Choix invalide")
 
 
+def choose_recipe_to_update(cursor):
 
-def update_recipe_name(cursor, connection):
-            
     display_all_recipes(cursor)
     
     while True:
     
         choix = input("Recette choisie : ")
-    
+
         if choix.isdigit() and id_exists(cursor, "recipes", int(choix)):
             recipe_id = int(choix)
             break
     
         print("Choix invalide.")
         return
+
+    return recipe_id
+
+
+def update_recipe_name(cursor, connection):
+            
+    recipe_id = choose_recipe_to_update(cursor)
 
     new_name = input("Nouveau nom : ")
 
@@ -96,16 +106,7 @@ def update_recipe_description(cursor, connection):
             
     display_all_recipes(cursor)
     
-    while True:
-        
-        choix = input("Recette choisie : ")
-        
-        if choix.isdigit() and id_exists(cursor, "recipes", int(choix)):
-            recipe_id = int(choix)
-            break
-        
-        print("Choix invalide.")
-        return
+    recipe_id = choose_recipe_to_update(cursor)
 
     new_description = input("Nouveau descriptif : ")
 
@@ -121,18 +122,7 @@ def update_recipe_description(cursor, connection):
 
 def update_recipe_effect(cursor, connection):
             
-    display_all_recipes(cursor)
-    
-    while True:
-        
-        choix = input("Recette choisie : ")
-        
-        if choix.isdigit() and id_exists(cursor, "recipes", int(choix)):
-            recipe_id = int(choix)
-            break
-        
-        print("Choix invalide.")
-        return
+    recipe_id = choose_recipe_to_update(cursor)
 
     new_effect = input("Nouvel effet : ")
 
@@ -143,45 +133,14 @@ def update_recipe_effect(cursor, connection):
         """, (new_effect, recipe_id,))
 
     connection.commit()
-    print ("Description mise à jour.")
+    print ("Effet mis à jour.")
 
 
 def update_recipe_rarity(cursor, connection):
             
-    display_all_recipes(cursor)
-        
-    while True:
-            
-        choix = input("Recette choisie : ")
-            
-        if choix.isdigit() and id_exists(cursor, "recipes", int(choix)):
-            recipe_id = int(choix)
-            break
-            
-        print("Choix invalide.")
-        return
+    recipe_id = choose_recipe_to_update(cursor)
 
-    cursor.execute("""
-            SELECT id, name
-            FROM rarities
-        """)
-    
-    rarities = cursor.fetchall()
-    
-    while True:
-        print("--- Rareté ---")
-    
-        for rarity in rarities:
-            print(f"{rarity[0]} - {rarity[1]}")
-    
-        choix = input("> ")
-    
-        if choix.isdigit() and 1 <= int(choix) <= len(rarities):
-            new_rarity_id = int(choix)
-            break
-    
-        print("Choix invalide.")
-        return
+    new_rarity_id = add_recipe_rarity(cursor)
 
     cursor.execute("""
         UPDATE recipes
@@ -193,46 +152,15 @@ def update_recipe_rarity(cursor, connection):
     print ("Rareté mise à jour.")
 
 
-def update_recipe_category(cursor, connection):
+def update_recipe_type(cursor, connection):
             
-    display_all_recipes(cursor)
-    
-    while True:
-                
-        choix = input("Recette choisie : ")
-                
-        if choix.isdigit() and id_exists(cursor, "recipes", int(choix)):
-            recipe_id = int(choix)
-            break
-                
-        print("Choix invalide.")
-        return
+    recipe_id = choose_recipe_to_update(cursor)
 
-    cursor.execute("""
-            SELECT id, name
-            FROM recipe_types
-        """)
-    
-    categories = cursor.fetchall()
-    
-    while True:
-        print("--- Catégories ---")
-    
-        for category in categories:
-            print(f"{category[0]} - {category[1]}")
-    
-        choix = input("> ")
-    
-        if choix.isdigit() and 1 <= int(choix) <= len(categories):
-            new_category_id = int(choix)
-            break
-    
-        print("Choix invalide.")
-        return
+    new_category_id = add_recipe_type
 
     cursor.execute("""
         UPDATE recipes
-        SET category_id = ?
+        SET type_id = ?
         WHERE id = ?
         """, (new_category_id, recipe_id,))
 
@@ -242,40 +170,9 @@ def update_recipe_category(cursor, connection):
 
 def update_recipe_target(cursor, connection):
             
-    display_all_recipes(cursor)
-    
-    while True:
-                
-        choix = input("Recette choisie : ")
-                
-        if choix.isdigit() and id_exists(cursor, "recipes", int(choix)):
-            recipe_id = int(choix)
-            break
-                
-        print("Choix invalide.")
-        return
+    recipe_id = choose_recipe_to_update(cursor)
 
-    cursor.execute("""
-        SELECT id, name
-        FROM targets
-        """)
-    
-    targets = cursor.fetchall()
-    
-    while True:
-        print("--- Cible ---")
-    
-        for target in targets:
-            print(f"{target[0]} - {target[1]}")
-    
-        choix = input("> ")
-    
-        if choix.isdigit() and 1 <= int(choix) <= len(targets):
-            new_target_id = int(choix)
-            break
-    
-        print("Choix invalide.")
-        return
+    new_target_id = add_recipe_target(cursor)
 
     cursor.execute("""
         UPDATE recipes
@@ -289,52 +186,9 @@ def update_recipe_target(cursor, connection):
 
 def update_recipe_fire(cursor, connection):
             
-    display_all_recipes(cursor)
-    
-    while True:
-                
-        choix = input("Recette choisie : ")
-                
-        if choix.isdigit() and id_exists(cursor, "recipes", int(choix)):
-            recipe_id = int(choix)
-            break
-                
-        print("Choix invalide.")
-        return
+    recipe_id = choose_recipe_to_update(cursor)
 
-    cursor.execute("""
-        SELECT 
-            equipment.id,
-            equipment.name, 
-            rarities.color
-        FROM equipment
-        JOIN rarities
-            ON rarities.id = equipment.rarity_id
-        WHERE equipment.category_id = 3
-        """)
-    
-    fires = cursor.fetchall()
-    fire_ids = [fire[0] for fire in fires]
-    
-    while True:
-        print("--- Feux ---")
-    
-        for fire in fires:
-            print(f"{fire[0]} - {COLORS[fire[2]]}{fire[1]}{RESET}")
-        print("[0] Aucun")
-    
-        choix = input("> ")
-
-        if choix == "0":
-            new_fire_id = None
-            break
-    
-        if choix.isdigit() and int(choix) in fire_ids:
-            new_fire_id = int(choix)
-            break
-    
-        print("Choix invalide.")
-        return
+    new_fire_id = add_recipe_fire(cursor)
 
     cursor.execute("""
         UPDATE recipes
@@ -349,53 +203,10 @@ def update_recipe_fire(cursor, connection):
 
 def update_recipe_melting_pot(cursor, connection):
             
-    display_all_recipes(cursor)
-    
-    while True:
-                
-        choix = input("Recette choisie : ")
-                
-        if choix.isdigit() and id_exists(cursor, "recipes", int(choix)):
-            recipe_id = int(choix)
-            break
-                
-        print("Choix invalide.")
-        return
+    recipe_id = choose_recipe_to_update(cursor)
 
-    cursor.execute("""
-        SELECT 
-            equipment.id,
-            equipment.name, 
-            rarities.color
-        FROM equipment
-        JOIN rarities
-            ON rarities.id = equipment.rarity_id
-        WHERE equipment.category_id = 2
-    """)
-            
-    melting_pots = cursor.fetchall()
-    melting_pot_ids = [melting_pot[0] for melting_pot in melting_pots]
-            
-    while True:
-        print("--- Creusets ---")
-            
-        for melting_pot in melting_pots:
-            print(f"{melting_pot[0]} - {COLORS[melting_pot[2]]}{melting_pot[1]}{RESET}")
-        print("[0] Aucun")
-
-        choix = input("> ")
-
-        if choix == "0":
-            new_melting_pot_id = None
-            break
-
-        if choix.isdigit() and int(choix) in melting_pot_ids:
-            new_melting_pot_id = int(choix)
-            break
-            
-        print("Choix invalide.")
-        return
-
+    new_melting_pot_id = add_recipe_melting_pot(cursor)
+       
     cursor.execute("""
         UPDATE recipes
         SET melting_pot_equipment_id = ?
@@ -408,53 +219,9 @@ def update_recipe_melting_pot(cursor, connection):
 
 def update_recipe_container(cursor, connection):
             
-    display_all_recipes(cursor)
-    
-    while True:
-                
-        choix = input("Recette choisie : ")
-                
-        if choix.isdigit() and id_exists(cursor, "recipes", int(choix)):
-            recipe_id = int(choix)
-            break
-                
-        print("Choix invalide.")
-        return
+    recipe_id = choose_recipe_to_update(cursor)
 
-    cursor.execute("""
-        SELECT 
-            equipment.id,
-            equipment.name, 
-            rarities.color
-        FROM equipment
-        JOIN rarities
-            ON rarities.id = equipment.rarity_id
-        WHERE equipment.category_id = 4
-        """)
-               
-    containers = cursor.fetchall()
-    containers_ids = [container[0] for container in containers]
-                        
-    while True:
-        print()
-        print("--- Contenants ---")
-                        
-        for container in containers:
-            print(f"{container[0]} - {COLORS[container[2]]}{container[1]}{RESET}")
-        print("[0] Aucun")
-                        
-        choix = input("> ")
-        
-        if choix == "0":
-            new_container_id = None
-            break
-        
-        if choix.isdigit() and int(choix) in containers_ids:
-            new_container_id = int(choix)
-            break
-                        
-        print("Choix invalide.")
-        return
+    new_container_id = add_recipe_container(cursor)
 
     cursor.execute("""
         UPDATE recipes
@@ -466,54 +233,81 @@ def update_recipe_container(cursor, connection):
     print ("Contenant mis à jour.")
 
 
-def add_recipe(cursor, connection):
 
-    print()
-    print("À chaque étape : q pour quitter.")
+def update_recipe_discovery_difficulty(cursor, connection):
+            
+    recipe_id = choose_recipe_to_update(cursor)
 
-    # ========================================= NAME, DESCRIPTION, EFFECT
+    new_difficulty_id = add_recipe_discovery_difficulty(cursor)
 
-    name = input("Nom : ")
+    cursor.execute("""
+        UPDATE recipes
+        SET discovery_difficulty_id = ?
+        WHERE id = ?
+        """, (new_difficulty_id, recipe_id,))
 
-    if name == "q":
-        return
+    connection.commit()
+    print ("Difficulté de la découverte mise à jour.")
 
-    description = input("Description : ")
 
+# ---------------------------------------------- AJOUTER RECETTE ----------------------------------------------------------------
+
+def add_recipe_name_description_and_effect():
+
+    while True:
+
+        name = input("Nom : ").strip()
+
+        if name == "q":
+            return
+
+        if name:
+            break
+
+        print("Le nom ne peut pas être vide.")
+    
+    description = input("Description : ").strip()
+    
     if description == "q":
         return
-
-    effect = input("Effet : ")
-
+    
+    effect = input("Effet : ").strip()
+    
     if effect == "q":
         return
 
-# ========================================= TARGET
+    return name, description, effect
+
+
+def add_recipe_target(cursor):
 
     cursor.execute("""
         SELECT id, name
         FROM targets
     """)
-    
+
     targets = cursor.fetchall()
-    
+
     while True:
         print()
         print("--- Cible ---")
-    
+
         for target in targets:
             print(f"{target[0]} - {target[1]}")
-    
+
         choice = input("> ")
 
         if choice.isdigit() and 1 <= int(choice) <= len(targets):
             target_id = int(choice)
             break
-    
+
         print("Choix invalide.")
         return
 
-    # ========================================= TYPE : POTION, ELIXIR, PENTAGRAMME
+    return target_id
+
+
+def add_recipe_type(cursor):
 
     cursor.execute("""
         SELECT id, name
@@ -538,7 +332,10 @@ def add_recipe(cursor, connection):
         print("Choix invalide.")
         return
 
-    # ========================================= RARITY
+    return recipe_type_id
+
+
+def add_recipe_rarity(cursor):
 
     cursor.execute("""
         SELECT id, name
@@ -563,7 +360,10 @@ def add_recipe(cursor, connection):
         print("Choix invalide.")
         return
 
-    # ========================================= FIRE EQUIPMENT
+    return rarity_id
+
+
+def add_recipe_fire(cursor):
 
     cursor.execute("""
         SELECT 
@@ -575,20 +375,20 @@ def add_recipe(cursor, connection):
             ON rarities.id = equipment.rarity_id
         WHERE equipment.category_id = 3
     """)
-    
+
     fires = cursor.fetchall()
     fire_ids = [fire[0] for fire in fires]
-    
+
     while True:
         print()
         print("--- Feux ---")
-    
+
         for fire in fires:
             print(f"{fire[0]} - {COLORS[fire[2]]}{fire[1]}{RESET}")
         print("[0] Aucun")
-    
+
         choice = input("> ")
-    
+
         if choice == "0":
             fire_id = None
             break
@@ -596,11 +396,14 @@ def add_recipe(cursor, connection):
         if choice.isdigit() and int(choice) in fire_ids:
             fire_id = int(choice)
             break
-    
+
         print("Choix invalide.")
         return
 
-    # ========================================= MELTING POT EQUIPMENT
+    return fire_id
+
+
+def add_recipe_melting_pot(cursor):
 
     cursor.execute("""
         SELECT 
@@ -612,18 +415,18 @@ def add_recipe(cursor, connection):
             ON rarities.id = equipment.rarity_id
         WHERE equipment.category_id = 2
     """)
-                
+
     melting_pots = cursor.fetchall()
     melting_pot_ids = [melting_pot[0] for melting_pot in melting_pots]
-                
+
     while True:
         print()
         print("--- Creusets ---")
-                
+
         for melting_pot in melting_pots:
             print(f"{melting_pot[0]} - {COLORS[melting_pot[2]]}{melting_pot[1]}{RESET}")
         print("[0] Aucun")
-                
+
         choice = input("> ")
 
         if choice == "0":
@@ -633,12 +436,15 @@ def add_recipe(cursor, connection):
         if choice.isdigit() and int(choice) in melting_pot_ids:
             melting_pot_id = int(choice)
             break
-                
+
         print("Choix invalide.")
         return
 
-    # ========================================= CONTAINER EQUIPMENT
-    
+    return melting_pot_id
+
+
+def add_recipe_container(cursor):
+
     cursor.execute("""
         SELECT 
             equipment.id,
@@ -649,36 +455,94 @@ def add_recipe(cursor, connection):
             ON rarities.id = equipment.rarity_id
         WHERE equipment.category_id = 4
     """)
-                    
+
     containers = cursor.fetchall()
     containers_ids = [container[0] for container in containers]
-                    
+
     while True:
         print()
         print("--- Contenants ---")
-                    
+
         for container in containers:
             print(f"{container[0]} - {COLORS[container[2]]}{container[1]}{RESET}")
         print("[0] Aucun")
-                    
+
         choice = input("> ")
-    
+
         if choice == "0":
             container_id = None
             break
-    
+
         if choice.isdigit() and int(choice) in containers_ids:
             container_id = int(choice)
             break
-                    
+
+        print("Choix invalide.")
+        return
+    
+    return container_id
+
+
+def add_recipe_discovery_difficulty(cursor):
+
+    cursor.execute("""
+        SELECT id, name, number_of_affinities
+        FROM recipe_discovery_difficulty
+        """)
+    
+    difficulties = cursor.fetchall()
+    
+    while True:
+        print("--- Difficulté de la découverte ---")
+    
+        for difficulty in difficulties:
+            print(f"{difficulty[0]} - {difficulty[1]} - Nombre d'affinités à classer : {difficulty[2]}")
+    
+        choice = input("> ")
+    
+        if choice.isdigit() and 1 <= int(choice) <= len(difficulties):
+            discovery_difficulty_id = int(choice)
+            break
+    
         print("Choix invalide.")
         return
 
+    return discovery_difficulty_id
+
+    
+    
+def add_recipe(cursor, connection):
+
+    dans_ton_q() # Q FOR QUITTING
+
+    name_description_effect = add_recipe_name_description_and_effect() # NAME, DESCRIPTION, EFFECT
+
+    if name_description_effect is None: # c'est pour le q qui fait None, banane
+        return
+
+    name, description, effect = name_description_effect
+
+
+    target_id = add_recipe_target(cursor) # TARGET
+
+    recipe_type_id = add_recipe_type(cursor) # TYPE : POTION, ELIXIR, PENTAGRAMME
+
+    rarity_id = add_recipe_rarity(cursor) # RARITY
+
+    discovery_difficulty_id = add_recipe_discovery_difficulty(cursor)
+
+    fire_id = add_recipe_fire(cursor) # FIRE
+
+    melting_pot_id = add_recipe_melting_pot(cursor) # MELTING POT
+
+    container_id = add_recipe_container(cursor) # CONTAINER  
+    
+
     try:
         cursor.execute("""
-            INSERT INTO recipes (name, type_id, target_id, description, effect, rarity_id, fire_equipment_id, melting_pot_equipment_id, container_equipment_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (name, recipe_type_id, target_id, description, effect, rarity_id, fire_id, melting_pot_id, container_id))
+            INSERT INTO recipes (name, type_id, target_id, description, effect, rarity_id, discovery_difficulty_id, fire_equipment_id, melting_pot_equipment_id, container_equipment_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (name, recipe_type_id, target_id, description, effect, rarity_id, discovery_difficulty_id, fire_id, melting_pot_id, container_id))
 
         connection.commit()
 
@@ -686,13 +550,9 @@ def add_recipe(cursor, connection):
         print("Cette recette est déjà répertoriée.")
 
 
+# ---------------------------------------------- AJOUTER INGRéDIENTS à RECETTE ----------------------------------------------------------------
 
-def add_recipe_ingredients(cursor, connection):
-
-    print()
-    print("À chaque étape : q pour quitter.")
-
-# ========================================= choix recette
+def choose_recipe_to_add_to(cursor):
 
     cursor.execute("""
         SELECT 
@@ -704,26 +564,38 @@ def add_recipe_ingredients(cursor, connection):
             ON rarities.id = recipes.rarity_id
         ORDER BY recipes.rarity_id ASC
     """)
-
+    
     recipes = cursor.fetchall()
-
+    
     while True:
         print()
         print("--- Recettes ---")
-
+    
         for recipe in recipes:
             print(f"{recipe[0]} - {COLORS[recipe[2]]}{recipe[1]}{RESET}")
-
+    
         choice = input("> ")
-
+    
         if choice.isdigit() and id_exists(cursor, "recipes", int(choice)):
             recipe_id = int(choice)
             break
-
+    
         print("Choix invalide.")
         return
 
-    # ========================================= choix ingrédients + quantité
+    return recipe_id
+
+
+def add_recipe_ingredients(cursor, connection):
+
+    dans_ton_q()
+
+# ========================================= choix recette
+
+    recipe_id = choose_recipe_to_add_to(cursor)
+
+# ========================================= choix ingrédients + quantité
+
     recipe_has_ingredients = False
     
     while True:
@@ -769,44 +641,16 @@ def add_recipe_ingredients(cursor, connection):
         
     connection.commit()
 
+# ---------------------------------------------- AJOUTER RECETTES PRODUITES (=PRODUCTS) à RECETTE ----------------------------------------------------------------
 
 def add_recipe_products(cursor, connection):
 
-    print()
-    print("À chaque étape : q pour quitter.")
+    dans_ton_q()
 
-# ========================================= choix recette
+    recipe_id = choose_recipe_to_add_to(cursor) # choix recette
 
-    cursor.execute("""
-        SELECT 
-            recipes.id, 
-            recipes.name, 
-            rarities.color
-        FROM recipes
-        JOIN rarities
-            ON rarities.id = recipes.rarity_id
-        ORDER BY recipes.rarity_id ASC
-    """)
-
-    recipes = cursor.fetchall()
-
-    while True:
-        print()
-        print("--- Recettes ---")
-
-        for recipe in recipes:
-            print(f"{recipe[0]} - {COLORS[recipe[2]]}{recipe[1]}{RESET}")
-
-        choice = input("> ")
-
-        if choice.isdigit() and id_exists(cursor, "recipes", int(choice)):
-            recipe_id = int(choice)
-            break
-
-        print("Choix invalide.")
-        return
-
-    # ========================================= choix produits + quantité
+# ============================================ choix produits + quantité
+    
     recipe_has_products = False
     
     while True:
@@ -853,29 +697,20 @@ def add_recipe_products(cursor, connection):
     connection.commit()
 
 
+# ---------------------------------------------- Réinitialiser INGREDIENTS et PRODUCTS d'une RECETTE ----------------------------------------------------------------
+
 def reset_recipe_ingredients(cursor, connection):
 
     display_all_recipes_ingredients(cursor)
 
-    while True:
-            
-        recipe_id = input("Recette choisie : ")
-
-        cursor.execute("""
-            SELECT recipe_id
-            FROM recipe_ingredients
-            WHERE recipe_id = ?
-        """, (recipe_id,))
-                
-        result = cursor.fetchone()
-        
-        if recipe_id.isdigit() and recipe_id is not None:
-            recipe_id = int(recipe_id)
-            break
+    recipe_id = input("Recette choisie : ")
     
+    if not recipe_id.isdigit():
         print("Choix invalide.")
         return
-
+    
+    recipe_id = int(recipe_id)
+    
     cursor.execute("""  
         DELETE FROM recipe_ingredients
         WHERE recipe_id = ?
@@ -889,31 +724,18 @@ def reset_recipe_products(cursor, connection):
 
     display_all_recipes_products(cursor)
 
-    while True:
-            
-        recipe_id = input("Recette choisie : ")
+    recipe_id = input("Recette choisie : ")
 
-        cursor.execute("""
-            SELECT recipe_id
-            FROM recipe_products
-            WHERE recipe_id = ?
-        """, (recipe_id,))
-                
-        result = cursor.fetchone()
-        
-        if recipe_id.isdigit() and recipe_id is not None:
-            recipe_id = int(recipe_id)
-            break
-    
+    if not recipe_id.isdigit():
         print("Choix invalide.")
         return
 
+    recipe_id = int(recipe_id)
+        
     cursor.execute("""  
         DELETE FROM recipe_products
         WHERE recipe_id = ?
         """, (recipe_id,))
 
     connection.commit()
-    print("Produits supprimés de la recette.")
-        
-        
+    print("Produits supprimés de la recette.")   

@@ -1,4 +1,4 @@
-from display_colors_and_rarities import COLORS, RESET, DIM, YELLOW, RED, CYAN, LIGHT_PINK
+from display_colors_and_rarities import COLORS, RESET, DIM, YELLOW, RED, CYAN, LIGHT_PINK, ORANGE
 
 
 def display_all_recipes(cursor):
@@ -8,11 +8,12 @@ def display_all_recipes(cursor):
 
         recipes.id,
         recipes.name,
-        recipe_types.id,
+        recipe_types.name,
         targets.name,
         recipes.description,
         recipes.effect,
         rarities.color,
+        recipe_discovery_difficulty.name,
         fire.name,
         melting_pot.name,
         container.name
@@ -27,6 +28,9 @@ def display_all_recipes(cursor):
 
     JOIN rarities
         ON rarities.id = recipes.rarity_id
+    
+    LEFT JOIN recipe_discovery_difficulty
+        ON recipe_discovery_difficulty.id = recipes.discovery_difficulty_id
 
     LEFT JOIN equipment AS fire
         ON fire.id = recipes.fire_equipment_id
@@ -46,10 +50,11 @@ def display_all_recipes(cursor):
 
 
 def display_recipe(recipes):
-    for recipe_id, name, type, target, description, effect, color, fire, melting_pot, container in recipes:
+    for recipe_id, name, type, target, description, effect, color, discovery_difficulty, fire, melting_pot, container in recipes:
         print(
             f'{recipe_id:<2} - {COLORS[color]}{name}{RESET} - '
-            f'{YELLOW}{type}{RESET} - {effect} ({target})'
+            f'{YELLOW}{type} - {discovery_difficulty}{RESET} - '
+            f'{effect} ({target})'
             )
         
         print(f'     {RED}Feu : {fire or "Aucun"}{RESET} - {LIGHT_PINK}Creuset : {melting_pot or "Aucun"}{RESET} - '

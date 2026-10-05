@@ -21,7 +21,8 @@ def group_data_under_same_id(items):
         
         current_group.append((item))
 
-    groups.append(current_group)
+    if current_group:
+        groups.append(current_group)
 
     return groups
 
@@ -56,3 +57,5 @@ def format_affinity_items(ac_list):
             ac_text += f"{first} {second}"
 
     return ac_text
+
+

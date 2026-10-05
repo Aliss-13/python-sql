@@ -3,6 +3,8 @@ from display_inventories import display_inventory
 from display_refactor import group_data_under_same_id
 from display_colors_and_rarities import COLORS, RESET
 
+from discoveries import get_discovery_affinity_signature
+
 def pick_mixing_tool(cursor):
 
     mixing_tools = display_all_mixing_tools(cursor)
@@ -21,6 +23,7 @@ def pick_mixing_tool(cursor):
             break
     
         print("choix invalide")
+
     return mixing_tool_id
 
 
@@ -81,7 +84,6 @@ def pick_ingredients_to_blend(cursor, capacity):
                 break
 
             print("choix invalide")
-            return
 
         print(f"ID ingrédients du mélange : {blending_ingredients}")
         print()
@@ -125,6 +127,8 @@ def blend_affinities_result(cursor, capacity, blending_ingredients):
         print(f"{icon} : {value}")
     print()
 
+    get_blend_affinity_signature(blending_affinities)
+
     return blending_affinities
 
 
@@ -137,10 +141,16 @@ def blending(cursor):
         return None, None
 
     capacity = return_mixing_tool_capacity(cursor, mixing_tool_id)
+    if capacity is None:
+        return None, None
 
     blending_ingredients = pick_ingredients_to_blend(cursor, capacity)
+    if blending_ingredients is None:
+        return None, None
 
     blending_affinities = blend_affinities_result(cursor, capacity, blending_ingredients)
+    if blending_affinities is None:
+        return None, None
 
     return blending_affinities, capacity
 
@@ -149,49 +159,41 @@ def join_corresponding_recipe_to_blend(cursor):
 
     blending_affinities, capacity = blending(cursor)
 
-    cursor.execute("""
-        SELECT 
-            recipe_discovery.recipe_id, 
-            recipe_discovery.number_of_ingredients,
-            recipe_discovery.affinity_id,
-            recipe_discovery.value
-        FROM recipe_discovery
-        WHERE number_of_ingredients = ?
-        ORDER BY recipe_discovery.recipe_id
-        """, (capacity,))
-    
-    result = cursor.fetchall()
+    if blending_affinities is None or capacity is None:
+        return None
 
-    discoveries = group_data_under_same_id(result)
+    blend_affinity_signature = get_blend_affinity_signature(blending_affinities)
 
-    for discovery in discoveries:
+    discoveries_affinities_signatures = get_discovery_affinity_signature(cursor)
 
-        discovery_id = discovery[0][0]
+    #for discovery_name, signature in discoveries_affinities_signatures.items():
+        
+        #corresponding_affinities = 0
 
-        disc_affinities_ids = []
-        corresponding_affinities = 0
+        #signature[:number_of_affinities]
 
-        for recipe_id, number_of_ingredients, affinity_id, disc_value in discovery:
+            #if (icon, value) not in blend_affinity_signature:
+                #break
 
-            disc_affinities_ids.append(affinity_id)
+            #else:
+                #corresponding_affinities += 1
+                
 
-            if affinity_id not in blending_affinities:
-                continue
+def get_blend_affinity_signature(blending_affinities):
 
-            blending_value, icon = blending_affinities[affinity_id]
+        #   (affinity_id, value)
+        #   x[0]  → affinity_id
+        #   x[1]  → value
 
-            if blending_value == disc_value:
-                corresponding_affinities += 1
+    signature = []
 
-        # Le mélange ne doit pas avoir d'affinité supplémentaire
-        extra_affinity = False
+    for affinity_id, (value, icon) in blending_affinities.items():
+        signature.append((affinity_id, (value, icon)))
 
-        for blending_affinity in blending_affinities:
-            if blending_affinity not in disc_affinities_ids:
-                extra_affinity = True
+    signature.sort(key=lambda x: x[1][0], reverse=True)
+    print("Signature du mélange :")
 
-        if not extra_affinity and corresponding_affinities == len(discovery):
-            print("Correspondance trouvée !")
-            return discovery_id
+    for affinity_id, (value, icon) in signature:
+        print(f"{icon} : {value}")
 
-    return None
+    return signature

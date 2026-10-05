@@ -2,6 +2,7 @@ from display_affinities_and_portals import display_all_affinities
 from display_recipes import display_all_recipes
 from display_discoveries import display_all_discoveries
 from display_colors_and_rarities import COLORS, RESET
+from display_refactor import group_data_under_same_id
 
 from utils import id_exists, ask_positive_int, ask_positive_float_0_1
 
@@ -246,4 +247,44 @@ def discover_recipe(cursor, connection, recipe_id):
 
         connection.commit()
 
+
+
         
+def get_discovery_affinity_signature(cursor):
+
+    cursor.execute("""
+        SELECT 
+            recipes.name,
+            affinities.icon,
+            value
+        FROM recipe_discovery
+        JOIN recipes
+            ON recipes.id = recipe_discovery.recipe_id
+        JOIN affinities
+            ON affinities.id = recipe_discovery.affinity_id
+        ORDER BY recipe_discovery.recipe_id
+    """)
+
+    result = cursor.fetchall()
+
+    groups = group_data_under_same_id(result)
+
+    discoveries_affinities = {}
+
+    for group in groups:
+
+        signature = []
+        discovery_name = group[0][0] # group > nom de la recette découverte > construction de la signature > tri > nom > signature
+
+        for discovery_name, icon, value in group:
+            signature.append((discovery_name, (icon, value)))
+
+        signature.sort(key=lambda x: x[1][1], reverse=True)
+        
+        discoveries_affinities[discovery_name] = signature
+
+    for discovery_name, signature in discoveries_affinities.items():
+        print(f"Découvertes : ")
+        print(f"{signature}")
+
+    return discoveries_affinities

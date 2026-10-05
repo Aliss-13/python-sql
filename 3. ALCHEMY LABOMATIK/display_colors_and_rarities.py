@@ -18,3 +18,8 @@ COLORS = {
     "purple": "\033[35m",
     "reset": "\033[0m",
 }
+
+
+def dans_ton_q():
+    print()
+    print("À chaque étape : q pour quitter.")

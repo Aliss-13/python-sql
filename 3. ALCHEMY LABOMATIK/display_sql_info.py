@@ -15,7 +15,7 @@ def display_tables_info(cursor):
 
     for table in ["rarities", "affinities", "ingredients", "ingredient_affinities", "inventory", "product_inventory",
                   "container_inventory", "shop_inventory", "equipment", "equipment_categories", "equipment_craft", "mixing_tools", 
-                  "player_equipment", "recipes", "recipe_types", "recipe_discovery", "player_recipes", "recipe_ingredients",
+                  "player_equipment", "recipes", "recipe_types", "recipe_discovery_difficulty", "recipe_discovery", "player_recipes", "recipe_ingredients",
                   "recipe_products"]:
         print(f"\n--- {table} ---")
 
@@ -27,17 +27,17 @@ def display_tables_info(cursor):
 
 def display_new_table_contents(cursor):
     print()
-    print("=> Contenu de container_inventory")
-    cursor.execute("SELECT * FROM container_inventory")
+    print("=> Contenu de recipe_discovery_difficulty")
+    cursor.execute("SELECT * FROM recipe_discovery_difficulty")
     print(cursor.fetchall())
     print()
 
 
 def display_FK(cursor):
     print()
-    print("=> Liste clés étrangères recipe_products")
+    print("=> Liste clés étrangères recipes")
     cursor.execute("""
-        PRAGMA foreign_key_list(recipe_products)
+        PRAGMA foreign_key_list(recipes)
     """)
 
     for row in cursor.fetchall():

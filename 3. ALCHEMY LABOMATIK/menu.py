@@ -59,7 +59,7 @@ def menu_database_management(cursor, connection):
             print()
             display_tables(cursor)
             display_tables_info(cursor)
-            #display_new_table_contents(cursor)
+            display_new_table_contents(cursor)
             display_FK(cursor)
             print("=================================")
 
