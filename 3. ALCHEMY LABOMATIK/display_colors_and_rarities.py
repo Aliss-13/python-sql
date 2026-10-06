@@ -23,3 +23,15 @@ COLORS = {
 def dans_ton_q():
     print()
     print("À chaque étape : q pour quitter.")
+
+
+def display_main_menu():
+    print()
+    print("   ┌──────────────────────┐   ")
+    print("   | Alchemy Lab-o-Matik  |   ")
+    print("   └──────────────────────┘   ")
+    print("Votre magie, notre logistique®.")
+    print()
+    print()
+    print(f"Accès menu gestion base de données : {YELLOW}bdd_forever{RESET}")
+    print()
