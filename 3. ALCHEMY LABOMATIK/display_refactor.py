@@ -53,7 +53,7 @@ def format_affinity_items(ac_list):
     else:
         for first, second in ac_list:
             if ac_text:
-                ac_text += " - "
+                ac_text += " > "
             ac_text += f"{first} {second}"
 
     return ac_text

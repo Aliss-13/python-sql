@@ -238,6 +238,7 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS recipe_products (
 
 #------------------------------------------ commit -----------------------------
 
+#cursor.execute("""DELETE FROM player_recipes;""")
 connection.commit()
 
 #------------------------------------------ code temporaire -----------------------------

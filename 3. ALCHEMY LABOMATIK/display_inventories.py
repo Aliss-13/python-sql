@@ -64,7 +64,9 @@ def display_ingredient_from_inventory(inventory):
             if affinity_icon is not None:
                 affinity_list.append((affinity_icon, affinity_value))
 
-        affinity_text = format_affinity_items(affinity_list)
+        sorted_affinity_list = sorted(affinity_list, key=lambda x: x[1], reverse=True)
+        
+        affinity_text = format_affinity_items(sorted_affinity_list)
 
         
         print(f"{display_number:<2} - {COLORS[color]}{name}{RESET} {YELLOW}x{quantity}{RESET} {affinity_text} - {DIM}{description}{RESET}")

@@ -15,9 +15,9 @@ from display_colors_and_rarities import DIM, RESET
 from ingredients import add_ingredient, menu_update_ingredient, reset_ingredient_affinities
 from portals import menu_portal
 from equipment import add_equipment, menu_update_equipment, add_equipment_craft, reset_equipment_craft
-from blending import join_corresponding_recipe_to_blend
+from blending import discover_recipe
 from recipes import add_recipe, menu_update_recipe, add_recipe_ingredients, add_recipe_products, reset_recipe_ingredients, reset_recipe_products
-from discoveries import add_recipe_discovery, menu_update_discovery, discover_recipe
+from discoveries import add_recipe_discovery, menu_update_discovery
 from craft import craft_recipe
 
 def menu_database_management(cursor, connection):
@@ -72,7 +72,7 @@ def menu_database_management(cursor, connection):
 def menu(cursor, connection, player_level):
 
     while True:
-
+        print()
         print("       = MENU =        ")
         print("")
         print(f'[1] 🌀 Portails {DIM}- Récolte des ingrédients.{RESET}')
@@ -93,10 +93,7 @@ def menu(cursor, connection, player_level):
             menu_portal(cursor, connection, player_level)
         
         elif choix == "2":
-            recipe_id = join_corresponding_recipe_to_blend(cursor)
-
-            if recipe_id is not None:
-                discover_recipe(cursor, connection, recipe_id)
+            discover_recipe(cursor, connection)
 
         elif choix == "3":
             craft_recipe(cursor, connection)

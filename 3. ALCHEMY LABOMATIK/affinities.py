@@ -71,7 +71,7 @@ def add_affinity_to_ingredient(cursor, connection):
         print("Choix invalide.")
         return
 
-# pas plus de 3 affinités différentes 
+# pas plus de 2 affinités différentes 
 
     affinities = display_all_affinities(cursor)
 
@@ -85,8 +85,8 @@ def add_affinity_to_ingredient(cursor, connection):
 
         count = cursor.fetchone()[0]
 
-        if count >= 3:
-            print("Cet ingrédient possède déjà 3 affinités.")
+        if count >= 2:
+            print("Cet ingrédient a 2 affinités.")
             break
 
 # pas deux fois la même affinité
@@ -119,54 +119,26 @@ def add_affinity_to_ingredient(cursor, connection):
 
         total_value = get_affinity_ingredient_total_points(cursor, ingredient_id)
 
-        if total_value == 1:
-            print("La somme des affinités est à son maximum.")
-            return
-
-        elif total_value > 1: 
-            print("La somme des affinités ne doit pas dépasser 1.") 
-            return
-
-        remaining = round(1 - total_value, 2)
-        print(f"Il reste {remaining} à répartir.")
-        
-        if count == 2:
+        if count == 1:
+            remaining = round(1 - total_value, 2)
             value = remaining
-            print(f"Dernière affinité : {value}")
+            print(f"Dernière affinité : {remaining}")
 
         else:
-            while True:
-                value = ask_positive_float_0_1("Valeur de l'affinité : ")
+            value = ask_positive_float_0_1("Valeur de l'affinité : ")
 
-                if value > remaining:
-                    print("La valeur saisie dépasse la quantité disponible.")
-                    continue
+        new_total_value = round(total_value + value, 2)
+        
+        if new_total_value == 1:
+            
+            cursor.execute("""
+                INSERT INTO ingredient_affinities (
+                    ingredient_id,
+                    affinity_id,
+                    value
+                )
+                VALUES (?, ?, ?)
+                """, (ingredient_id, affinity_id, value))
 
-                break
-
-        cursor.execute("""
-            INSERT INTO ingredient_affinities (
-                ingredient_id,
-                affinity_id,
-                value
-            )
-            VALUES (?, ?, ?)
-            """, (ingredient_id, affinity_id, value))
-
-        connection.commit()
-
-        total_value = get_affinity_ingredient_total_points(cursor, ingredient_id)
-
-        if total_value == 1:
-            print("Tous les points ont été répartis.")
+            connection.commit()
             break
-
-        remaining = round(1 - total_value, 2)
-        print(f"Il reste {remaining} à répartir.")
-        continue
-
-
-
-
-
-

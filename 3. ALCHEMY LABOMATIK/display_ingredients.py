@@ -47,7 +47,9 @@ def display_ingredient(ingredients):
 
             if icon is not None:
                 affinity_list.append((icon, value))
+
+        sorted_affinity_list = sorted(affinity_list, key=lambda x: x[1], reverse=True)
         
-        affinity_text = format_affinity_items(affinity_list)
+        affinity_text = format_affinity_items(sorted_affinity_list)
                     
-        print(f"{ingredient_id:<2} - {COLORS[color]}{name}{RESET} {affinity_text} - {DIM}{description}{RESET}") #- {DIM}Niv. {level}{RESET} à rajouter si besoin
+        print(f"{ingredient_id:<2} - {COLORS[color]}{name}{RESET}  {affinity_text}  - {DIM}{description}{RESET}") #- {DIM}Niv. {level}{RESET} à rajouter si besoin

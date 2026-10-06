@@ -51,7 +51,9 @@ def display_discovery(recipe_discovery):
             if affinity_icon is not None:
                 affinity_list.append((affinity_icon, affinity_value))
 
-        affinity_text = format_affinity_items(affinity_list)
+        sorted_affinity_list = sorted(affinity_list, key=lambda x: x[1], reverse=True)
+
+        affinity_text = format_affinity_items(sorted_affinity_list)
 
         print(
                 f'{discovery_id:<2} - {COLORS[color]}{name}{RESET} - '

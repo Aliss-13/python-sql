@@ -1,12 +1,11 @@
 from display_affinities_and_portals import display_all_affinities
 from display_recipes import display_all_recipes
 from display_discoveries import display_all_discoveries
-from display_colors_and_rarities import COLORS, RESET
-from display_refactor import group_data_under_same_id
 
 from utils import id_exists, ask_positive_int, ask_positive_float_0_1
 
 from affinities import get_affinity_recipe_discovery_total_points
+
 
 
 def menu_update_discovery(cursor, connection):
@@ -60,6 +59,8 @@ def update_number_of_ingredients(cursor, connection):
     
     connection.commit()
     print("Nombre d'ingrédients mis à jour.")
+
+
 
 
 def add_recipe_discovery(cursor, connection):
@@ -206,85 +207,3 @@ def reset_discovery_affinities(cursor, connection):
 
     connection.commit()
     print("Affinités de l'ingrédient supprimées.")
-
-
-
-
-
-def discover_recipe(cursor, connection, recipe_id):
-
-    cursor.execute("""
-        SELECT recipe_id
-        FROM player_recipes
-    """)
-
-    player_recipes = cursor.fetchall()
-    player_recipes = [recipe[0] for recipe in player_recipes]
-
-    if recipe_id not in player_recipes:
-        
-        cursor.execute("""
-            SELECT 
-                recipes.name,
-                rarities.color
-            FROM recipes
-            JOIN rarities
-                ON rarities.id = recipes.rarity_id
-            WHERE recipes.id = ?
-        """, (recipe_id,))
-
-        recipe_nc = cursor.fetchone()
-        recipe_name = recipe_nc[0]
-        recipe_color = recipe_nc[1]
-
-        print(f"Vous découvrez {COLORS[recipe_color]}{recipe_name}{RESET} !")
-        print()
-    
-        cursor.execute("""
-            INSERT INTO player_recipes (recipe_id)
-            VALUES (?)
-        """, (recipe_id,))
-
-        connection.commit()
-
-
-
-        
-def get_discovery_affinity_signature(cursor):
-
-    cursor.execute("""
-        SELECT 
-            recipes.name,
-            affinities.icon,
-            value
-        FROM recipe_discovery
-        JOIN recipes
-            ON recipes.id = recipe_discovery.recipe_id
-        JOIN affinities
-            ON affinities.id = recipe_discovery.affinity_id
-        ORDER BY recipe_discovery.recipe_id
-    """)
-
-    result = cursor.fetchall()
-
-    groups = group_data_under_same_id(result)
-
-    discoveries_affinities = {}
-
-    for group in groups:
-
-        signature = []
-        discovery_name = group[0][0] # group > nom de la recette découverte > construction de la signature > tri > nom > signature
-
-        for discovery_name, icon, value in group:
-            signature.append((discovery_name, (icon, value)))
-
-        signature.sort(key=lambda x: x[1][1], reverse=True)
-        
-        discoveries_affinities[discovery_name] = signature
-
-    for discovery_name, signature in discoveries_affinities.items():
-        print(f"Découvertes : ")
-        print(f"{signature}")
-
-    return discoveries_affinities

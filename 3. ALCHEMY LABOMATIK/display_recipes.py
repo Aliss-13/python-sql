@@ -13,7 +13,7 @@ def display_all_recipes(cursor):
         recipes.description,
         recipes.effect,
         rarities.color,
-        recipe_discovery_difficulty.name,
+        recipe_discovery_difficulty.id,
         fire.name,
         melting_pot.name,
         container.name
@@ -45,6 +45,11 @@ def display_all_recipes(cursor):
     """)
    
     result = cursor.fetchall()
+    print()
+    print(f'Difficulté découverte {LIGHT_PINK}(nb affinités){RESET} : ★ très facile {LIGHT_PINK}(2){RESET} - '
+          f'★★ facile {LIGHT_PINK}(3){RESET} - ★★★ moyen {LIGHT_PINK}(4){RESET} - ★★★★ difficile {LIGHT_PINK}(5){RESET} - '
+          f'★★★★★ très difficile {LIGHT_PINK}(6){RESET}')
+    print()
     display_recipe(result)
     return(result)
 
@@ -53,11 +58,15 @@ def display_recipe(recipes):
     for recipe_id, name, type, target, description, effect, color, discovery_difficulty, fire, melting_pot, container in recipes:
         print(
             f'{recipe_id:<2} - {COLORS[color]}{name}{RESET} - '
-            f'{YELLOW}{type} - {discovery_difficulty}{RESET} - '
+            f'{YELLOW}{type}{RESET} - {format_difficulty_stars(discovery_difficulty)} - '
             f'{effect} ({target})'
             )
         
-        print(f'     {RED}Feu : {fire or "Aucun"}{RESET} - {LIGHT_PINK}Creuset : {melting_pot or "Aucun"}{RESET} - '
+        print(f'     {RED}Feu : {fire or "Aucun"}{RESET} - {ORANGE}Creuset : {melting_pot or "Aucun"}{RESET} - '
               f'{CYAN}Contenant : {container or "Aucun"}{RESET}')
         print(f"     {DIM}{description}{RESET}")
         print()
+
+
+def format_difficulty_stars(difficulty_id):
+    return "★" * difficulty_id + DIM + "☆" * (5 - difficulty_id) + RESET # concaténation => "texte" + variable
