@@ -99,24 +99,12 @@ CREATE TABLE ingredient_affinities (
 INSERT INTO "ingredient_affinities" VALUES(9,4,1.0);
 INSERT INTO "ingredient_affinities" VALUES(7,1,0.8);
 INSERT INTO "ingredient_affinities" VALUES(7,4,0.2);
-INSERT INTO "ingredient_affinities" VALUES(10,6,0.5);
-INSERT INTO "ingredient_affinities" VALUES(10,2,0.3);
-INSERT INTO "ingredient_affinities" VALUES(10,5,0.2);
 INSERT INTO "ingredient_affinities" VALUES(1,1,0.7);
 INSERT INTO "ingredient_affinities" VALUES(1,5,0.3);
 INSERT INTO "ingredient_affinities" VALUES(4,6,0.6);
 INSERT INTO "ingredient_affinities" VALUES(4,2,0.4);
 INSERT INTO "ingredient_affinities" VALUES(13,4,0.3);
 INSERT INTO "ingredient_affinities" VALUES(13,5,0.7);
-INSERT INTO "ingredient_affinities" VALUES(5,6,0.6);
-INSERT INTO "ingredient_affinities" VALUES(5,3,0.3);
-INSERT INTO "ingredient_affinities" VALUES(5,2,0.1);
-INSERT INTO "ingredient_affinities" VALUES(12,3,0.5);
-INSERT INTO "ingredient_affinities" VALUES(12,1,0.1);
-INSERT INTO "ingredient_affinities" VALUES(12,5,0.4);
-INSERT INTO "ingredient_affinities" VALUES(8,3,0.5);
-INSERT INTO "ingredient_affinities" VALUES(8,6,0.3);
-INSERT INTO "ingredient_affinities" VALUES(8,2,0.2);
 INSERT INTO "ingredient_affinities" VALUES(14,2,1.0);
 INSERT INTO "ingredient_affinities" VALUES(17,5,0.5);
 INSERT INTO "ingredient_affinities" VALUES(17,1,0.5);
@@ -133,19 +121,10 @@ INSERT INTO "ingredient_affinities" VALUES(3,6,0.8);
 INSERT INTO "ingredient_affinities" VALUES(3,4,0.2);
 INSERT INTO "ingredient_affinities" VALUES(20,4,0.9);
 INSERT INTO "ingredient_affinities" VALUES(20,5,0.1);
-INSERT INTO "ingredient_affinities" VALUES(2,2,0.3);
-INSERT INTO "ingredient_affinities" VALUES(2,5,0.6);
-INSERT INTO "ingredient_affinities" VALUES(2,1,0.1);
-INSERT INTO "ingredient_affinities" VALUES(21,6,0.5);
-INSERT INTO "ingredient_affinities" VALUES(21,3,0.3);
-INSERT INTO "ingredient_affinities" VALUES(21,2,0.2);
 INSERT INTO "ingredient_affinities" VALUES(6,2,0.6);
 INSERT INTO "ingredient_affinities" VALUES(6,1,0.4);
 INSERT INTO "ingredient_affinities" VALUES(22,2,0.6);
 INSERT INTO "ingredient_affinities" VALUES(22,4,0.4);
-INSERT INTO "ingredient_affinities" VALUES(23,5,0.6);
-INSERT INTO "ingredient_affinities" VALUES(23,6,0.2);
-INSERT INTO "ingredient_affinities" VALUES(23,3,0.2);
 INSERT INTO "ingredient_affinities" VALUES(24,1,0.6);
 INSERT INTO "ingredient_affinities" VALUES(24,6,0.4);
 INSERT INTO "ingredient_affinities" VALUES(25,2,0.6);
@@ -154,6 +133,21 @@ INSERT INTO "ingredient_affinities" VALUES(27,6,1.0);
 INSERT INTO "ingredient_affinities" VALUES(26,6,1.0);
 INSERT INTO "ingredient_affinities" VALUES(28,6,0.5);
 INSERT INTO "ingredient_affinities" VALUES(28,3,0.5);
+INSERT INTO "ingredient_affinities" VALUES(10,6,0.7);
+INSERT INTO "ingredient_affinities" VALUES(10,2,0.3);
+INSERT INTO "ingredient_affinities" VALUES(23,5,0.4);
+INSERT INTO "ingredient_affinities" VALUES(23,3,0.6);
+INSERT INTO "ingredient_affinities" VALUES(21,3,0.3);
+INSERT INTO "ingredient_affinities" VALUES(21,6,0.7);
+INSERT INTO "ingredient_affinities" VALUES(2,5,0.6);
+INSERT INTO "ingredient_affinities" VALUES(2,2,0.4);
+INSERT INTO "ingredient_affinities" VALUES(8,2,0.5);
+INSERT INTO "ingredient_affinities" VALUES(8,3,0.5);
+INSERT INTO "ingredient_affinities" VALUES(5,2,0.4);
+INSERT INTO "ingredient_affinities" VALUES(5,6,0.6);
+INSERT INTO "ingredient_affinities" VALUES(12,3,0.6);
+INSERT INTO "ingredient_affinities" VALUES(12,5,0.4);
+INSERT INTO "ingredient_affinities" VALUES(29,3,1.0);
 CREATE TABLE ingredients (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
@@ -191,6 +185,7 @@ INSERT INTO "ingredients" VALUES(25,'Aconit','Aussi appelé napel ou tue-loup. S
 INSERT INTO "ingredients" VALUES(26,'Pavlovnia','Cette plante a de très bons réflexes.',1,3);
 INSERT INTO "ingredients" VALUES(27,'Vigne catcheuse','L''oeil du tigre. Tin-tin-tin, tin-tin-tiiiiinnnnnnn...',1,3);
 INSERT INTO "ingredients" VALUES(28,'Baies piquantes','Ça arrache un peu.',1,1);
+INSERT INTO "ingredients" VALUES(29,'Fourmi rouge Soprano','Sa piqûre provoque une sensation de brûlure vive. Appelle les pompiers !',1,1);
 CREATE TABLE inventory (
         ingredient_id INTEGER PRIMARY KEY,
         quantity INTEGER NOT NULL DEFAULT 0,
@@ -223,7 +218,8 @@ INSERT INTO "inventory" VALUES(24,6);
 INSERT INTO "inventory" VALUES(25,14);
 INSERT INTO "inventory" VALUES(26,0);
 INSERT INTO "inventory" VALUES(27,8);
-INSERT INTO "inventory" VALUES(28,1);
+INSERT INTO "inventory" VALUES(28,3);
+INSERT INTO "inventory" VALUES(29,3);
 CREATE TABLE mixing_tools (
     equipment_id INTEGER PRIMARY KEY,
     capacity INTEGER,
@@ -247,18 +243,7 @@ CREATE TABLE player_recipes (
     	CHECK (crafted IN (0, 1)),
     FOREIGN KEY (recipe_id) REFERENCES recipes(id)
 );
-INSERT INTO "player_recipes" VALUES(1,1);
-INSERT INTO "player_recipes" VALUES(2,0);
 INSERT INTO "player_recipes" VALUES(3,0);
-INSERT INTO "player_recipes" VALUES(5,1);
-INSERT INTO "player_recipes" VALUES(6,0);
-INSERT INTO "player_recipes" VALUES(7,0);
-INSERT INTO "player_recipes" VALUES(8,0);
-INSERT INTO "player_recipes" VALUES(9,0);
-INSERT INTO "player_recipes" VALUES(10,0);
-INSERT INTO "player_recipes" VALUES(11,0);
-INSERT INTO "player_recipes" VALUES(12,0);
-INSERT INTO "player_recipes" VALUES(13,0);
 CREATE TABLE product_inventory (
     recipe_id INTEGER PRIMARY KEY,
     quantity INTEGER NOT NULL DEFAULT 0,
@@ -288,9 +273,6 @@ INSERT INTO "recipe_discovery" VALUES(1,2,4,0.4);
 INSERT INTO "recipe_discovery" VALUES(2,2,5,0.4);
 INSERT INTO "recipe_discovery" VALUES(2,2,4,0.6);
 INSERT INTO "recipe_discovery" VALUES(3,2,3,1.0);
-INSERT INTO "recipe_discovery" VALUES(4,2,1,0.2);
-INSERT INTO "recipe_discovery" VALUES(4,2,6,0.4);
-INSERT INTO "recipe_discovery" VALUES(4,2,4,0.4);
 INSERT INTO "recipe_discovery" VALUES(5,3,6,0.6);
 INSERT INTO "recipe_discovery" VALUES(5,3,4,0.4);
 INSERT INTO "recipe_discovery" VALUES(6,3,3,0.5);
@@ -313,6 +295,19 @@ INSERT INTO "recipe_discovery" VALUES(9,2,2,0.2);
 INSERT INTO "recipe_discovery" VALUES(10,2,2,0.8);
 INSERT INTO "recipe_discovery" VALUES(10,2,1,0.2);
 INSERT INTO "recipe_discovery" VALUES(7,2,6,1.0);
+INSERT INTO "recipe_discovery" VALUES(4,3,6,0.4);
+INSERT INTO "recipe_discovery" VALUES(4,3,1,0.4);
+INSERT INTO "recipe_discovery" VALUES(4,3,4,0.2);
+CREATE TABLE recipe_discovery_difficulty (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE,
+    number_of_affinities INTEGER NOT NULL
+);
+INSERT INTO "recipe_discovery_difficulty" VALUES(1,'Très facile',2);
+INSERT INTO "recipe_discovery_difficulty" VALUES(2,'Facile',3);
+INSERT INTO "recipe_discovery_difficulty" VALUES(3,'Moyen',4);
+INSERT INTO "recipe_discovery_difficulty" VALUES(4,'Difficile',5);
+INSERT INTO "recipe_discovery_difficulty" VALUES(5,'Très difficile',6);
 CREATE TABLE recipe_ingredients (
     recipe_id INTEGER,
     ingredient_id INTEGER,
@@ -387,26 +382,27 @@ CREATE TABLE recipes (
     rarity_id INTEGER,
     fire_equipment_id INTEGER,
     melting_pot_equipment_id INTEGER, container_equipment_id INTEGER
-    REFERENCES equipment(id),
+    REFERENCES equipment(id), discovery_difficulty_id INTEGER
+        REFERENCES recipe_discovery_difficulty(id),
     FOREIGN KEY (type_id) REFERENCES recipe_types(id),
     FOREIGN KEY (target_id) REFERENCES targets(id),
     FOREIGN KEY (rarity_id) REFERENCES rarities(id),
     FOREIGN KEY (fire_equipment_id) REFERENCES equipment(id),
     FOREIGN KEY (melting_pot_equipment_id) REFERENCES equipment(id)
 );
-INSERT INTO "recipes" VALUES(1,'Potion de soin',1,1,'Un soin instantané goût framboise.','+80 points de vie',1,NULL,NULL,4);
-INSERT INTO "recipes" VALUES(2,'Potion de mana',1,1,'Une récupération de mana instantanée goût Kola Koala.','+80 points de mana',1,NULL,NULL,4);
-INSERT INTO "recipes" VALUES(3,'Potion de puissance',1,1,'Pétillante en bouche, parfaite pour péter des gueules.','+10 puissance pendant 3 tours',2,NULL,NULL,4);
-INSERT INTO "recipes" VALUES(4,'Potion Source de vie',1,3,'Un soin chaleureux et convivial, comme les douches du rugby.','+20 points de vie pendant 3 tours',2,NULL,NULL,5);
-INSERT INTO "recipes" VALUES(5,'Grande potion de soin',1,3,'L''effet d''un cri de guerre à Fort Boyard, l''hydratation en plus !','+100 points de vie',3,3,2,5);
-INSERT INTO "recipes" VALUES(6,'Potion de peau de cuir',1,1,'Vous êtes maintenant un vrai dur à cuir ! ','+20 points de défense pendant 3 tours',3,3,2,5);
-INSERT INTO "recipes" VALUES(7,'Potion de défense',1,1,'Pour encaisser les coups comme un bonhomme.','+10 points de défense pendant 2 tours',1,NULL,NULL,4);
-INSERT INTO "recipes" VALUES(8,'Élixir de vitesse',2,1,'Cours Forest, cours !','+5 points de vitesse pendant 15 minutes de jeu',1,NULL,NULL,25);
-INSERT INTO "recipes" VALUES(9,'Élixir de peau de dragon',2,1,'Acide hyaluronique + rétinol A.','+8 points de défense pendant 15 minutes de jeu',1,NULL,NULL,4);
-INSERT INTO "recipes" VALUES(10,'Pentagramme de Terreur',3,4,'BOUH.','Applique Peur pendant 2 tours',1,NULL,NULL,37);
-INSERT INTO "recipes" VALUES(11,'Pentagramme de la Tatane',3,4,'Tu l''as pas volée, celle-là !','Applique Stun pendant 2 tours',2,3,2,35);
-INSERT INTO "recipes" VALUES(12,'Pentagramme de la Conserve Périmée',3,4,'Boah, allez, je goûte...','Applique Poison pendant 2 tours',1,NULL,NULL,37);
-INSERT INTO "recipes" VALUES(13,'Pentagramme du Pyromane',3,4,'Une allumette, charlipopette...','Applique Brûlure pendant 2 tours',1,NULL,NULL,37);
+INSERT INTO "recipes" VALUES(1,'Potion de soin',1,1,'Un soin instantané goût framboise.','+80 points de vie',1,NULL,NULL,4,1);
+INSERT INTO "recipes" VALUES(2,'Potion de mana',1,1,'Une récupération de mana instantanée goût Kola Koala.','+80 points de mana',1,NULL,NULL,4,1);
+INSERT INTO "recipes" VALUES(3,'Potion de puissance',1,1,'Pétillante en bouche, parfaite pour péter des gueules.','+10 puissance pendant 3 tours',2,NULL,NULL,4,1);
+INSERT INTO "recipes" VALUES(4,'Potion Source de vie',1,3,'Un soin chaleureux et convivial, comme les douches du rugby.','+20 points de vie pendant 3 tours',2,NULL,NULL,5,2);
+INSERT INTO "recipes" VALUES(5,'Grande potion de soin',1,3,'L''effet d''un cri de guerre à Fort Boyard, l''hydratation en plus !','+100 points de vie',3,3,2,5,2);
+INSERT INTO "recipes" VALUES(6,'Potion de peau de cuir',1,1,'Vous êtes maintenant un vrai dur à cuir ! ','+20 points de défense pendant 3 tours',3,3,2,5,2);
+INSERT INTO "recipes" VALUES(7,'Potion de défense',1,1,'Pour encaisser les coups comme un bonhomme.','+10 points de défense pendant 2 tours',1,NULL,NULL,4,1);
+INSERT INTO "recipes" VALUES(8,'Élixir de vitesse',2,1,'Cours Forest, cours !','+5 points de vitesse pendant 15 minutes de jeu',1,NULL,NULL,25,2);
+INSERT INTO "recipes" VALUES(9,'Élixir de peau de dragon',2,1,'Acide hyaluronique + rétinol A.','+8 points de défense pendant 15 minutes de jeu',1,NULL,NULL,4,2);
+INSERT INTO "recipes" VALUES(10,'Pentagramme de Terreur',3,4,'BOUH.','Applique Peur pendant 2 tours',1,NULL,NULL,37,1);
+INSERT INTO "recipes" VALUES(11,'Pentagramme de la Tatane',3,4,'Tu l''as pas volée, celle-là !','Applique Stun pendant 2 tours',2,3,2,35,2);
+INSERT INTO "recipes" VALUES(12,'Pentagramme de la Conserve Périmée',3,4,'Boah, allez, je goûte...','Applique Poison pendant 2 tours',1,NULL,NULL,37,1);
+INSERT INTO "recipes" VALUES(13,'Pentagramme du Pyromane',3,4,'Une allumette, charlipopette...','Applique Brûlure pendant 2 tours',1,NULL,NULL,37,1);
 CREATE TABLE shop_inventory (
     recipe_id INTEGER PRIMARY KEY,
     quantity INTEGER NOT NULL DEFAULT 0,
