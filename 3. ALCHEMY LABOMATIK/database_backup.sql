@@ -99,8 +99,6 @@ CREATE TABLE ingredient_affinities (
 INSERT INTO "ingredient_affinities" VALUES(9,4,1.0);
 INSERT INTO "ingredient_affinities" VALUES(7,1,0.8);
 INSERT INTO "ingredient_affinities" VALUES(7,4,0.2);
-INSERT INTO "ingredient_affinities" VALUES(1,1,0.7);
-INSERT INTO "ingredient_affinities" VALUES(1,5,0.3);
 INSERT INTO "ingredient_affinities" VALUES(4,6,0.6);
 INSERT INTO "ingredient_affinities" VALUES(4,2,0.4);
 INSERT INTO "ingredient_affinities" VALUES(13,4,0.3);
@@ -148,6 +146,11 @@ INSERT INTO "ingredient_affinities" VALUES(5,6,0.6);
 INSERT INTO "ingredient_affinities" VALUES(12,3,0.6);
 INSERT INTO "ingredient_affinities" VALUES(12,5,0.4);
 INSERT INTO "ingredient_affinities" VALUES(29,3,1.0);
+INSERT INTO "ingredient_affinities" VALUES(30,5,1.0);
+INSERT INTO "ingredient_affinities" VALUES(31,5,0.4);
+INSERT INTO "ingredient_affinities" VALUES(31,6,0.6);
+INSERT INTO "ingredient_affinities" VALUES(1,5,0.7);
+INSERT INTO "ingredient_affinities" VALUES(1,1,0.3);
 CREATE TABLE ingredients (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
@@ -186,16 +189,18 @@ INSERT INTO "ingredients" VALUES(26,'Pavlovnia','Cette plante a de très bons r�
 INSERT INTO "ingredients" VALUES(27,'Vigne catcheuse','L''oeil du tigre. Tin-tin-tin, tin-tin-tiiiiinnnnnnn...',1,3);
 INSERT INTO "ingredients" VALUES(28,'Baies piquantes','Ça arrache un peu.',1,1);
 INSERT INTO "ingredients" VALUES(29,'Fourmi rouge Soprano','Sa piqûre provoque une sensation de brûlure vive. Appelle les pompiers !',1,1);
+INSERT INTO "ingredients" VALUES(30,'Fébellule','Créature peu commune, quasiment invisible à l''oeil nu. Elle se prend parfois dans les toiles d''araignée.',1,3);
+INSERT INTO "ingredients" VALUES(31,'Plumefeuille','C''est presque pareil !',1,1);
 CREATE TABLE inventory (
         ingredient_id INTEGER PRIMARY KEY,
         quantity INTEGER NOT NULL DEFAULT 0,
         FOREIGN KEY (ingredient_id) REFERENCES ingredients(id)
 );
 INSERT INTO "inventory" VALUES(1,5);
-INSERT INTO "inventory" VALUES(2,11);
-INSERT INTO "inventory" VALUES(3,16);
-INSERT INTO "inventory" VALUES(4,42);
-INSERT INTO "inventory" VALUES(5,11);
+INSERT INTO "inventory" VALUES(2,15);
+INSERT INTO "inventory" VALUES(3,17);
+INSERT INTO "inventory" VALUES(4,45);
+INSERT INTO "inventory" VALUES(5,12);
 INSERT INTO "inventory" VALUES(6,8);
 INSERT INTO "inventory" VALUES(7,2);
 INSERT INTO "inventory" VALUES(8,22);
@@ -211,15 +216,17 @@ INSERT INTO "inventory" VALUES(17,13);
 INSERT INTO "inventory" VALUES(18,13);
 INSERT INTO "inventory" VALUES(19,8);
 INSERT INTO "inventory" VALUES(20,2);
-INSERT INTO "inventory" VALUES(21,11);
+INSERT INTO "inventory" VALUES(21,17);
 INSERT INTO "inventory" VALUES(22,3);
 INSERT INTO "inventory" VALUES(23,1);
 INSERT INTO "inventory" VALUES(24,6);
 INSERT INTO "inventory" VALUES(25,14);
 INSERT INTO "inventory" VALUES(26,0);
-INSERT INTO "inventory" VALUES(27,8);
+INSERT INTO "inventory" VALUES(27,11);
 INSERT INTO "inventory" VALUES(28,3);
 INSERT INTO "inventory" VALUES(29,3);
+INSERT INTO "inventory" VALUES(30,3);
+INSERT INTO "inventory" VALUES(31,3);
 CREATE TABLE mixing_tools (
     equipment_id INTEGER PRIMARY KEY,
     capacity INTEGER,
@@ -243,7 +250,17 @@ CREATE TABLE player_recipes (
     	CHECK (crafted IN (0, 1)),
     FOREIGN KEY (recipe_id) REFERENCES recipes(id)
 );
+INSERT INTO "player_recipes" VALUES(1,0);
+INSERT INTO "player_recipes" VALUES(2,0);
 INSERT INTO "player_recipes" VALUES(3,0);
+INSERT INTO "player_recipes" VALUES(4,0);
+INSERT INTO "player_recipes" VALUES(6,0);
+INSERT INTO "player_recipes" VALUES(8,0);
+INSERT INTO "player_recipes" VALUES(9,0);
+INSERT INTO "player_recipes" VALUES(10,0);
+INSERT INTO "player_recipes" VALUES(11,0);
+INSERT INTO "player_recipes" VALUES(12,0);
+INSERT INTO "player_recipes" VALUES(13,0);
 CREATE TABLE product_inventory (
     recipe_id INTEGER PRIMARY KEY,
     quantity INTEGER NOT NULL DEFAULT 0,
@@ -275,29 +292,28 @@ INSERT INTO "recipe_discovery" VALUES(2,2,4,0.6);
 INSERT INTO "recipe_discovery" VALUES(3,2,3,1.0);
 INSERT INTO "recipe_discovery" VALUES(5,3,6,0.6);
 INSERT INTO "recipe_discovery" VALUES(5,3,4,0.4);
-INSERT INTO "recipe_discovery" VALUES(6,3,3,0.5);
-INSERT INTO "recipe_discovery" VALUES(6,3,6,0.5);
-INSERT INTO "recipe_discovery" VALUES(8,2,2,0.4);
-INSERT INTO "recipe_discovery" VALUES(8,2,1,0.3);
-INSERT INTO "recipe_discovery" VALUES(8,2,5,0.3);
-INSERT INTO "recipe_discovery" VALUES(11,2,6,0.4);
-INSERT INTO "recipe_discovery" VALUES(11,2,1,0.3);
-INSERT INTO "recipe_discovery" VALUES(11,2,2,0.3);
 INSERT INTO "recipe_discovery" VALUES(13,2,3,0.5);
 INSERT INTO "recipe_discovery" VALUES(13,2,5,0.3);
 INSERT INTO "recipe_discovery" VALUES(13,2,6,0.2);
 INSERT INTO "recipe_discovery" VALUES(12,2,2,0.5);
 INSERT INTO "recipe_discovery" VALUES(12,2,6,0.3);
 INSERT INTO "recipe_discovery" VALUES(12,2,4,0.2);
-INSERT INTO "recipe_discovery" VALUES(9,2,3,0.4);
-INSERT INTO "recipe_discovery" VALUES(9,2,6,0.4);
-INSERT INTO "recipe_discovery" VALUES(9,2,2,0.2);
 INSERT INTO "recipe_discovery" VALUES(10,2,2,0.8);
 INSERT INTO "recipe_discovery" VALUES(10,2,1,0.2);
 INSERT INTO "recipe_discovery" VALUES(7,2,6,1.0);
-INSERT INTO "recipe_discovery" VALUES(4,3,6,0.4);
-INSERT INTO "recipe_discovery" VALUES(4,3,1,0.4);
+INSERT INTO "recipe_discovery" VALUES(9,2,3,0.5);
+INSERT INTO "recipe_discovery" VALUES(9,2,6,0.4);
+INSERT INTO "recipe_discovery" VALUES(9,2,2,0.1);
+INSERT INTO "recipe_discovery" VALUES(4,3,6,0.5);
+INSERT INTO "recipe_discovery" VALUES(4,3,1,0.3);
 INSERT INTO "recipe_discovery" VALUES(4,3,4,0.2);
+INSERT INTO "recipe_discovery" VALUES(8,2,5,0.8);
+INSERT INTO "recipe_discovery" VALUES(8,2,1,0.2);
+INSERT INTO "recipe_discovery" VALUES(11,2,6,0.6);
+INSERT INTO "recipe_discovery" VALUES(11,2,5,0.3);
+INSERT INTO "recipe_discovery" VALUES(11,2,1,0.1);
+INSERT INTO "recipe_discovery" VALUES(6,3,6,0.6);
+INSERT INTO "recipe_discovery" VALUES(6,3,3,0.4);
 CREATE TABLE recipe_discovery_difficulty (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
