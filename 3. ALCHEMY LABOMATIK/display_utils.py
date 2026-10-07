@@ -1,3 +1,6 @@
+import textwrap
+
+
 YELLOW = "\033[93m"
 CYAN = "\033[38;2;112;198;250m"
 BLUE = "\033[94m"
@@ -35,3 +38,18 @@ def display_main_menu():
     print()
     print(f"Accès menu gestion base de données : {YELLOW}bdd_forever{RESET}")
     print()
+
+
+def display_recipe_description(description):
+    
+    if description is None:
+        return
+
+    lines = textwrap.wrap(description, width=100)
+
+    for line in lines:
+        print(f'     {DIM}{line}{RESET}')
+
+
+def format_difficulty_stars(difficulty_id):
+    return "★" * difficulty_id + DIM + "☆" * (5 - difficulty_id) + RESET # concaténation => "texte" + variable

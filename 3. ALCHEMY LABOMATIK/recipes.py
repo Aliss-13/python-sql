@@ -1,6 +1,6 @@
 import sqlite3
 
-from display_colors_and_rarities import COLORS, RESET, dans_ton_q
+from display_utils import COLORS, RESET, dans_ton_q
 from display_ingredients import display_all_ingredients
 from display_recipes import display_all_recipes
 from display_recipe_ingredients_products_and_equipment import display_all_recipes_ingredients, display_all_recipes_products
@@ -493,6 +493,7 @@ def add_recipe_discovery_difficulty(cursor):
     difficulties = cursor.fetchall()
     
     while True:
+        print()
         print("--- Difficulté de la découverte ---")
     
         for difficulty in difficulties:

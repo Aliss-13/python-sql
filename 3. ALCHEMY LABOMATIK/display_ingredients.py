@@ -1,4 +1,4 @@
-from display_colors_and_rarities import COLORS, RESET, DIM
+from display_utils import COLORS, RESET, DIM
 from display_refactor import group_data_under_same_id, format_affinity_items
 
 def display_all_ingredients(cursor):

@@ -1,4 +1,4 @@
-from display_colors_and_rarities import COLORS, RESET, DIM, YELLOW, RED, CYAN, LIGHT_PINK, ORANGE
+from display_utils import COLORS, RESET, YELLOW, RED, CYAN, LIGHT_PINK, ORANGE, display_recipe_description, format_difficulty_stars
 
 
 def display_all_recipes(cursor):
@@ -64,9 +64,7 @@ def display_recipe(recipes):
         
         print(f'     {RED}Feu : {fire or "Aucun"}{RESET} - {ORANGE}Creuset : {melting_pot or "Aucun"}{RESET} - '
               f'{CYAN}Contenant : {container or "Aucun"}{RESET}')
-        print(f"     {DIM}{description}{RESET}")
+        display_recipe_description(description)
         print()
 
 
-def format_difficulty_stars(difficulty_id):
-    return "★" * difficulty_id + DIM + "☆" * (5 - difficulty_id) + RESET # concaténation => "texte" + variable

@@ -1,5 +1,5 @@
 from display_refactor import group_data_under_same_id, format_affinity_items
-from display_colors_and_rarities import COLORS, RESET, DIM, YELLOW
+from display_utils import COLORS, RESET, DIM, YELLOW
 
 
 def return_inventory(cursor):

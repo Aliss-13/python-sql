@@ -1,5 +1,5 @@
 from display_player_recipes import display_all_player_recipes_ingredients_products_and_equipments
-from display_colors_and_rarities import COLORS, RESET
+from display_utils import COLORS, RESET
 
 
 def pick_recipe(cursor):

@@ -10,7 +10,7 @@ from display_recipes import display_all_recipes
 
 from display_sql_info import display_tables_info, display_tables, display_new_table_contents, display_FK
 
-from display_colors_and_rarities import DIM, RESET
+from display_utils import DIM, RESET
 
 from ingredients import add_ingredient, menu_update_ingredient, reset_ingredient_affinities
 from portals import menu_portal

@@ -1,5 +1,6 @@
 from display_refactor import group_data_under_same_id, format_recipe_and_craft_items
-from display_colors_and_rarities import COLORS, RESET, YELLOW, LIGHT_PINK, CYAN, RED, DIM, ORANGE
+from display_utils import COLORS, RESET, YELLOW, LIGHT_PINK, CYAN, RED, ORANGE, display_recipe_description
+
 
 
 def get_all_recipes_infos(cursor):
@@ -253,7 +254,7 @@ def display_recipe_ingredients_products_and_equipments(
         print(f'{LIGHT_PINK}     Ingrédients : {RESET}{ingredient_text}')
         print(f'{LIGHT_PINK}     Produits : {RESET}{product_text}')
         print()
-        print(f'     {DIM}{recipe_description}{RESET}')
+        display_recipe_description(recipe_description)
         print()
 
     return recipes_datas
