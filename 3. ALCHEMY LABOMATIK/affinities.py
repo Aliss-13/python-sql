@@ -128,17 +128,17 @@ def add_affinity_to_ingredient(cursor, connection):
             value = ask_positive_float_0_1("Valeur de l'affinité : ")
 
         new_total_value = round(total_value + value, 2)
-        
-        if new_total_value == 1:
-            
-            cursor.execute("""
-                INSERT INTO ingredient_affinities (
-                    ingredient_id,
-                    affinity_id,
-                    value
-                )
-                VALUES (?, ?, ?)
-                """, (ingredient_id, affinity_id, value))
 
-            connection.commit()
+        cursor.execute("""
+            INSERT INTO ingredient_affinities (
+                ingredient_id,
+                affinity_id,
+                value
+            )
+            VALUES (?, ?, ?)
+            """, (ingredient_id, affinity_id, value))
+
+        connection.commit()
+
+        if new_total_value == 1:
             break

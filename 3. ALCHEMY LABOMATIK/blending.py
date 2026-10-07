@@ -130,12 +130,6 @@ def blend_affinities_result(cursor, capacity, blending_ingredients):
     for affinity_id, (value, icon) in blending_affinities.items():
         blending_affinities[affinity_id] = (round(value / capacity, 2), icon)
 
-    print("Affinités finales du mélange :")
-
-    for affinity_id, (value, icon) in blending_affinities.items():
-        print(f"{icon} : {value}")
-    print()
-
     return blending_affinities
 
 

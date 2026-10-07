@@ -1,4 +1,4 @@
-from display_player_recipes import display_recipe_ingredients_products_and_equipments
+from display_player_recipes import display_all_player_recipes_ingredients_products_and_equipments
 from display_colors_and_rarities import COLORS, RESET
 
 
@@ -6,7 +6,7 @@ def pick_recipe(cursor):
 
 # affichage des recettes connues  
 
-    recipe_infos = display_recipe_ingredients_products_and_equipments(cursor)
+    recipe_infos = display_all_player_recipes_ingredients_products_and_equipments(cursor)
 
     print()
 

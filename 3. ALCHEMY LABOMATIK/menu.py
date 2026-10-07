@@ -4,7 +4,7 @@ from display_affinities_and_portals import display_all_affinities
 from display_discoveries import display_all_discoveries
 from display_inventories import display_inventory, display_container_inventory, display_product_inventory
 from display_ingredients import display_all_ingredients
-from display_recipe_ingredients_and_products import display_recipe_ingredients_and_products
+from display_recipe_ingredients_products_and_equipment import display_all_recipes_ingredients_products_and_equipments
 from display_equipment_and_equipment_craft import display_all_equipment_crafts, display_all_equipment
 from display_recipes import display_all_recipes
 
@@ -176,7 +176,7 @@ def menu_recipes(cursor, connection):
             menu_update_recipe(cursor, connection)
 
         elif choix == "4":
-            display_recipe_ingredients_and_products(cursor)
+            display_all_recipes_ingredients_products_and_equipments(cursor)
 
         elif choix == "5":
             add_recipe_ingredients(cursor, connection)
