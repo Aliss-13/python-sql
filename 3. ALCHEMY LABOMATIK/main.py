@@ -19,7 +19,6 @@ connection.execute("PRAGMA foreign_keys = ON")
 create_tables(cursor)
 
 # commit
-
 connection.commit()
 
 # code temporaire 
@@ -31,3 +30,12 @@ display_main_menu()
 menu(cursor, connection, player_level)
 
 connection.close()
+
+
+
+
+#cursor.execute("""
+#    UPDATE inventory
+#    SET quantity = quantity + 20
+#    WHERE ingredient_id = 15
+#    """)

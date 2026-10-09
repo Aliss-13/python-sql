@@ -18,7 +18,8 @@ from equipment import add_equipment, menu_update_equipment, add_equipment_craft,
 from blending import discover_recipe
 from recipes import add_recipe, menu_update_recipe, add_recipe_ingredients, add_recipe_products, reset_recipe_ingredients, reset_recipe_products
 from discoveries import add_recipe_discovery, menu_update_discovery
-from craft import craft_recipe
+from craft_recipe import craft_recipe
+from craft_equipment import craft_equipment
 
 def menu_database_management(cursor, connection):
 
@@ -78,8 +79,10 @@ def menu(cursor, connection, player_level):
         print(f'[1] 🌀 Portails {DIM}- Récolte des ingrédients.{RESET}')
         print(f"[2] 🧪 Laboratoire {DIM}- Expérimentation par le mélange des ingrédients, la souffrance et l'introspection.{RESET}")
         print(f'[3] 🧫 Fabriquer {DIM}- Fabrication des produits dont la recette est connue. Ne fonctionne pas pour le gasoil.{RESET}')
-        print(f"[4] 📓 Inventaire {DIM}- Ingrédients, contenants et produits fabriqués.{RESET}")
-        print(f"[5] 💰 Boutique {DIM}- Vente des produits fabriqués : enrichissement personnel, gain d'expérience et contrôle fiscal.{RESET}")
+        print(f'[4] 🥽 Crafter {DIM}- Manufacture des instruments de mélange, creusets et feux. Magimix, Dolby Digital THX et Assurancetourix.{RESET}')
+        print(f"[5] 🌐 FlamelXpress {DIM}- Fournisseur incontournable des contenants alchimiques : contenants certifiés, prix transmutés !{RESET}")
+        print(f"[6] 📓 Inventaire {DIM}- Ingrédients, contenants et produits fabriqués.{RESET}")
+        print(f"[7] 💰 Boutique {DIM}- Vente des produits fabriqués : enrichissement personnel, gain d'expérience et contrôle fiscal.{RESET}")
         print("")
         print(f"[q] 🔚 Quitter {DIM}- Je m'en vais comme un prince !{RESET}")
         print("")
@@ -99,12 +102,18 @@ def menu(cursor, connection, player_level):
             craft_recipe(cursor, connection)
 
         elif choix == "4":
+            craft_equipment(cursor, connection)
+
+        elif choix == "5":
+            print("🌐 FlamelXpress en construction")
+
+        elif choix == "6":
             display_inventory(cursor)
             display_container_inventory(cursor)
             display_product_inventory(cursor)
             print()
 
-        elif choix == "5":
+        elif choix == "7":
             print("💰 Boutique en construction")
 
         elif choix == "q":

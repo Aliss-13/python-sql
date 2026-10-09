@@ -101,6 +101,7 @@ def create_tables(cursor):
         category_id INTEGER,
         description TEXT,
         rarity_id INTEGER,
+        unlock_discoveries INTEGER NOT NULL DEFAULT 0,
         FOREIGN KEY (category_id) REFERENCES equipment_categories(id),
         FOREIGN KEY (rarity_id) REFERENCES rarities(id)
     )""")

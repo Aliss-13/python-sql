@@ -1,6 +1,8 @@
 from display_player_recipes import display_all_player_recipes_ingredients_products_and_equipments
 from display_utils import COLORS, RESET
+from inventory import check_inventory_for_ingredients_and_quantity
 
+#----------------------------------------------- craft recettes ----------------------------------------
 
 def pick_recipe(cursor):
 
@@ -106,60 +108,7 @@ def check_melting_pot(cursor, recipe_id):  # vérification creuset dans l'équip
             print()
 
     return player_equipment_has_required_melting_pot
-
-
-def check_inventory_for_ingredients_and_quantity(cursor, recipe_id):  # vérification ingrédients + quantité dans l'inventaire
-
-    cursor.execute("""
-        SELECT 
-            ingredient_id, 
-            quantity
-        FROM recipe_ingredients
-        WHERE recipe_id = ?
-    """, (recipe_id,))
-                    
-    result_recipe_ingredients = cursor.fetchall()
-
-    cursor.execute("""
-        SELECT 
-            ingredient_id, 
-            quantity
-        FROM inventory
-    """)
-                        
-    result_inventory = cursor.fetchall()
-
-    
-    inventory_has_required_ingredients = True
-
-    for ingredient_id, required_quantity in result_recipe_ingredients: 
-    # | for a, b in liste_de_tuples: | signifie : « Pour chaque tuple de deux éléments, mets le premier dans a et le second dans b. »
-        
-        ingredient_found = False
-        ingredient_has_required_quantity = False
-        
-        for inventory_ingredient_id, inventory_quantity in result_inventory: 
-            
-            if ingredient_id == inventory_ingredient_id:
-                ingredient_found = True 
-
-                if required_quantity <= inventory_quantity:
-                    ingredient_has_required_quantity = True
-                   
-        
-    if not ingredient_found:
-        inventory_has_required_ingredients = False
-        print("Vous n'avez pas les ingrédients requis pour cette recette.")
-        print()
-
-    else:
-        if not ingredient_has_required_quantity:
-            inventory_has_required_ingredients = False
-            print("Vous n'avez pas assez d'ingrédients pour cette recette.")
-            print()
-            
-    return inventory_has_required_ingredients, result_recipe_ingredients
-
+   
 
 def check_container_inventory_for_containers_and_quantity(cursor, recipe_id):  
 # vérification contenants + quantité dans l'inventaire de contenants
@@ -268,15 +217,6 @@ def pick_product_destination(cursor, recipe_id):
         print("Choix invalide.")
 
 
-def crafted_is_true(cursor, recipe_id):
-
-    cursor.execute("""
-        UPDATE player_recipes
-        SET crafted = 1
-    WHERE recipe_id = ?
-    """, (recipe_id,))
-
-
 def craft_recipe(cursor, connection):
 
     recipe_id = pick_recipe(cursor)
@@ -302,7 +242,8 @@ def craft_recipe(cursor, connection):
 
     player_equipment_has_required_melting_pot = check_melting_pot(cursor, recipe_id)
 
-    inventory_has_required_ingredients, result_recipe_ingredients = check_inventory_for_ingredients_and_quantity(cursor, recipe_id)
+    inventory_has_required_ingredients, result_item_to_craft_ingredients = check_inventory_for_ingredients_and_quantity(
+    cursor, "recipe_ingredients", "recipe_id", recipe_id, "cette recette")
 
     container_inventory_has_required_containers, container_equipment_id = check_container_inventory_for_containers_and_quantity(cursor, recipe_id)
                               
@@ -315,7 +256,7 @@ def craft_recipe(cursor, connection):
 
                     pick_product_destination(cursor, recipe_id)
 
-                    for ingredient_id, required_quantity in result_recipe_ingredients:
+                    for ingredient_id, required_quantity in result_item_to_craft_ingredients:
 
                         cursor.execute("""
                             UPDATE inventory
@@ -329,6 +270,15 @@ def craft_recipe(cursor, connection):
                         WHERE equipment_id = ?
                     """, (1, container_equipment_id))
 
-                    crafted_is_true(cursor, recipe_id)
+                    crafted_recipe_is_true(cursor, recipe_id)
 
                     connection.commit()
+
+
+def crafted_recipe_is_true(cursor, recipe_id):
+
+    cursor.execute("""
+        UPDATE player_recipes
+        SET crafted = 1
+    WHERE recipe_id = ?
+    """, (recipe_id,))

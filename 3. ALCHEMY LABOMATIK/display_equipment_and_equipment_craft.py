@@ -52,7 +52,8 @@ def display_all_equipment(cursor):
             equipment.name,
             equipment_categories.name,
             equipment.description,
-            rarities.color
+            rarities.color,
+            equipment.unlock_discoveries
         FROM equipment
         LEFT JOIN equipment_categories
             ON equipment.category_id = equipment_categories.id
@@ -66,9 +67,9 @@ def display_all_equipment(cursor):
 
     print()
     print("--- Matériel ---")
-    for equipment_id, equipment_name, equipment_category, equipment_description, equipment_color in equipment:
+    for equipment_id, equipment_name, equipment_category, equipment_description, equipment_color, equipment_unlock_discoveries in equipment:
         color = COLORS[equipment_color]
-        print(f'{equipment_id:<2} - {color}{equipment_name}{RESET} - {YELLOW}{equipment_category}{RESET} - {DIM}{equipment_description}{RESET}')
+        print(f'{equipment_id:<2} - {color}{equipment_name}{RESET} - {YELLOW}{equipment_category}{RESET} - Déblocage : {equipment_unlock_discoveries} découvertes - {DIM}{equipment_description}{RESET}')
 
 # ----------------------------------------------- EQUIPMENT CRAFT ----------------------------------------------------
 
@@ -79,19 +80,28 @@ def display_all_equipment_crafts(cursor):
         equipment.id,
         equipment.name,
         equipment.description,
-        rarities.color,
+        equipment_rarity.color,
+        equipment_categories.name,
         ingredients.name,
         equipment_craft.quantity,
         ingredient_rarity.color
     FROM equipment_craft
+
     JOIN equipment
         ON equipment.id = equipment_craft.equipment_id
-    JOIN rarities
-        ON rarities.id = equipment.rarity_id
+
+    JOIN rarities AS equipment_rarity
+        ON equipment_rarity.id = equipment.rarity_id
+
+    JOIN equipment_categories
+        ON equipment_categories.id = equipment.category_id
+
     JOIN ingredients
         ON ingredients.id = equipment_craft.ingredient_id
+
     JOIN rarities AS ingredient_rarity
         ON ingredient_rarity.id = ingredients.rarity_id
+
     ORDER BY equipment.id ASC
     """)
 
@@ -103,10 +113,14 @@ def display_all_equipment_crafts(cursor):
 
 def display_equipment_craft(equipment_craft):
 
+    display_number = 0
+
     groups = group_data_under_same_id(equipment_craft)
 
     for group in groups:
 
+        display_number += 1
+        
         craft_list = []
 
         for equipment in group:
@@ -115,13 +129,16 @@ def display_equipment_craft(equipment_craft):
             equipment_name = equipment[1]
             equipment_description = equipment[2]
             equipment_color = equipment[3]
-            ingredient_name = equipment[4]
-            ingredient_quantity = equipment[5]    
-            ingredient_color = equipment[6]
+            equipment_category_name = equipment[4]
+            ingredient_name = equipment[5]
+            ingredient_quantity = equipment[6]    
+            ingredient_color = equipment[7]
 
             if ingredient_name is not None:
                 craft_list.append((ingredient_name, ingredient_quantity, ingredient_color))
 
         craft_text = format_recipe_and_craft_items(craft_list)
                         
-        print(f"{equipment_id:<2} - {COLORS[equipment_color]}{equipment_name}{RESET} - {craft_text} - {DIM}{equipment_description}{RESET}")
+        print(f"{display_number:<2} - {COLORS[equipment_color]}{equipment_name}{RESET} - {YELLOW}{equipment_category_name}{RESET} - {DIM}{equipment_description}{RESET}")
+        print(f"     {craft_text}")
+        print()

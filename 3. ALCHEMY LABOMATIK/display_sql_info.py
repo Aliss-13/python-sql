@@ -27,8 +27,8 @@ def display_tables_info(cursor):
 
 def display_new_table_contents(cursor):
     print()
-    print("=> Contenu de player_recipes")
-    cursor.execute("SELECT * FROM player_recipes")
+    print("=> Contenu de equipment")
+    cursor.execute("SELECT * FROM equipment")
     print(cursor.fetchall())
     print()
 

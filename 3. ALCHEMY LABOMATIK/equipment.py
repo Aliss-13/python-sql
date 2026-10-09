@@ -71,13 +71,28 @@ def add_equipment(cursor, connection):
         print("Choix invalide.")
         return
 
+    # ============================== SEUIL DE DEBLOCAGE NB DE DECOUVERTES
+
+    while True:
+    
+        try:
+            unlock_discoveries_threshold = int(input("Seuil de déblocage - nombre de découvertes : "))
+    
+            if unlock_discoveries_threshold >= 0 :
+                break
+            
+            print("La valeur doit être 0 ou un entier positif.")
+    
+        except ValueError:
+            print("Saisie invalide.")
+
     # =============================== COMMIT
     
     try:
         cursor.execute("""
-            INSERT INTO equipment (name, description, rarity_id, category_id)
-            VALUES (?, ?, ?, ?)
-        """, (name, description, rarity_id, new_category_id))
+            INSERT INTO equipment (name, description, rarity_id, category_id, unlock_discoveries)
+            VALUES (?, ?, ?, ?, ?)
+        """, (name, description, rarity_id, new_category_id, unlock_discoveries_threshold))
 
         connection.commit()
 
@@ -94,6 +109,7 @@ def menu_update_equipment(cursor, connection):
         print("[2] Description")
         print("[3] Rareté")
         print("[4] Catégorie")
+        print("[5] Déblocage via N découvertes")
         print("[r] Retour")
 
         choix = input("> ")
@@ -109,6 +125,9 @@ def menu_update_equipment(cursor, connection):
 
         elif choix == "4":
             update_equipment_category(cursor, connection)
+
+        elif choix == "5":
+            update_equipment_unlock_discoveries(cursor, connection)
 
         elif choix == "r":
             return
@@ -281,9 +300,6 @@ def add_equipment_craft(cursor, connection):
 
     equipment_id = ask_positive_int("Matériel (q pour quitter) : ")
 
-    if equipment_id == "q":
-        return
-
     if not id_exists(cursor, "equipment", equipment_id):
         print("Matériel introuvable.")
         return
@@ -355,3 +371,68 @@ def reset_equipment_craft(cursor, connection):
     print("Matériaux nécessaires au craft de l'équipement supprimés.")
 
 
+def update_equipment_unlock_discoveries(cursor, connection):
+            
+    display_all_equipment(cursor)
+    
+    while True:
+    
+        choice = input("Matériel choisi : ")
+    
+        if choice.isdigit() and id_exists(cursor, "equipment", int(choice)):
+            equipment_id = int(choice)
+            break
+    
+        print("Choix invalide.")
+        return
+
+    while True:
+
+        try:
+            unlock_discoveries_threshold = int(input("Seuil de déblocage - nombre de découvertes : "))
+
+            if unlock_discoveries_threshold >= 0 :
+                break
+
+            print("La valeur doit être 0 ou un entier positif.")
+
+        except ValueError:
+            print("Saisie invalide.")
+
+    try:
+        cursor.execute("""
+            UPDATE equipment
+            SET unlock_discoveries = ?
+            WHERE id = ?
+            """, (unlock_discoveries_threshold, equipment_id,))
+
+        connection.commit()
+        print ("Seuil de déblocage - nombre de découvertes mis à jour.")
+
+    except sqlite3.IntegrityError:
+        print("Ce nom existe déjà.")
+
+
+
+
+
+def initialize_player_equipment(cursor, connection):
+
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM player_recipes
+    """)
+
+    discovery_count = cursor.fetchone()[0]
+
+    cursor.execute("""
+        INSERT OR IGNORE INTO player_equipment (
+            equipment_id,
+            crafted
+        )
+        SELECT id, 0
+        FROM equipment
+        WHERE unlock_discoveries <= ?
+    """, (discovery_count,))
+
+    connection.commit()
