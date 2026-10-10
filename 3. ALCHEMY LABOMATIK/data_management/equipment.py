@@ -2,7 +2,7 @@ import sqlite3
 
 from utils import id_exists
 
-from display_equipment_and_equipment_craft import display_all_equipment
+from display.display_equipment_and_equipment_craft import display_all_equipment
 
 
 def add_equipment(cursor, connection):
@@ -292,9 +292,6 @@ def update_equipment_category(cursor, connection):
 
     connection.commit()
     print ("Catégorie mise à jour.")
-
-
-
 
 
 def update_equipment_unlock_discoveries(cursor, connection):

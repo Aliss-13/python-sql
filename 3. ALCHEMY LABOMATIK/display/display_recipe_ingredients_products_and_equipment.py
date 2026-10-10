@@ -1,5 +1,5 @@
-from display_refactor import group_data_under_same_id, format_recipe_and_craft_items
-from display_utils import COLORS, RESET, YELLOW, LIGHT_PINK, CYAN, RED, ORANGE, display_recipe_description
+from display.display_refactor import group_data_under_same_id, format_recipe_and_craft_items
+from display.display_utils import COLORS, RESET, YELLOW, LIGHT_PINK, CYAN, RED, ORANGE, display_recipe_description
 
 
 

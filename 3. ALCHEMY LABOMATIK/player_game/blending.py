@@ -1,7 +1,7 @@
-from display_equipment_and_equipment_craft import display_all_mixing_tools
-from display_inventories import display_inventory
-from display_refactor import group_data_under_same_id
-from display_utils import COLORS, RESET
+from display.display_equipment_and_equipment_craft import display_all_mixing_tools
+from display.display_inventories import display_inventory
+from display.display_refactor import group_data_under_same_id
+from display.display_utils import COLORS, RESET
 
 def pick_mixing_tool(cursor):
 

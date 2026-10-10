@@ -1,4 +1,4 @@
-from display_utils import COLORS, RESET
+from display.display_utils import COLORS, RESET
 
 
 def group_data_under_same_id(items):

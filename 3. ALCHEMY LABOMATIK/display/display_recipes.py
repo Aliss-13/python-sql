@@ -1,4 +1,4 @@
-from display_utils import COLORS, RESET, YELLOW, RED, CYAN, LIGHT_PINK, ORANGE, display_recipe_description, format_difficulty_stars
+from display.display_utils import COLORS, RESET, YELLOW, RED, CYAN, LIGHT_PINK, ORANGE, display_recipe_description, format_difficulty_stars
 
 
 def display_all_recipes(cursor):

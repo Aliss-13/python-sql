@@ -1,6 +1,6 @@
-from display_affinities_and_portals import display_all_affinities
-from display_recipes import display_all_recipes
-from display_discoveries import display_all_discoveries
+from display.display_affinities_and_portals import display_all_affinities
+from display.display_recipes import display_all_recipes
+from display.display_discoveries import display_all_discoveries
 
 from utils import id_exists, ask_positive_int, ask_positive_float_0_1
 

@@ -1,4 +1,4 @@
-from display_recipe_ingredients_products_and_equipment import display_recipe_ingredients_products_and_equipments
+from display.display_recipe_ingredients_products_and_equipment import display_recipe_ingredients_products_and_equipments
 
 def get_all_player_recipes_infos(cursor):
 

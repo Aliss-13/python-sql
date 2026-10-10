@@ -1,5 +1,5 @@
-from display_utils import COLORS, RESET, DIM
-from display_refactor import group_data_under_same_id, format_affinity_items
+from display.display_utils import COLORS, RESET, DIM
+from display.display_refactor import group_data_under_same_id, format_affinity_items
 
 def display_all_ingredients(cursor):
 

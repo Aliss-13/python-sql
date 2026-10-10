@@ -1,9 +1,9 @@
 import sqlite3
 
-from display_utils import COLORS, RESET, dans_ton_q
-from display_ingredients import display_all_ingredients
-from display_recipes import display_all_recipes
-from display_recipe_ingredients_products_and_equipment import display_all_recipes_ingredients, display_all_recipes_products
+from display.display_utils import COLORS, RESET, dans_ton_q
+from display.display_ingredients import display_all_ingredients
+from display.display_recipes import display_all_recipes
+from display.display_recipe_ingredients_products_and_equipment import display_all_recipes_ingredients, display_all_recipes_products
 
 from utils import id_exists, ask_positive_int
 

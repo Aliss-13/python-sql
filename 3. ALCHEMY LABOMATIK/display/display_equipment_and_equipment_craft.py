@@ -1,5 +1,5 @@
-from display_utils import COLORS, RESET, DIM, YELLOW
-from display_refactor import group_data_under_same_id, format_recipe_and_craft_items
+from display.display_utils import COLORS, RESET, DIM, YELLOW
+from display.display_refactor import group_data_under_same_id, format_recipe_and_craft_items
 
 #----------------------------------------------- MIXING TOOLS ----------------------------------------------------
 

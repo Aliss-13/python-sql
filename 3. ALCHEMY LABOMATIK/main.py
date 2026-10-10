@@ -1,8 +1,9 @@
 from pathlib import Path
 import sqlite3
-from database_creation_plan import create_tables
+
+from database.database_creation_plan import create_tables
 from menu import menu
-from display_utils import display_main_menu
+from display.display_utils import display_main_menu
 
 
 BASE_DIR = Path(__file__).resolve().parent #C:\Users\lisas\OneDrive\Documents\Python\python-sql\3. ALCHEMY LABOMATIK
@@ -19,7 +20,6 @@ connection.execute("PRAGMA foreign_keys = ON")
 create_tables(cursor)
 
 # commit
-cursor.execute("""DELETE FROM player_equipment""")
 
 connection.commit()
 

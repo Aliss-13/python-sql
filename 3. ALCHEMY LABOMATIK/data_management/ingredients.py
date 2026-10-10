@@ -1,5 +1,5 @@
 import sqlite3
-from display_ingredients import display_all_ingredients
+from display.display_ingredients import display_all_ingredients
 from utils import ask_positive_int, id_exists
 
 

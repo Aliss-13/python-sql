@@ -1,8 +1,6 @@
 from utils import ask_positive_int, id_exists, ask_int
-from display_equipment_and_equipment_craft import display_all_equipment, display_all_equipment_crafts
-from display_ingredients import display_all_ingredients
-
-
+from display.display_equipment_and_equipment_craft import display_all_equipment, display_all_equipment_crafts
+from display.display_ingredients import display_all_ingredients
 
 
 def add_equipment_craft(cursor, connection):

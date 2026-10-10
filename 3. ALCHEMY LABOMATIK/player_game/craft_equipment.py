@@ -1,7 +1,7 @@
-from inventory import check_inventory_for_ingredients_and_quantity
-from display_utils import COLORS, RESET
-from display_equipment_and_equipment_craft import display_equipment_craft
-from player_equipment import initialize_player_equipment
+from player_game.craft_recipe import check_inventory_for_ingredients_and_quantity
+from display.display_utils import COLORS, RESET
+from display.display_equipment_and_equipment_craft import display_equipment_craft
+from player_game.player_equipment import initialize_player_equipment
 
 
 #----------------------------------------------- craft feu et creuset ----------------------------------------
@@ -49,7 +49,6 @@ def pick_equipment(cursor, connection):
     JOIN player_equipment
         ON player_equipment.equipment_id = equipment.id
     
-       
     WHERE equipment.unlock_discoveries <= ?
     AND player_equipment.crafted = 0
     ORDER BY equipment_categories.id, equipment.rarity_id ASC

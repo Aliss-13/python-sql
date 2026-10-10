@@ -1,5 +1,4 @@
-
-from display_utils import COLORS, RESET
+from display.display_utils import COLORS, RESET
 
 #----------------------------------------------- AFFINITIES ----------------------------------------------------
 
