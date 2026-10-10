@@ -171,6 +171,7 @@ def create_tables(cursor):
         fire_equipment_id INTEGER,
         melting_pot_equipment_id INTEGER,
         container_equipment_id INTEGER,
+        selling_price INTEGER NOT NULL DEFAULT 0,
 
         FOREIGN KEY (type_id) REFERENCES recipe_types(id),
         FOREIGN KEY (target_id) REFERENCES targets(id),
@@ -232,7 +233,7 @@ def create_tables(cursor):
     )""")
 
     #▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬:◦●◦:▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
-    
+
     #------------------------------------------ player --------------------------------------------------------
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS player (

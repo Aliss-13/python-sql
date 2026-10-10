@@ -69,6 +69,7 @@ def buy_container(cursor, connection):
             break
         
         print("Choix invalide.")
+        return
         
 
     # Tu extrais les deux informations nécessaires

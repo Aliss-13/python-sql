@@ -13,16 +13,17 @@ def menu_update_recipe(cursor, connection):
     while True:
         print()
         print("--- Modifier recette ---")
-        print("[1] Nom")
-        print("[2] Catégorie")
-        print("[3] Cible")
-        print("[4] Description")
-        print("[5] Effet")
-        print("[6] Rareté")
-        print("[7] Difficulté à découvrir")
-        print("[8] Feu")
-        print("[9] Creuset")
+        print("[1]  Nom")
+        print("[2]  Catégorie")
+        print("[3]  Cible")
+        print("[4]  Description")
+        print("[5]  Effet")
+        print("[6]  Rareté")
+        print("[7]  Difficulté à découvrir")
+        print("[8]  Feu")
+        print("[9]  Creuset")
         print("[10] Contenant")
+        print("[11] Prix de vente")
         print("[r] Retour")
 
         choix = input("> ")
@@ -56,6 +57,9 @@ def menu_update_recipe(cursor, connection):
 
         elif choix == "10":
             update_recipe_container(cursor, connection)
+
+        elif choix == "11":
+            update_recipe_selling_price(cursor, connection)
             
         elif choix == "r":
             return
@@ -66,19 +70,20 @@ def menu_update_recipe(cursor, connection):
 
 def choose_recipe_to_update(cursor):
 
-    display_all_recipes(cursor)
+    recipes = display_all_recipes(cursor)
     
     while True:
     
-        choix = input("Recette choisie : ")
+        choice = input("Recette choisie : ")
 
-        if choix.isdigit() and id_exists(cursor, "recipes", int(choix)):
-            recipe_id = int(choix)
+        # Tu récupères le tuple correspondant à son choix
+        if choice.isdigit() and 1 <= int(choice) <= len(recipes):
+            selected_recipe = recipes[int(choice) - 1]
             break
-    
+        
         print("Choix invalide.")
-        return
 
+    recipe_id = selected_recipe[0]
     return recipe_id
 
 
@@ -249,6 +254,21 @@ def update_recipe_discovery_difficulty(cursor, connection):
     connection.commit()
     print ("Difficulté de la découverte mise à jour.")
 
+
+def update_recipe_selling_price(cursor, connection):
+            
+    recipe_id = choose_recipe_to_update(cursor)
+
+    new_selling_price = add_recipe_selling_price()
+
+    cursor.execute("""
+        UPDATE recipes
+        SET selling_price = ?
+        WHERE id = ?
+        """, (new_selling_price, recipe_id))
+
+    connection.commit()
+    print ("Prix de vente mis à jour.")
 
 # ---------------------------------------------- AJOUTER RECETTE ----------------------------------------------------------------
 
@@ -510,8 +530,13 @@ def add_recipe_discovery_difficulty(cursor):
 
     return discovery_difficulty_id
 
+
+def add_recipe_selling_price():
+
+    selling_price = int(input("Prix de vente : "))
+    return selling_price
     
-    
+
 def add_recipe(cursor, connection):
 
     dans_ton_q() # Q FOR QUITTING
@@ -536,14 +561,16 @@ def add_recipe(cursor, connection):
 
     melting_pot_id = add_recipe_melting_pot(cursor) # MELTING POT
 
-    container_id = add_recipe_container(cursor) # CONTAINER  
+    container_id = add_recipe_container(cursor) # CONTAINER
+
+    selling_price = add_recipe_selling_price() # PRIX DE VENTE
     
 
     try:
         cursor.execute("""
-            INSERT INTO recipes (name, type_id, target_id, description, effect, rarity_id, discovery_difficulty_id, fire_equipment_id, melting_pot_equipment_id, container_equipment_id)
+            INSERT INTO recipes (name, type_id, target_id, description, effect, rarity_id, discovery_difficulty_id, fire_equipment_id, melting_pot_equipment_id, container_equipment_id, selling_price)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (name, recipe_type_id, target_id, description, effect, rarity_id, discovery_difficulty_id, fire_id, melting_pot_id, container_id))
+        """, (name, recipe_type_id, target_id, description, effect, rarity_id, discovery_difficulty_id, fire_id, melting_pot_id, container_id, selling_price))
 
         connection.commit()
 

@@ -9,7 +9,7 @@ def get_player_money(cursor):
     WHERE id = 1""")
     
     money = cursor.fetchone()[0]
-    print(f"💰 Bourse : {money} pièces.")
+    print(f"      💰 Bourse : {money} pièces.")
 
 
 def return_inventory(cursor):

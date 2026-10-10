@@ -16,7 +16,8 @@ def display_all_recipes(cursor):
         recipe_discovery_difficulty.id,
         fire.name,
         melting_pot.name,
-        container.name
+        container.name, 
+        recipes.selling_price
 
     FROM recipes
 
@@ -55,9 +56,10 @@ def display_all_recipes(cursor):
 
 
 def display_recipe(recipes):
-    for recipe_id, name, type, target, description, effect, color, discovery_difficulty, fire, melting_pot, container in recipes:
+    for display_number, (recipe_id, name, type, target, description, effect, color, discovery_difficulty, fire, melting_pot, container, 
+                         selling_price) in enumerate (recipes, start=1):
         print(
-            f'{recipe_id:<2} - {COLORS[color]}{name}{RESET} - '
+            f'{display_number:<2} - {COLORS[color]}{name}{RESET} - '
             f'{YELLOW}{type}{RESET} - {format_difficulty_stars(discovery_difficulty)} - '
             f'{effect} ({target})'
             )
@@ -65,6 +67,7 @@ def display_recipe(recipes):
         print(f'     {RED}Feu : {fire or "Aucun"}{RESET} - {ORANGE}Creuset : {melting_pot or "Aucun"}{RESET} - '
               f'{CYAN}Contenant : {container or "Aucun"}{RESET}')
         display_recipe_description(description)
+        print(f"     Prix de vente : {selling_price} pièces")
         print()
 
 

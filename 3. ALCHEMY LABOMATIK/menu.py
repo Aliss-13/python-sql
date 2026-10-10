@@ -110,6 +110,7 @@ def menu(cursor, connection, player_level):
 
         elif choix == "5":
             flamel_xpress()
+            get_player_money(cursor)
             buy_container(cursor, connection)
 
         elif choix == "6":
@@ -125,6 +126,7 @@ def menu(cursor, connection, player_level):
 
         elif choix == "8":
             print("💰 Boutique en construction")
+            get_player_money(cursor)
 
         elif choix == "q":
             return

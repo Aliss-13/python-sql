@@ -14,7 +14,7 @@ def display_tables(cursor):
 def display_tables_info(cursor):
 
     for table in ["rarities", "affinities", "equipment_categories", "targets", "recipe_types", "recipe_discovery_difficulty",
-                  "ingredients", "equipment", "mixing_tools", "containers", "recipes", "recipe_discovery"
+                  "ingredients", "equipment", "mixing_tools", "containers", "recipes", "recipe_discovery",
                   "ingredient_affinities", "equipment_craft", 
                   "player", "inventory", "product_inventory",
                   "recipe_ingredients", "recipe_products"
@@ -31,8 +31,8 @@ def display_tables_info(cursor):
 
 def display_new_table_contents(cursor):
     print()
-    print("=> Contenu de player")
-    cursor.execute("SELECT * FROM player")
+    print("=> Contenu de recipes")
+    cursor.execute("SELECT * FROM recipes")
     print(cursor.fetchall())
     print()
 
