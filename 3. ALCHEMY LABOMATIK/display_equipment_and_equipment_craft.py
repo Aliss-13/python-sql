@@ -69,7 +69,9 @@ def display_all_equipment(cursor):
     print("--- Matériel ---")
     for equipment_id, equipment_name, equipment_category, equipment_description, equipment_color, equipment_unlock_discoveries in equipment:
         color = COLORS[equipment_color]
-        print(f'{equipment_id:<2} - {color}{equipment_name}{RESET} - {YELLOW}{equipment_category}{RESET} - Déblocage : {equipment_unlock_discoveries} découvertes - {DIM}{equipment_description}{RESET}')
+        print(f'{equipment_id:<2} - {color}{equipment_name}{RESET} - {YELLOW}{equipment_category}{RESET} - Déblocage : {equipment_unlock_discoveries} découvertes')
+        print(f'     {DIM}{equipment_description}{RESET}')
+        print()
 
 # ----------------------------------------------- EQUIPMENT CRAFT ----------------------------------------------------
 
@@ -102,13 +104,17 @@ def display_all_equipment_crafts(cursor):
     JOIN rarities AS ingredient_rarity
         ON ingredient_rarity.id = ingredients.rarity_id
 
-    ORDER BY equipment.id ASC
+    ORDER BY
+        equipment.category_id ASC,
+        equipment.rarity_id ASC,
+        equipment.id ASC
     """)
 
     result = cursor.fetchall()
     print()
     print("--- Fabrication ---")
     display_equipment_craft(result)
+    return result
 
 
 def display_equipment_craft(equipment_craft):

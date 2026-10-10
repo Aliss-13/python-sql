@@ -1,7 +1,7 @@
 from inventory import check_inventory_for_ingredients_and_quantity
 from display_utils import COLORS, RESET
 from display_equipment_and_equipment_craft import display_equipment_craft
-from equipment import initialize_player_equipment
+from player_equipment import initialize_player_equipment
 
 
 #----------------------------------------------- craft feu et creuset ----------------------------------------

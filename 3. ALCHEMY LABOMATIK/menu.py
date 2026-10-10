@@ -14,7 +14,8 @@ from display_utils import DIM, RESET
 
 from ingredients import add_ingredient, menu_update_ingredient, reset_ingredient_affinities
 from portals import menu_portal
-from equipment import add_equipment, menu_update_equipment, add_equipment_craft, reset_equipment_craft
+from equipment import add_equipment, menu_update_equipment
+from equipment_craft import add_equipment_craft, reset_equipment_craft
 from blending import discover_recipe
 from recipes import add_recipe, menu_update_recipe, add_recipe_ingredients, add_recipe_products, reset_recipe_ingredients, reset_recipe_products
 from discoveries import add_recipe_discovery, menu_update_discovery

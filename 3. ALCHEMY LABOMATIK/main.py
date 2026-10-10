@@ -19,6 +19,8 @@ connection.execute("PRAGMA foreign_keys = ON")
 create_tables(cursor)
 
 # commit
+cursor.execute("""DELETE FROM player_equipment""")
+
 connection.commit()
 
 # code temporaire 

@@ -1,8 +1,8 @@
 import sqlite3
-from utils import id_exists, ask_positive_int, ask_int
 
-from display_equipment_and_equipment_craft import display_all_equipment, display_all_equipment_crafts
-from display_ingredients import display_all_ingredients
+from utils import id_exists
+
+from display_equipment_and_equipment_craft import display_all_equipment
 
 
 def add_equipment(cursor, connection):
@@ -294,81 +294,7 @@ def update_equipment_category(cursor, connection):
     print ("Catégorie mise à jour.")
 
 
-def add_equipment_craft(cursor, connection):
 
-    display_all_equipment(cursor)
-
-    equipment_id = ask_positive_int("Matériel (q pour quitter) : ")
-
-    if not id_exists(cursor, "equipment", equipment_id):
-        print("Matériel introuvable.")
-        return
-
-    equipment_has_craft = False
-
-    while True:
-
-        display_all_ingredients(cursor)
-        
-        ingredient_id = ask_int("Ingrédients pour le craft (0 = terminer) : ")
-
-        if ingredient_id == 0:
-            if not equipment_has_craft:
-                connection.rollback()
-                print("Saisie annulée.")
-                return
-            break
-
-        if not id_exists(cursor, "ingredients", ingredient_id):
-            print("Ingrédient introuvable.")
-            connection.rollback()
-            return
-
-        quantity = ask_positive_int("Quantité (666 pour quitter) : ")
-
-        if quantity == "666":
-            return
-
-        cursor.execute("""
-            INSERT INTO equipment_craft (equipment_id, ingredient_id, quantity)
-            VALUES (?, ?, ?)
-        """, (equipment_id, ingredient_id, quantity))
-
-        equipment_has_craft = True
-
-    connection.commit()
-
-
-def reset_equipment_craft(cursor, connection):
-
-    display_all_equipment_crafts(cursor)
-
-    while True:
-            
-        choix = input("Matériel choisi : ")
-
-        cursor.execute("""
-            SELECT equipment_id
-            FROM equipment_craft
-            WHERE equipment_id = ?
-            """, (choix,))
-        
-        result = cursor.fetchone()
-
-        if choix.isdigit() and result is not None:
-            equipment_id = int(choix)
-            break
-
-        print("Choix invalide.")
-        return
-
-    cursor.execute("""  
-        DELETE FROM equipment_craft
-        WHERE equipment_id = ?
-        """, (equipment_id,))
-
-    connection.commit()
-    print("Matériaux nécessaires au craft de l'équipement supprimés.")
 
 
 def update_equipment_unlock_discoveries(cursor, connection):
@@ -411,28 +337,3 @@ def update_equipment_unlock_discoveries(cursor, connection):
 
     except sqlite3.IntegrityError:
         print("Ce nom existe déjà.")
-
-
-
-
-
-def initialize_player_equipment(cursor, connection):
-
-    cursor.execute("""
-        SELECT COUNT(*)
-        FROM player_recipes
-    """)
-
-    discovery_count = cursor.fetchone()[0]
-
-    cursor.execute("""
-        INSERT OR IGNORE INTO player_equipment (
-            equipment_id,
-            crafted
-        )
-        SELECT id, 0
-        FROM equipment
-        WHERE unlock_discoveries <= ?
-    """, (discovery_count,))
-
-    connection.commit()
