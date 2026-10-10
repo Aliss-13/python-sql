@@ -53,3 +53,10 @@ def display_recipe_description(description):
 
 def format_difficulty_stars(difficulty_id):
     return "★" * difficulty_id + DIM + "☆" * (5 - difficulty_id) + RESET # concaténation => "texte" + variable
+
+
+def flamel_xpress():
+    print(f"🌐 {CYAN}FlamelXpress© = N°1 mondial de l'alchimie = {RESET}")
+    print("   « Le prix et la qualité en instantané ! »*")
+    print(f"{DIM}   *Voir conditions générales de transmutation.{RESET}")
+    print()

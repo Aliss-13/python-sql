@@ -1,14 +1,13 @@
 from player_game.craft_recipe import check_inventory_for_ingredients_and_quantity
+from player_game.initialization import initialize_player_equipment
+
 from display.display_utils import COLORS, RESET
 from display.display_equipment_and_equipment_craft import display_equipment_craft
-from player_game.player_equipment import initialize_player_equipment
 
 
 #----------------------------------------------- craft feu et creuset ----------------------------------------
 
-def pick_equipment(cursor, connection):
-
-    initialize_player_equipment(cursor, connection)
+def pick_equipment(cursor):
 
     cursor.execute("""
         SELECT COUNT(*)
@@ -90,7 +89,7 @@ def pick_equipment(cursor, connection):
 
 def craft_equipment(cursor, connection):
 
-    equipment_id, equipment_to_craft = pick_equipment(cursor, connection)
+    equipment_id, equipment_to_craft = pick_equipment(cursor)
 
     if equipment_id is None:
         return

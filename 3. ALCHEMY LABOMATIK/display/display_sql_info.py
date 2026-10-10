@@ -13,10 +13,14 @@ def display_tables(cursor):
 
 def display_tables_info(cursor):
 
-    for table in ["rarities", "affinities", "ingredients", "ingredient_affinities", "inventory", "product_inventory",
-                  "container_inventory", "shop_inventory", "equipment", "equipment_categories", "equipment_craft", "mixing_tools", 
-                  "player_equipment", "recipes", "recipe_types", "recipe_discovery_difficulty", "recipe_discovery", "player_recipes", "recipe_ingredients",
-                  "recipe_products"]:
+    for table in ["rarities", "affinities", "equipment_categories", "targets", "recipe_types", "recipe_discovery_difficulty",
+                  "ingredients", "equipment", "mixing_tools", "containers", "recipes", "recipe_discovery"
+                  "ingredient_affinities", "equipment_craft", 
+                  "player", "inventory", "product_inventory",
+                  "recipe_ingredients", "recipe_products"
+                  "container_inventory", "shop_inventory",
+                  "player_equipment", "player_recipes"
+                  ]:
         print(f"\n--- {table} ---")
 
         cursor.execute(f"PRAGMA table_info({table})")
@@ -27,8 +31,8 @@ def display_tables_info(cursor):
 
 def display_new_table_contents(cursor):
     print()
-    print("=> Contenu de equipment")
-    cursor.execute("SELECT * FROM equipment")
+    print("=> Contenu de player")
+    cursor.execute("SELECT * FROM player")
     print(cursor.fetchall())
     print()
 

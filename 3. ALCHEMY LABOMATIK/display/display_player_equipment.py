@@ -38,8 +38,11 @@ def display_all_player_equipments(cursor):
 
 def display_player_equipment(player_equipment):
 
-    for equipment in player_equipment:
+    if not player_equipment:
+        print("Vous ne possédez aucun équipement.")
+        return
 
+    for equipment in player_equipment:
         equipment_id = equipment[0]
         equipment_name = equipment[1]
         equipment_description = equipment[2]

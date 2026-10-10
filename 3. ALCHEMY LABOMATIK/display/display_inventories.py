@@ -2,6 +2,16 @@ from display.display_refactor import group_data_under_same_id, format_affinity_i
 from display.display_utils import COLORS, RESET, DIM, YELLOW
 
 
+def get_player_money(cursor):
+
+    cursor.execute("""SELECT money
+    FROM player
+    WHERE id = 1""")
+    
+    money = cursor.fetchone()[0]
+    print(f"💰 Bourse : {money} pièces.")
+
+
 def return_inventory(cursor):
 
     cursor.execute("""

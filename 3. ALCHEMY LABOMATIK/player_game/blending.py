@@ -3,6 +3,8 @@ from display.display_inventories import display_inventory
 from display.display_refactor import group_data_under_same_id
 from display.display_utils import COLORS, RESET
 
+from player_game.initialization import initialize_player_equipment
+
 def pick_mixing_tool(cursor):
 
     mixing_tools = display_all_mixing_tools(cursor)
@@ -237,8 +239,6 @@ def get_blend_affinity_signature(blending_affinities):
     return signature
 
 
-
-
 def discover_recipe(cursor, connection):
 
     result = join_corresponding_recipe_to_blend(cursor)
@@ -282,9 +282,9 @@ def discover_recipe(cursor, connection):
 
         connection.commit()
 
+        initialize_player_equipment(cursor, connection)
 
 
-        
 def get_discovery_affinity_signature(cursor):
 
     cursor.execute("""

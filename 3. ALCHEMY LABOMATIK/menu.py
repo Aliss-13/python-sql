@@ -8,20 +8,21 @@ from data_management.discoveries import add_recipe_discovery, menu_update_discov
 
 from display.display_affinities_and_portals import display_all_affinities
 from display.display_discoveries import display_all_discoveries
-from display.display_inventories import display_inventory, display_container_inventory, display_product_inventory
+from display.display_inventories import display_inventory, display_container_inventory, display_product_inventory, get_player_money
 from display.display_ingredients import display_all_ingredients
 from display.display_recipe_ingredients_products_and_equipment import display_all_recipes_ingredients_products_and_equipments
 from display.display_equipment_and_equipment_craft import display_all_equipment_crafts, display_all_equipment
 from display.display_recipes import display_all_recipes
 from display.display_player_equipment import display_all_player_equipments
 from display.display_sql_info import display_tables_info, display_tables, display_new_table_contents, display_FK
-from display.display_utils import DIM, RESET
+from display.display_utils import DIM, RESET, flamel_xpress
 
 
 from player_game.portals import menu_portal
 from player_game.blending import discover_recipe
 from player_game.craft_recipe import craft_recipe
 from player_game.craft_equipment import craft_equipment
+from player_game.containers import buy_container
 
 def menu_database_management(cursor, connection):
 
@@ -82,7 +83,7 @@ def menu(cursor, connection, player_level):
         print(f"[2] 🧪 Laboratoire {DIM}- Expérimentation par le mélange des ingrédients, la souffrance et l'introspection.{RESET}")
         print(f'[3] 🧫 Fabriquer {DIM}- Fabrication des produits dont la recette est connue. Ne fonctionne pas pour le gasoil.{RESET}')
         print(f'[4] 🥽 Crafter {DIM}- Manufacture des instruments de mélange, creusets et feux. Magimix, Dolby Digital THX et Assurancetourix.{RESET}')
-        print(f"[5] 🌐 FlamelXpress {DIM}- Fournisseur incontournable des contenants alchimiques : contenants certifiés, prix transmutés !{RESET}")
+        print(f"[5] 🌐 FlamelXpress© {DIM}- Fournisseur incontournable des contenants alchimiques : contenants certifiés, prix transmutés !{RESET}")
         print(f"[6] 📓 Inventaire {DIM}- Ingrédients, contenants et produits fabriqués. Deuxième porte à droite.{RESET}")
         print(f"[7] ⚗️ Matériel d'alchimie {DIM}- Instruments de mélange, creusets et feux manufacturés. Dernière porte à gauche.{RESET}")
         print(f"[8] 💰 Boutique {DIM}- Vente des produits fabriqués : enrichissement personnel, gain d'expérience et contrôle fiscal.{RESET}")
@@ -108,9 +109,11 @@ def menu(cursor, connection, player_level):
             craft_equipment(cursor, connection)
 
         elif choix == "5":
-            print("🌐 FlamelXpress en construction")
+            flamel_xpress()
+            buy_container(cursor, connection)
 
         elif choix == "6":
+            get_player_money(cursor)
             display_inventory(cursor)
             display_container_inventory(cursor)
             display_product_inventory(cursor)

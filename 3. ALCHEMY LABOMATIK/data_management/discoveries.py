@@ -4,7 +4,7 @@ from display.display_discoveries import display_all_discoveries
 
 from utils import id_exists, ask_positive_int, ask_positive_float_0_1
 
-from affinities import get_affinity_recipe_discovery_total_points
+from data_management.affinities import get_affinity_recipe_discovery_total_points
 
 
 
