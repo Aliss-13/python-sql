@@ -9,6 +9,9 @@ from player_game.initialization import initialize_containers, initialize_player_
 BASE_DIR = Path(__file__).resolve().parent #C:\Users\lisas\OneDrive\Documents\Python\python-sql\3. ALCHEMY LABOMATIK
 DATABASE_PATH = BASE_DIR / "database.db"
 
+import os
+
+print(os.path.abspath("database.db"))
 connection = sqlite3.connect(DATABASE_PATH)
 
 cursor = connection.cursor()

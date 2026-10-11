@@ -267,6 +267,7 @@ def display_all_recipes_products(cursor):
     SELECT
         recipes.id,
         recipes.name,
+        recipes.type_id,
         product_recipe.name,
         recipe_rarity.color,
         product_rarity.color,
@@ -280,7 +281,7 @@ def display_all_recipes_products(cursor):
         ON recipe_rarity.id = recipes.rarity_id
     LEFT JOIN rarities AS product_rarity
         ON product_rarity.id = product_recipe.rarity_id
-    ORDER BY recipe_rarity.id ASC
+    ORDER BY recipes.type_id ASC, recipe_rarity.id ASC
     """)
    
     result = cursor.fetchall()
@@ -300,11 +301,11 @@ def display_recipe_product(recipe_products):
 
             recipe_id = recipe_product[0]
             recipe_name = recipe_product[1]
-            recipe_color = recipe_product[3]
+            recipe_color = recipe_product[4]
 
-            name = recipe_product[2]
-            quantity = recipe_product[5]
-            color = recipe_product[4]
+            name = recipe_product[3]
+            quantity = recipe_product[6]
+            color = recipe_product[5]
 
             if name is not None:
                 product_list.append((name, quantity, color))
@@ -312,7 +313,7 @@ def display_recipe_product(recipe_products):
         product_text = format_recipe_and_craft_items(product_list)
             
         print(
-                f'{recipe_id} - '
+                f'{recipe_id:<2} - '
                 f'{COLORS[recipe_color]}{recipe_name}{RESET} - '
                 f'{product_text}'
             )
@@ -325,6 +326,7 @@ def display_all_recipes_ingredients(cursor):
     SELECT
         recipe_ingredients.recipe_id,
         recipes.name,
+        recipes.type_id,
         ingredients.name,
         recipe_rarity.color,
         ingredient_rarity.color,
@@ -332,13 +334,15 @@ def display_all_recipes_ingredients(cursor):
     FROM recipe_ingredients
     JOIN recipes
         ON recipes.id = recipe_ingredients.recipe_id
+    JOIN recipe_types
+        ON recipe_types.id = recipes.type_id
     JOIN ingredients
         ON ingredients.id = recipe_ingredients.ingredient_id
     JOIN rarities AS recipe_rarity
         ON recipe_rarity.id = recipes.rarity_id
     JOIN rarities AS ingredient_rarity
         ON ingredient_rarity.id = ingredients.rarity_id
-    ORDER BY recipe_rarity.id ASC
+    ORDER BY recipes.type_id ASC, recipe_rarity.id ASC
     """)
    
     result = cursor.fetchall()
@@ -358,10 +362,11 @@ def display_recipe_ingredients(recipe_ingredients):
 
             recipe_id = recipe_ingredient[0]
             recipe_name = recipe_ingredient[1]
-            recipe_color = recipe_ingredient[3]
-            ingredient_name = recipe_ingredient[2]
-            ingredient_quantity = recipe_ingredient[5]
-            ingredient_color = recipe_ingredient[4]
+            recipe_type = recipe_ingredient[2]
+            recipe_color = recipe_ingredient[4]
+            ingredient_name = recipe_ingredient[3]
+            ingredient_quantity = recipe_ingredient[6]
+            ingredient_color = recipe_ingredient[5]
         
             if ingredient_name is not None:
                 ingredient_list.append((ingredient_name, ingredient_quantity, ingredient_color))
@@ -369,7 +374,7 @@ def display_recipe_ingredients(recipe_ingredients):
         ingredient_text = format_recipe_and_craft_items(ingredient_list)
 
         print(
-                f'{recipe_id} - {COLORS[recipe_color]}{recipe_name}{RESET} - '
+                f'{recipe_id:<3} - {COLORS[recipe_color]}{recipe_name}{RESET} - '
                 f'{ingredient_text}'
             )
 

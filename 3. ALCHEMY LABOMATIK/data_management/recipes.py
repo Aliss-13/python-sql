@@ -616,12 +616,13 @@ def choose_recipe_to_add_to(cursor):
     cursor.execute("""
         SELECT 
             recipes.id, 
-            recipes.name, 
+            recipes.name,
+            recipes.type_id, 
             rarities.color
         FROM recipes
         JOIN rarities
             ON rarities.id = recipes.rarity_id
-        ORDER BY recipes.rarity_id ASC
+        ORDER BY recipes.type_id ASC, recipes.rarity_id ASC
     """)
     
     recipes = cursor.fetchall()
@@ -631,7 +632,10 @@ def choose_recipe_to_add_to(cursor):
         print("--- Recettes ---")
     
         for recipe in recipes:
-            print(f"{recipe[0]} - {COLORS[recipe[2]]}{recipe[1]}{RESET}")
+            recipe_id = recipe[0]
+            recipe_name = recipe[1]
+            recipe_color = recipe[3]
+            print(f"{recipe_id:<3} - {COLORS[recipe_color]}{recipe_name}{RESET}")
     
         choice = input("> ")
     
