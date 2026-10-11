@@ -5,7 +5,7 @@ from display.display_ingredients import display_all_ingredients
 from display.display_recipes import display_all_recipes
 from display.display_recipe_ingredients_products_and_equipment import display_all_recipes_ingredients, display_all_recipes_products
 
-from utils import id_exists, ask_positive_int
+from utils import id_exists, ask_positive_int, ask_positive_float
 
 
 def menu_update_recipe(cursor, connection):
@@ -24,6 +24,7 @@ def menu_update_recipe(cursor, connection):
         print("[9]  Creuset")
         print("[10] Contenant")
         print("[11] Prix de vente")
+        print("[12] Demande")
         print("[r] Retour")
 
         choix = input("> ")
@@ -60,6 +61,9 @@ def menu_update_recipe(cursor, connection):
 
         elif choix == "11":
             update_recipe_selling_price(cursor, connection)
+
+        elif choix == "12":
+            update_recipe_demand(cursor, connection)
             
         elif choix == "r":
             return
@@ -269,6 +273,22 @@ def update_recipe_selling_price(cursor, connection):
 
     connection.commit()
     print ("Prix de vente mis à jour.")
+
+
+def update_recipe_demand(cursor, connection):
+            
+    recipe_id = choose_recipe_to_update(cursor)
+
+    new_demand = add_recipe_demand()
+
+    cursor.execute("""
+        UPDATE recipes
+        SET demand = ?
+        WHERE id = ?
+        """, (new_demand, recipe_id))
+
+    connection.commit()
+    print ("Demande mise à jour.")
 
 # ---------------------------------------------- AJOUTER RECETTE ----------------------------------------------------------------
 
@@ -533,9 +553,16 @@ def add_recipe_discovery_difficulty(cursor):
 
 def add_recipe_selling_price():
 
-    selling_price = int(input("Prix de vente : "))
+    selling_price = ask_positive_int("Prix de vente : ")
     return selling_price
-    
+
+
+def add_recipe_demand():
+
+    demand = ask_positive_float("Demande : ")
+    return demand
+
+
 
 def add_recipe(cursor, connection):
 
@@ -564,13 +591,17 @@ def add_recipe(cursor, connection):
     container_id = add_recipe_container(cursor) # CONTAINER
 
     selling_price = add_recipe_selling_price() # PRIX DE VENTE
+
+    demand = add_recipe_demand() # DEMANDE
     
 
     try:
         cursor.execute("""
-            INSERT INTO recipes (name, type_id, target_id, description, effect, rarity_id, discovery_difficulty_id, fire_equipment_id, melting_pot_equipment_id, container_equipment_id, selling_price)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (name, recipe_type_id, target_id, description, effect, rarity_id, discovery_difficulty_id, fire_id, melting_pot_id, container_id, selling_price))
+            INSERT INTO recipes (name, type_id, target_id, description, effect, rarity_id, discovery_difficulty_id, 
+            fire_equipment_id, melting_pot_equipment_id, container_equipment_id, selling_price, demand)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (name, recipe_type_id, target_id, description, effect, rarity_id, discovery_difficulty_id, 
+              fire_id, melting_pot_id, container_id, selling_price, demand))
 
         connection.commit()
 

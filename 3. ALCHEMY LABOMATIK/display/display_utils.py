@@ -60,3 +60,8 @@ def flamel_xpress():
     print("   « Le prix et la qualité en instantané ! »*")
     print(f"{DIM}   *Voir conditions générales de transmutation.{RESET}")
     print()
+
+def youtique():
+    print(f"🐍 {LIGHT_GREEN}La Youtique© - Parce qu'il faut bien que je vende mes merdes 🤸 {RESET}")
+    print(f"{DIM}   Récupère le flouze, le pèze, la moula, le pognon et à toi les gourgandines et l'opium !{RESET}")
+    print()

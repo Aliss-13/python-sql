@@ -172,6 +172,7 @@ def create_tables(cursor):
         melting_pot_equipment_id INTEGER,
         container_equipment_id INTEGER,
         selling_price INTEGER NOT NULL DEFAULT 0,
+        demand REAL NOT NULL DEFAULT 1.0,
 
         FOREIGN KEY (type_id) REFERENCES recipe_types(id),
         FOREIGN KEY (target_id) REFERENCES targets(id),
@@ -350,4 +351,14 @@ def create_tables(cursor):
 
     )""")
 
-    #▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+    #▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬:◦●◦:▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+
+    #------------------------------------------ sales_history ------------------------------------------------------
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS sales_history (
+
+        recipe_id INTEGER NOT NULL,
+        quantity INTEGER NOT NULL DEFAULT 1,
+
+        FOREIGN KEY (recipe_id) REFERENCES recipes(id)
+    )""")

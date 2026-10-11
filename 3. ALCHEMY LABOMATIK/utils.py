@@ -50,3 +50,19 @@ def ask_positive_float_0_1(prompt):
 
         except ValueError:
             print("Saisie invalide.")
+
+
+def ask_positive_float(prompt):
+
+    while True:
+
+        try:
+            value = float(input(prompt))
+
+            if value > 0 :
+                return value
+            else:
+                print("La valeur doit être positive.")
+
+        except ValueError:
+            print("Saisie invalide.")

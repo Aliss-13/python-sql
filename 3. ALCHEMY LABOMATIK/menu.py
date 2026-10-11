@@ -15,7 +15,8 @@ from display.display_equipment_and_equipment_craft import display_all_equipment_
 from display.display_recipes import display_all_recipes
 from display.display_player_equipment import display_all_player_equipments
 from display.display_sql_info import display_tables_info, display_tables, display_new_table_contents, display_FK
-from display.display_utils import DIM, RESET, flamel_xpress
+from display.display_utils import DIM, RESET, flamel_xpress, youtique
+from display.display_player_shop import display_player_shop
 
 
 from player_game.portals import menu_portal
@@ -23,6 +24,7 @@ from player_game.blending import discover_recipe
 from player_game.craft_recipe import craft_recipe
 from player_game.craft_equipment import craft_equipment
 from player_game.containers import buy_container
+from player_game.youtique import wait_for_input
 
 def menu_database_management(cursor, connection):
 
@@ -86,12 +88,12 @@ def menu(cursor, connection, player_level):
         print(f"[5] 🌐 FlamelXpress© {DIM}- Fournisseur incontournable des contenants alchimiques : contenants certifiés, prix transmutés !{RESET}")
         print(f"[6] 📓 Inventaire {DIM}- Ingrédients, contenants et produits fabriqués. Deuxième porte à droite.{RESET}")
         print(f"[7] ⚗️ Matériel d'alchimie {DIM}- Instruments de mélange, creusets et feux manufacturés. Dernière porte à gauche.{RESET}")
-        print(f"[8] 💰 Boutique {DIM}- Vente des produits fabriqués : enrichissement personnel, gain d'expérience et contrôle fiscal.{RESET}")
+        print(f"[8] 🐍 La Youtique© {DIM}- Vente des produits fabriqués : enrichissement personnel, gain d'expérience et contrôle fiscal.{RESET}")
         print("")
         print(f"[q] 🔚 Quitter {DIM}- Je m'en vais comme un prince !{RESET}")
         print("")
 
-        choix = input("> ")
+        choix = wait_for_input(cursor, connection)
 
         if choix == "bdd_forever":
             menu_database_management(cursor, connection)
@@ -125,8 +127,9 @@ def menu(cursor, connection, player_level):
             print()
 
         elif choix == "8":
-            print("💰 Boutique en construction")
+            youtique()
             get_player_money(cursor)
+            display_player_shop(cursor)
 
         elif choix == "q":
             return
