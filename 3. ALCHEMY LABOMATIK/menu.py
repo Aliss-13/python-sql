@@ -95,7 +95,7 @@ def menu(cursor, connection, player_level):
 
         choix = wait_for_input(cursor, connection)
 
-        if choix == "bdd_forever":
+        if choix == "b":
             menu_database_management(cursor, connection)
 
         elif choix == "1":

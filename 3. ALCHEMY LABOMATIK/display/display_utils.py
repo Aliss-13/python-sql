@@ -36,7 +36,7 @@ def display_main_menu():
     print("Votre magie, notre logistique®.")
     print()
     print()
-    print(f"Accès menu gestion base de données : {YELLOW}bdd_forever{RESET}")
+    print(f"Accès menu gestion base de données : {YELLOW}b{RESET}")
     print()
 
 
