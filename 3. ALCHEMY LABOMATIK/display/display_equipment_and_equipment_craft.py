@@ -3,20 +3,34 @@ from display.display_refactor import group_data_under_same_id, format_recipe_and
 
 #----------------------------------------------- MIXING TOOLS ----------------------------------------------------
 
-def display_all_mixing_tools(cursor):
+def display_all_available_mixing_tools(cursor):
+
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM player_recipes
+    """)
+
+    discovery_count = cursor.fetchone()[0]
 
     cursor.execute("""
         SELECT
             equipment.id,
             equipment.name,
             rarities.color,
-            mixing_tools.capacity
+            mixing_tools.capacity,
+            equipment.unlock_discoveries
         FROM mixing_tools
         JOIN equipment
             ON equipment.id = mixing_tools.equipment_id
         JOIN rarities
             ON rarities.id = equipment.rarity_id
-    """)
+        JOIN player_equipment
+            ON player_equipment.equipment_id = equipment.id
+        WHERE equipment.unlock_discoveries <= ?
+            AND player_equipment.crafted = 1
+        ORDER BY equipment.rarity_id ASC
+    """, (discovery_count,))
+
 
     result = cursor.fetchall()
 

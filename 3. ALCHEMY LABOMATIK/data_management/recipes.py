@@ -599,7 +599,7 @@ def add_recipe(cursor, connection):
         cursor.execute("""
             INSERT INTO recipes (name, type_id, target_id, description, effect, rarity_id, discovery_difficulty_id, 
             fire_equipment_id, melting_pot_equipment_id, container_equipment_id, selling_price, demand)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (name, recipe_type_id, target_id, description, effect, rarity_id, discovery_difficulty_id, 
               fire_id, melting_pot_id, container_id, selling_price, demand))
 
@@ -636,22 +636,23 @@ def choose_recipe_to_add_to(cursor):
             recipe_name = recipe[1]
             recipe_color = recipe[3]
             print(f"{recipe_id:<3} - {COLORS[recipe_color]}{recipe_name}{RESET}")
+        print("[0] = Terminer")
     
         choice = input("> ")
+
+        if choice == "0":
+            return None
     
         if choice.isdigit() and id_exists(cursor, "recipes", int(choice)):
             recipe_id = int(choice)
             break
-    
+
         print("Choix invalide.")
-        return
 
     return recipe_id
 
 
 def add_recipe_ingredients(cursor, connection):
-
-    dans_ton_q()
 
 # ========================================= choix recette
 
@@ -667,7 +668,7 @@ def add_recipe_ingredients(cursor, connection):
         print()
         print("[0] = Terminer")
 
-        choice = input("> ")
+        choice = input("> (q pour quitter)")
 
         if choice == "q":
             return
@@ -708,56 +709,39 @@ def add_recipe_ingredients(cursor, connection):
 
 def add_recipe_products(cursor, connection):
 
-    dans_ton_q()
-
     recipe_id = choose_recipe_to_add_to(cursor) # choix recette
+
+    if recipe_id is None:
+        return
 
 # ============================================ choix produits + quantité
     
-    recipe_has_products = False
-    
     while True:
 
-        display_all_recipes(cursor)
-        print()
-        print("[0] = Terminer")
+        product_id = choose_recipe_to_add_to(cursor)
 
-        choice = input("> ")
-
-        if choice == "q":
+        if product_id is None:
             return
-    
-        if choice == "0":
-            if not recipe_has_products:
-                connection.rollback()
-                print("Saisie annulée.")
-                return
-            break
-
-        if choice.isdigit() and id_exists(cursor, "recipes", int(choice)):
-            product_id = int(choice)
-
-        else:
-            print("Choix invalide.")
-            continue
 
         quantity = ask_positive_int("Quantité (666 pour quitter) : ")
 
-        if quantity == "666": 
+        if quantity == 666:
             return
 
         try:
             cursor.execute("""
-                INSERT INTO recipe_products (recipe_id, product_recipe_id, quantity)
+                INSERT INTO recipe_products (
+                    recipe_id,
+                    product_recipe_id,
+                    quantity
+                )
                 VALUES (?, ?, ?)
             """, (recipe_id, product_id, quantity))
-            
-            recipe_has_products = True
-            
+
         except sqlite3.IntegrityError:
             print("Ce produit est déjà répertorié dans cette recette.")
         
-    connection.commit()
+        connection.commit()
 
 
 # ---------------------------------------------- Réinitialiser INGREDIENTS et PRODUCTS d'une RECETTE ----------------------------------------------------------------

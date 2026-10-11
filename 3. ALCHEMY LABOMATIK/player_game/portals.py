@@ -8,7 +8,7 @@ from player_game.inventory import add_ingredient_to_inventory
 
 
 
-def menu_portal(cursor, connection, player_level):
+def menu_portal(cursor, connection):
 
     while True:
 
@@ -23,7 +23,7 @@ def menu_portal(cursor, connection, player_level):
 
         if choix.isdigit() and id_exists(cursor, "affinities", int(choix)):
             portal = int(choix)
-            harvest_portal(cursor, connection, portal, player_level)
+            harvest_portal(cursor, connection, portal)
 
         elif choix == "r":
             return
@@ -32,16 +32,18 @@ def menu_portal(cursor, connection, player_level):
             print("Choix invalide")
 
 
-def harvest_portal(cursor, connection, portal, player_level):
+def harvest_portal(cursor, connection, portal):
+
+    discoveries = get_player_discoveries(cursor)
 
     cursor.execute("""
         SELECT 
             ingredient_affinities.ingredient_id,
             ingredient_affinities.affinity_id,
             ingredient_affinities.value,
-            ingredients.level,
             ingredients.rarity_id,
-            rarities.weight
+            rarities.weight,
+            ingredients.unlock_discoveries
         FROM ingredient_affinities
         JOIN ingredients
             ON ingredients.id = ingredient_affinities.ingredient_id
@@ -54,9 +56,9 @@ def harvest_portal(cursor, connection, portal, player_level):
 
     portal_ingredients = []
 
-    for ingredient_id, affinity_id, value, level, rarity_id, weight in portaff_ingredients:
-        if value >= 0.4 and level <= player_level:
-            portal_ingredients.append((ingredient_id, affinity_id, value, level, rarity_id, weight))
+    for ingredient_id, affinity_id, value, rarity_id, weight, unlock_discoveries in portaff_ingredients:
+        if value >= 0.4 and unlock_discoveries <= discoveries:
+            portal_ingredients.append((ingredient_id, affinity_id, value, rarity_id, weight))
 
 
     loots = []
@@ -64,7 +66,7 @@ def harvest_portal(cursor, connection, portal, player_level):
     for _ in range(min(3, len(portal_ingredients))):
         result = random.choices(
             portal_ingredients,
-            weights=[ingredient[5] for ingredient in portal_ingredients],
+            weights=[ingredient[4] for ingredient in portal_ingredients],
             k=1
         )[0]
 
@@ -81,3 +83,26 @@ def harvest_portal(cursor, connection, portal, player_level):
 
         add_ingredient_to_inventory(cursor, connection, ingredient_id, quantity)
 
+
+
+
+
+def get_player_discoveries(cursor):
+
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM player_recipes
+    """)
+
+    return cursor.fetchone()[0]
+
+
+def get_available_ingredients(cursor, discoveries):
+
+    cursor.execute("""
+        SELECT id, name
+        FROM ingredients
+        WHERE unlock_discoveries <= ?
+    """, (discoveries,))
+
+    return cursor.fetchall()

@@ -9,6 +9,7 @@ def display_all_ingredients(cursor):
         ingredients.name,
         ingredients.description,
         ingredients.level,
+        ingredients.unlock_discoveries,
         rarities.color,
         affinities.icon,
         ingredient_affinities.value
@@ -41,9 +42,10 @@ def display_ingredient(ingredients):
             name = ingredient[1]
             description = ingredient[2]
             level = ingredient[3]
-            color = ingredient[4]
-            icon = ingredient[5]
-            value = ingredient[6]
+            unlock_discoveries = ingredient[4]
+            color = ingredient[5]
+            icon = ingredient[6]
+            value = ingredient[7]
 
             if icon is not None:
                 affinity_list.append((icon, value))
@@ -52,4 +54,6 @@ def display_ingredient(ingredients):
         
         affinity_text = format_affinity_items(sorted_affinity_list)
                     
-        print(f"{ingredient_id:<2} - {COLORS[color]}{name}{RESET}  {affinity_text}  - {DIM}{description}{RESET}") #- {DIM}Niv. {level}{RESET} à rajouter si besoin
+        print(f"{ingredient_id:<2} - {COLORS[color]}{name}{RESET}  {affinity_text}  - Déblocage : {unlock_discoveries} découvertes")
+        print(f"{DIM}{description}{RESET}") #- {DIM}Niv. {level}{RESET} à rajouter si besoin
+        print()

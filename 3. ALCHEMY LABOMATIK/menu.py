@@ -75,7 +75,7 @@ def menu_database_management(cursor, connection):
         else:
             print("Choix invalide")
 
-def menu(cursor, connection, player_level):
+def menu(cursor, connection):
 
     while True:
         print()
@@ -99,7 +99,7 @@ def menu(cursor, connection, player_level):
             menu_database_management(cursor, connection)
 
         elif choix == "1":
-            menu_portal(cursor, connection, player_level)
+            menu_portal(cursor, connection)
         
         elif choix == "2":
             discover_recipe(cursor, connection)

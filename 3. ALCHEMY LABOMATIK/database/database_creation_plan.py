@@ -106,6 +106,7 @@ def create_tables(cursor):
         description TEXT,
         level INTEGER NOT NULL,
         rarity_id INTEGER NOT NULL,
+        unlock_discoveries INTEGER NOT NULL DEFAULT 0,
 
         FOREIGN KEY (rarity_id) REFERENCES rarities(id)
 

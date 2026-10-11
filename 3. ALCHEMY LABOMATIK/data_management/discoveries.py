@@ -1,6 +1,6 @@
 from display.display_affinities_and_portals import display_all_affinities
 from display.display_recipes import display_all_recipes
-from display.display_discoveries import display_all_discoveries
+from display.display_discoveries import display_all_discoveries, display_discoveries_to_modify
 
 from utils import id_exists, ask_positive_int, ask_positive_float_0_1
 
@@ -65,13 +65,17 @@ def update_number_of_ingredients(cursor, connection):
 
 def add_recipe_discovery(cursor, connection):
 
-    display_all_recipes(cursor)
-    recipe_id = ask_positive_int("Recette choisie : ")
+    recipes = display_discoveries_to_modify(cursor)
+    choice = ask_positive_int("Recette choisie (666 pour quitter) : ")
 
-    if not id_exists(cursor, "recipes", recipe_id):
-        print("Recette introuvable.")
+    if 1 <= choice <= len(recipes):
+        recipe_id = choice
+        print(recipe_id)
+
+    else:
+        print("Choix invalide.")
         return
-
+    
     allowed_number_of_ingredients = [2, 3, 4, 5, 6]
 
     number_of_ingredients = ask_positive_int("Nombre d'ingrédients (2, 3, 4, 5, 6) : ")
@@ -94,6 +98,7 @@ def add_recipe_discovery(cursor, connection):
         """, (recipe_id,))
 
         count = cursor.fetchone()[0]
+        print(count)
 
         if count >= 6:
             print("Ce mélange possède déjà le nombre maximum d'affinités.")
@@ -184,8 +189,8 @@ def reset_discovery_affinities(cursor, connection):
 
     while True:
             
-        recipe_id = input("Découverte choisie : ")
-
+        recipe_id = ask_positive_int("Découverte choisie : ")
+        
         cursor.execute("""
             SELECT affinity_id, value
             FROM recipe_discovery
@@ -194,10 +199,9 @@ def reset_discovery_affinities(cursor, connection):
                 
         result = cursor.fetchone()
         
-        if recipe_id.isdigit() and recipe_id is not None:
-            recipe_id = int(recipe_id)
+        if result is not None:
             break
-    
+        
         print("Choix invalide.")
 
     cursor.execute("""  
@@ -205,5 +209,7 @@ def reset_discovery_affinities(cursor, connection):
         WHERE recipe_id = ?
         """, (recipe_id,))
 
+    print("Lignes supprimées :", cursor.rowcount)
+
     connection.commit()
-    print("Affinités de l'ingrédient supprimées.")
+    print("Affinités de la découverte supprimées.")

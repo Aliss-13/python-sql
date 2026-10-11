@@ -140,7 +140,8 @@ def auto_sell(cursor, connection):
 
                 print(f"\nVous avez vendu {recipe_name} !")
                 print(random_sale_dialogue(recipe_name))
-                print(f"Argent +{selling_price} pièces !")
+                print(f"💰 +{selling_price} pièces !")
+                print()
 
             
 

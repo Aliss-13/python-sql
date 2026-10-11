@@ -56,3 +56,66 @@ def display_discovery(recipe_discovery):
         print(
                 f'{discovery_id:<2} - {COLORS[color]}{name}{RESET} - '
                 f'{YELLOW}Ingrédients : {number_of_ingredients}{RESET} - {affinity_text}')
+
+
+
+
+
+def display_discoveries_to_modify(cursor):
+
+    cursor.execute("""
+        SELECT
+            recipes.id,
+            recipes.name,
+            rarities.color,
+            recipe_discovery.number_of_ingredients,
+            affinities.icon,
+            recipe_discovery.value
+        FROM recipes
+        JOIN rarities
+            ON rarities.id = recipes.rarity_id
+        LEFT JOIN recipe_discovery
+            ON recipes.id = recipe_discovery.recipe_id
+        LEFT JOIN affinities
+            ON affinities.id = recipe_discovery.affinity_id
+        ORDER BY recipes.id
+    """)
+
+    discoveries = cursor.fetchall()
+    display_discovery_to_modify(discoveries)
+    return discoveries
+
+def display_discovery_to_modify(recipe_discovery):
+
+    groups = group_data_under_same_id(recipe_discovery)
+    
+    for group in groups:
+    
+        affinity_list = []
+    
+        for discovery in group:
+    
+            discovery_id = discovery[0]
+            name = discovery[1]
+            color = discovery[2]
+            number_of_ingredients = discovery[3]
+            affinity_icon = discovery[4]
+            affinity_value = discovery[5]
+
+            if number_of_ingredients is None:
+                number_of_ingredients = "Aucun"
+
+            if affinity_icon is not None:
+                affinity_list.append((affinity_icon, affinity_value))
+
+            
+    
+        sorted_affinity_list = sorted(affinity_list, key=lambda x: x[1], reverse=True)
+    
+        affinity_text = format_affinity_items(sorted_affinity_list)
+    
+        print(
+                f'{discovery_id:<2} - {COLORS[color]}{name}{RESET} - '
+                f'{YELLOW}Ingrédients : {number_of_ingredients}{RESET} - {affinity_text}')
+        
+        

@@ -1,4 +1,4 @@
-from display.display_equipment_and_equipment_craft import display_all_mixing_tools
+from display.display_equipment_and_equipment_craft import display_all_available_mixing_tools
 from display.display_inventories import display_inventory
 from display.display_refactor import group_data_under_same_id
 from display.display_utils import COLORS, RESET
@@ -7,10 +7,11 @@ from player_game.initialization import initialize_player_equipment
 
 def pick_mixing_tool(cursor):
 
-    mixing_tools = display_all_mixing_tools(cursor)
+    mixing_tools = display_all_available_mixing_tools(cursor)
     print()
 
-    if mixing_tools is None:
+    if not mixing_tools:
+        print("Vous ne possédez aucun instrument de mélange.")
         return
     
     while True:
@@ -55,6 +56,11 @@ def return_mixing_tool_capacity(cursor, mixing_tool_id):
 def pick_ingredients_to_blend(cursor, capacity):
  
     ingredients = display_inventory(cursor)
+
+    if not ingredients:
+        print("Votre inventaire est vide.")
+        return
+
     ingredient_groups = group_data_under_same_id(ingredients)
     print()
 
@@ -64,11 +70,14 @@ def pick_ingredients_to_blend(cursor, capacity):
 
         while True:
 
-            choix = input("Ingrédient choisi : ")
+            choice = input("Ingrédient choisi (q pour quitter): ")
 
-            if choix.isdigit() and 1 <= int(choix) <= len(ingredient_groups):
+            if choice == "q":
+                return
 
-                group = ingredient_groups[int(choix) - 1]
+            if choice.isdigit() and 1 <= int(choice) <= len(ingredient_groups):
+
+                group = ingredient_groups[int(choice) - 1]
 
                 ingredient_id = group[0][0]
 
@@ -179,13 +188,18 @@ def join_corresponding_recipe_to_blend(cursor):
     discoveries_affinities_signatures = get_discovery_affinity_signature(cursor)
 
     for recipe_id, (
-        recipe_name, 
-        difficulty_id, 
-        difficulty_number_of_affinities, 
+        recipe_name,
+        discovery_number_of_ingredients,
+        difficulty_id,
+        difficulty_number_of_affinities,
         signature
         ) in discoveries_affinities_signatures.items():
 
         corresponding_affinities = 0
+
+        if capacity != discovery_number_of_ingredients:
+            print("Pas de correspondance du nombre d'ingrédients.")
+            continue
 
         required_signature = signature[:difficulty_number_of_affinities]
         blend_signature = blend_affinity_signature[:difficulty_number_of_affinities]
@@ -292,10 +306,12 @@ def get_discovery_affinity_signature(cursor):
         SELECT 
             recipes.id,
             recipes.name,
+            recipe_discovery.number_of_ingredients,
             recipes.discovery_difficulty_id,
             recipe_discovery_difficulty.number_of_affinities,
             affinities.icon,
             recipe_discovery.value
+            
         FROM recipe_discovery
 
         JOIN recipes
@@ -321,13 +337,15 @@ def get_discovery_affinity_signature(cursor):
         signature = []
         discovery_id = group[0][0] # id recette découverte > construction signature > tri > regroupement par id > signature
         discovery_name = group[0][1] # nom recette découverte
-        difficulty_id = group[0][2] # difficulté recette découverte
-        difficulty_number_of_affinities = group [0][3] # difficulté nb affinités recette découverte
+        discovery_number_of_ingredients = group[0][2] # nombre d'ingrédients à mélanger pour obtenir la découverte
+        difficulty_id = group[0][3] # difficulté recette découverte
+        difficulty_number_of_affinities = group [0][4] # difficulté nb affinités recette découverte
+        
 
-        for _, _, _, _, icon, value in group:
+        for _, _, _, _,_, icon, value in group:
             signature.append((icon, value))
         signature.sort(key=lambda x: x[1], reverse=True)
         
-        discoveries_affinities[discovery_id] = (discovery_name, difficulty_id, difficulty_number_of_affinities, signature)
+        discoveries_affinities[discovery_id] = (discovery_name, discovery_number_of_ingredients, difficulty_id, difficulty_number_of_affinities, signature)
 
     return discoveries_affinities
