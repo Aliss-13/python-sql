@@ -28,23 +28,6 @@ initialize_player_money(cursor, connection)
 initialize_player_equipment(cursor, connection)
 
 # commit
-cursor.execute("""
-UPDATE shop_inventory
-SET quantity = 3
-WHERE recipe_id = 5
-""")
-
-cursor.execute("""
-UPDATE shop_inventory
-SET quantity = 3
-WHERE recipe_id = 12
-""")
-
-cursor.execute("""
-UPDATE shop_inventory
-SET quantity = 3
-WHERE recipe_id = 13
-""")
 
 connection.commit()
 
