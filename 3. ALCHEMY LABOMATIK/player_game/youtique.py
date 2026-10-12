@@ -1,10 +1,9 @@
 import time
-import msvcrt
 
 
 from sale_dialogues import random_sale_dialogue
 
-BASE_SELL_INTERVAL = 30
+BASE_SELL_TICKS = 5
 last_sales = {}
 
 
@@ -57,9 +56,7 @@ def sell_recipe(cursor, connection, recipe_id):
         raise
 
 
-def auto_sell(cursor, connection):
-
-    now = time.time()
+def auto_sell(cursor, connection, game_tick):
 
     cursor.execute("""
         SELECT
@@ -78,16 +75,16 @@ def auto_sell(cursor, connection):
 
     for recipe_id, recipe_name, quantity, selling_price, demand in products:
 
-        interval = BASE_SELL_INTERVAL / demand
+        interval = round(BASE_SELL_TICKS / demand)
 
         if recipe_id not in last_sales:
-            last_sales[recipe_id] = now
+            last_sales[recipe_id] = game_tick
             continue
 
-        if now - last_sales[recipe_id] >= interval:
+        if game_tick - last_sales[recipe_id] >= interval:
 
             if quantity == 0:
-                last_sales[recipe_id] = now
+                last_sales[recipe_id] = game_tick
                 continue
 
             if quantity >= 1:
@@ -136,26 +133,12 @@ def auto_sell(cursor, connection):
 
                 connection.commit()
 
-                last_sales[recipe_id] = now
+                last_sales[recipe_id] = game_tick
 
                 print(f"\nVous avez vendu {recipe_name} !")
                 print(random_sale_dialogue(recipe_name))
                 print(f"💰 +{selling_price} pièces !")
-                print()
-
-            
-
-def wait_for_input(cursor, connection):
-    
-    while True:
-
-        auto_sell(cursor, connection)
-
-        if msvcrt.kbhit(): # kbhit vérifie s'il y a une touche disponible.
-            choice = msvcrt.getwch() #getwch récupère la touche
-            return choice
-
-        time.sleep(0.5)      
+                print()      
 
 
 

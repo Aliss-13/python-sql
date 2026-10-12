@@ -5,6 +5,8 @@ from display.display_affinities_and_portals import display_all_affinities, displ
 from utils import id_exists
 
 from player_game.inventory import add_ingredient_to_inventory
+from player_game.youtique import auto_sell
+import player_game.game_state
 
 
 
@@ -33,6 +35,8 @@ def menu_portal(cursor, connection):
 
 
 def harvest_portal(cursor, connection, portal):
+
+    global game_tick
 
     discoveries = get_player_discoveries(cursor)
 
@@ -83,8 +87,8 @@ def harvest_portal(cursor, connection, portal):
 
         add_ingredient_to_inventory(cursor, connection, ingredient_id, quantity)
 
-
-
+        player_game.game_state.game_tick +=1
+        auto_sell(cursor, connection, player_game.game_state.game_tick)
 
 
 def get_player_discoveries(cursor):

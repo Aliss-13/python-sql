@@ -24,7 +24,8 @@ from player_game.blending import discover_recipe
 from player_game.craft_recipe import craft_recipe
 from player_game.craft_equipment import craft_equipment
 from player_game.containers import buy_container
-from player_game.youtique import wait_for_input
+from player_game.youtique import auto_sell
+import player_game.game_state
 
 def menu_database_management(cursor, connection):
 
@@ -93,7 +94,7 @@ def menu(cursor, connection):
         print(f"[q] 🔚 Quitter {DIM}- Je m'en vais comme un prince !{RESET}")
         print("")
 
-        choix = wait_for_input(cursor, connection)
+        choix = input("> ")
 
         if choix == "b":
             menu_database_management(cursor, connection)
@@ -103,6 +104,9 @@ def menu(cursor, connection):
         
         elif choix == "2":
             discover_recipe(cursor, connection)
+            player_game.game_state.game_tick +=1
+            auto_sell(cursor, connection, player_game.game_state.game_tick)
+
 
         elif choix == "3":
             craft_recipe(cursor, connection)
@@ -113,7 +117,7 @@ def menu(cursor, connection):
         elif choix == "5":
             flamel_xpress()
             get_player_money(cursor)
-            buy_container(cursor, connection)
+            buy_container(cursor, connection) 
 
         elif choix == "6":
             get_player_money(cursor)

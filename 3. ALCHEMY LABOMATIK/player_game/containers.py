@@ -1,6 +1,11 @@
 from display.display_utils import COLORS, RESET, DIM, YELLOW
-from player_game.initialization import initialize_containers
 from utils import ask_positive_int
+
+from player_game.initialization import initialize_containers
+from player_game.youtique import auto_sell
+
+import player_game.game_state
+
 
 def get_available_containers(cursor, connection):
 
@@ -124,6 +129,9 @@ def buy_container(cursor, connection):
             print(f"La transaction a échoué : {error}")
 
         print(f"Vous achetez {COLORS[selected_container[3]]}{selected_container[1]}{RESET} x{quantity} !")
+
+        player_game.game_state.game_tick +=1
+        auto_sell(cursor, connection, player_game.game_state.game_tick)
         
 
     else:
