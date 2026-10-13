@@ -14,8 +14,8 @@ def menu_portal(cursor, connection):
 
     while True:
 
+        print("     🌀 Portails")
         print()
-        print("🌀 Portails")
 
         display_all_affinities(cursor)
 

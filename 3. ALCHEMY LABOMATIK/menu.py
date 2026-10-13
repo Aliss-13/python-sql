@@ -46,6 +46,7 @@ def menu_database_management(cursor, connection):
         print("")
 
         choix = input("> ")
+        print()
 
         if choix == "1":
             menu_ingredients(cursor, connection)
@@ -98,23 +99,32 @@ def menu(cursor, connection):
         print("")
 
         choix = input("> ")
+        print()
 
         if choix == "b":
             menu_database_management(cursor, connection)
 
         elif choix == "1":
+            print("      === Récolte des ingrédients ===")
+            print()
             menu_portal(cursor, connection)
         
         elif choix == "2":
+            print("      === Tenter un mélange ===")
+            print()
             discover_recipe(cursor, connection)
             player_game.game_state.game_tick +=1
             auto_sell(cursor, connection, player_game.game_state.game_tick)
 
 
         elif choix == "3":
+            print("      === Fabriquer Potion, Élixir ou Pentagramme ===")
+            print()
             craft_recipe(cursor, connection)
 
         elif choix == "4":
+            print("      === Fabriquer matériel d'alchimie ===")
+            print()
             craft_equipment(cursor, connection)
 
         elif choix == "5":
@@ -123,6 +133,8 @@ def menu(cursor, connection):
             buy_container(cursor, connection) 
 
         elif choix == "6":
+            print("      === Inventaire ===")
+            print()
             get_player_money(cursor)
             display_inventory(cursor)
             display_container_inventory(cursor)
@@ -130,6 +142,8 @@ def menu(cursor, connection):
             print()
 
         elif choix == "7":
+            print("      === Matériel ===")
+            print()
             display_all_player_equipments(cursor)
             print()
 
@@ -161,6 +175,7 @@ def menu_discoveries(cursor, connection):
         print("[r] Retour")
     
         choix = input("> ")
+        print()
     
         if choix == "1":
             display_all_discoveries(cursor)
@@ -199,6 +214,7 @@ def menu_recipes(cursor, connection):
         print("[r] Retour")
     
         choix = input("> ")
+        print()
     
         if choix == "1":
             display_all_recipes(cursor)
@@ -245,6 +261,7 @@ def menu_ingredients(cursor, connection):
             print("[r] Retour")
     
             choix = input("> ")
+            print()
     
             if choix == "1":
                 display_all_ingredients(cursor)
@@ -275,6 +292,7 @@ def menu_affinities(cursor, connection):
         print("[r] Retour")
     
         choix = input("> ")
+        print()
     
         if choix == "1":
             display_all_affinities(cursor)
@@ -308,6 +326,7 @@ def menu_equipment(cursor, connection):
         print("[r] Retour")
     
         choix = input("> ")
+        print()
     
         if choix == "1":
             display_all_equipment(cursor)

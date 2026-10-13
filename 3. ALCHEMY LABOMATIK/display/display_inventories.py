@@ -1,5 +1,5 @@
 from display.display_refactor import group_data_under_same_id, format_affinity_items
-from display.display_utils import COLORS, RESET, DIM, YELLOW
+from display.display_utils import COLORS, RESET, DIM, YELLOW, CYAN
 
 
 def get_player_money(cursor):
@@ -45,9 +45,14 @@ def display_inventory(cursor):
 
     result = return_inventory(cursor)
 
-    print()
     print("🫧 Ingrédients")
+
+    if not result:
+        print("Vous ne possédez aucun ingrédient. Allez voir les  🌀 Portails  pour en récupérer !")
+        return
+    
     display_ingredient_from_inventory(result)
+
     return result
 
 
@@ -102,8 +107,14 @@ def display_container_inventory(cursor):
     """)
 
     containers = cursor.fetchall()
+
     print()
+
     print("🫙 Contenants")
+
+    if not containers:
+        print(f"Vous ne possédez aucun contenant. Passez commande sur {CYAN}FlamelXpress.com - Votre partenaire alchimique depuis 1387{RESET} !")
+        return
    
     display_container_from_container_inventory(containers)
 
@@ -149,8 +160,13 @@ def display_product_inventory(cursor):
     """)
 
     products = cursor.fetchall()
+
     print()
     print("🛍️ Produits fabriqués")
+
+    if not products:
+        print("Vous ne possédez encore aucun produit fabriqué. Ça va venir !")
+        return
    
     display_product_from_product_inventory(products)
 

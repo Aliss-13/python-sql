@@ -56,8 +56,6 @@ def pick_equipment(cursor):
 
     equipment_to_craft = cursor.fetchall()
 
-    print()
-    print("--- Fabrication ---")
     display_equipment_craft(equipment_to_craft)
 
 

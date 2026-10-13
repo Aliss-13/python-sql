@@ -12,7 +12,9 @@ def pick_recipe(cursor):
 
     recipe_infos = display_all_player_recipes_ingredients_products_and_equipments(cursor)
 
-    print()
+    if not recipe_infos:
+        print("Vous ne connaissez pas encore de recette. Tentez de faire un mélange dans le  🧪 Laboratoire  pour en découvrir !")
+        return
 
     # choix du joueur
 

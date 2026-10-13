@@ -8,10 +8,9 @@ from player_game.initialization import initialize_player_equipment
 def pick_mixing_tool(cursor):
 
     mixing_tools = display_all_available_mixing_tools(cursor)
-    print()
 
     if not mixing_tools:
-        print("Vous ne possédez aucun instrument de mélange.")
+        print("Vous ne possédez aucun instrument de mélange. Essayez d'en fabriquer un !")
         return
     
     while True:
