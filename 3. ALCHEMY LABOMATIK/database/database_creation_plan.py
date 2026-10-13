@@ -362,4 +362,19 @@ def create_tables(cursor):
         quantity INTEGER NOT NULL DEFAULT 1,
 
         FOREIGN KEY (recipe_id) REFERENCES recipes(id)
+
+    )""")
+
+
+    #------------------------------------------ sales_history ------------------------------------------------------
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS player_recipe_research (
+    
+        recipe_id INTEGER NOT NULL,
+        clue_rank INTEGER NOT NULL,
+        
+        PRIMARY KEY (recipe_id, clue_rank),
+    
+        FOREIGN KEY (recipe_id) REFERENCES recipes(id)
+       
     )""")

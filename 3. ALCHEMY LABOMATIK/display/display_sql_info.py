@@ -19,7 +19,7 @@ def display_tables_info(cursor):
                   "player", "inventory", "product_inventory",
                   "recipe_ingredients", "recipe_products",
                   "container_inventory", "shop_inventory",
-                  "player_equipment", "player_recipes", "sales_history"
+                  "player_equipment", "player_recipes", "sales_history", "player_recipe_research"
                   ]:
         print(f"\n--- {table} ---")
 
@@ -31,17 +31,17 @@ def display_tables_info(cursor):
 
 def display_new_table_contents(cursor):
     print()
-    print("=> Contenu de sales_history")
-    cursor.execute("SELECT * FROM sales_history")
+    print("=> Contenu de player_recipe_research")
+    cursor.execute("SELECT * FROM player_recipe_research")
     print(cursor.fetchall())
     print()
 
 
 def display_FK(cursor):
     print()
-    print("=> Liste clés étrangères sales_history")
+    print("=> Liste clés étrangères player_recipe_research")
     cursor.execute("""
-        PRAGMA foreign_key_list(sales_history)
+        PRAGMA foreign_key_list(player_recipe_research)
     """)
 
     for row in cursor.fetchall():

@@ -1,3 +1,6 @@
+from display.display_utils import display_reset_game
+
+
 def reset_game(cursor, connection):
 
     tables_to_reset = [
@@ -7,7 +10,8 @@ def reset_game(cursor, connection):
         "shop_inventory",
         "sales_history",
         "container_inventory",
-        "product_inventory"
+        "product_inventory", 
+        "player_recipe_research"
     ]
 
     for table in tables_to_reset:
@@ -44,5 +48,31 @@ def test_reset_game(cursor):
     cursor.execute("SELECT * FROM sales_history")
     print("sales_history :", cursor.fetchall())
 
+    cursor.execute("SELECT * FROM player_recipe_research")
+    print("player_recipe_research :", cursor.fetchall())
+
     cursor.execute("SELECT * FROM player")
     print("player :", cursor.fetchall())
+
+
+def menu_reset_game(cursor, connection):
+
+    while True:
+
+        display_reset_game()
+
+        choice = input("> ")
+        print()
+
+        if choice == "reset_game":
+            reset_game(cursor, connection)
+            test_reset_game(cursor)
+            print()
+            print ("Partie réinitialisée ✅")
+            break
+
+        else:
+            print("Retour au menu ↩️")
+            return 
+    
+    

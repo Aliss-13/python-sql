@@ -26,6 +26,7 @@ from player_game.craft_equipment import craft_equipment
 from player_game.containers import buy_container
 from player_game.youtique import auto_sell
 import player_game.game_state
+from player_game.reset_game import menu_reset_game
 
 def menu_database_management(cursor, connection):
 
@@ -92,6 +93,8 @@ def menu(cursor, connection):
         print(f"[8] 🐍 La Youtique© {DIM}- Vente des produits fabriqués : enrichissement personnel, gain d'expérience et contrôle fiscal.{RESET}")
         print("")
         print(f"[q] 🔚 Quitter {DIM}- Je m'en vais comme un prince !{RESET}")
+        print()
+        print(f"[r] ♾️ Réinitialiser la partie {DIM}- Un choix radical.{RESET}")
         print("")
 
         choix = input("> ")
@@ -137,6 +140,9 @@ def menu(cursor, connection):
 
         elif choix == "q":
             return
+
+        elif choix == "r":
+            menu_reset_game(cursor, connection)
 
         else:
             print("Choix invalide")
