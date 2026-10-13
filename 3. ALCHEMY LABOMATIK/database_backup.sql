@@ -274,15 +274,6 @@ CREATE TABLE inventory (
         quantity INTEGER NOT NULL DEFAULT 0,
         FOREIGN KEY (ingredient_id) REFERENCES ingredients(id)
 );
-INSERT INTO "inventory" VALUES(2,2);
-INSERT INTO "inventory" VALUES(4,3);
-INSERT INTO "inventory" VALUES(7,4);
-INSERT INTO "inventory" VALUES(15,11);
-INSERT INTO "inventory" VALUES(16,2);
-INSERT INTO "inventory" VALUES(17,5);
-INSERT INTO "inventory" VALUES(24,3);
-INSERT INTO "inventory" VALUES(35,1);
-INSERT INTO "inventory" VALUES(36,1);
 CREATE TABLE mixing_tools (
     equipment_id INTEGER PRIMARY KEY,
     capacity INTEGER,
@@ -306,7 +297,7 @@ CREATE TABLE player_equipment (
     crafted INTEGER NOT NULL DEFAULT 0 CHECK (crafted IN (0, 1)),
     FOREIGN KEY (equipment_id) REFERENCES equipment(id)
 );
-INSERT INTO "player_equipment" VALUES(1,1);
+INSERT INTO "player_equipment" VALUES(1,0);
 INSERT INTO "player_equipment" VALUES(2,0);
 INSERT INTO "player_equipment" VALUES(3,0);
 INSERT INTO "player_equipment" VALUES(4,0);
@@ -314,6 +305,23 @@ INSERT INTO "player_equipment" VALUES(5,0);
 INSERT INTO "player_equipment" VALUES(25,0);
 INSERT INTO "player_equipment" VALUES(35,0);
 INSERT INTO "player_equipment" VALUES(37,0);
+CREATE TABLE player_recipe_research (
+    
+        recipe_id INTEGER NOT NULL,
+        clue_rank INTEGER NOT NULL,
+        
+        PRIMARY KEY (recipe_id, clue_rank),
+    
+        FOREIGN KEY (recipe_id) REFERENCES recipes(id)
+       
+    );
+INSERT INTO "player_recipe_research" VALUES(1,0);
+INSERT INTO "player_recipe_research" VALUES(1,1);
+INSERT INTO "player_recipe_research" VALUES(1,2);
+INSERT INTO "player_recipe_research" VALUES(2,0);
+INSERT INTO "player_recipe_research" VALUES(2,2);
+INSERT INTO "player_recipe_research" VALUES(3,0);
+INSERT INTO "player_recipe_research" VALUES(3,1);
 CREATE TABLE player_recipes (
     recipe_id INTEGER PRIMARY KEY,
     crafted INTEGER NOT NULL DEFAULT 0

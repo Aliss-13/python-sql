@@ -8,10 +8,6 @@ from display.display_utils import display_main_menu
 from player_game.initialization import initialize_containers, initialize_player_equipment, initialize_player_money
 
 
-
-from recipe_research import reveal_recipe_clues
-
-
 BASE_DIR = Path(__file__).resolve().parent #C:\Users\lisas\OneDrive\Documents\Python\python-sql\3. ALCHEMY LABOMATIK
 DATABASE_PATH = BASE_DIR / "database.db"
 print(os.path.abspath("database.db"))
