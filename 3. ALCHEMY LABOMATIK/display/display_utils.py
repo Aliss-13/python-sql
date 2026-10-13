@@ -55,6 +55,13 @@ def format_difficulty_stars(difficulty_id):
     return "★" * difficulty_id + DIM + "☆" * (5 - difficulty_id) + RESET # concaténation => "texte" + variable
 
 
+def info_format_difficulty_stars():
+    print(f"Difficulté découverte {LIGHT_PINK}(rang d'affinité){RESET} : ★ très facile {LIGHT_PINK}(2){RESET} - "
+          f'★★ facile {LIGHT_PINK}(3){RESET} - ★★★ moyen {LIGHT_PINK}(4){RESET} - ★★★★ difficile {LIGHT_PINK}(5){RESET} - '
+          f'★★★★★ très difficile {LIGHT_PINK}(6){RESET}')
+    print()
+
+
 def flamel_xpress():
     print(f"🌐 {CYAN}FlamelXpress© = N°1 mondial de l'alchimie = {RESET}")
     print("   « Le prix et la qualité en instantané ! »*")

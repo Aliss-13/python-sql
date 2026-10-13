@@ -1,4 +1,4 @@
-from display.display_utils import COLORS, RESET, YELLOW, RED, CYAN, LIGHT_PINK, ORANGE, display_recipe_description, format_difficulty_stars
+from display.display_utils import COLORS, RESET, YELLOW, RED, CYAN, LIGHT_PINK, ORANGE, display_recipe_description, format_difficulty_stars, info_format_difficulty_stars
 
 
 def display_all_recipes(cursor):
@@ -48,10 +48,7 @@ def display_all_recipes(cursor):
    
     result = cursor.fetchall()
     print()
-    print(f'Difficulté découverte {LIGHT_PINK}(nb affinités){RESET} : ★ très facile {LIGHT_PINK}(2){RESET} - '
-          f'★★ facile {LIGHT_PINK}(3){RESET} - ★★★ moyen {LIGHT_PINK}(4){RESET} - ★★★★ difficile {LIGHT_PINK}(5){RESET} - '
-          f'★★★★★ très difficile {LIGHT_PINK}(6){RESET}')
-    print()
+    info_format_difficulty_stars()
     display_recipe(result)
     return(result)
 

@@ -305,6 +305,7 @@ def get_discovery_affinity_signature(cursor):
         SELECT 
             recipes.id,
             recipes.name,
+            rarities.color,
             recipe_discovery.number_of_ingredients,
             recipes.discovery_difficulty_id,
             recipe_discovery_difficulty.number_of_affinities,
@@ -315,6 +316,9 @@ def get_discovery_affinity_signature(cursor):
 
         JOIN recipes
             ON recipes.id = recipe_discovery.recipe_id
+
+        JOIN rarities
+            ON rarities.id = recipes.rarity_id
 
         JOIN recipe_discovery_difficulty
             ON recipe_discovery_difficulty.id = recipes.discovery_difficulty_id
@@ -336,15 +340,16 @@ def get_discovery_affinity_signature(cursor):
         signature = []
         discovery_id = group[0][0] # id recette découverte > construction signature > tri > regroupement par id > signature
         discovery_name = group[0][1] # nom recette découverte
-        discovery_number_of_ingredients = group[0][2] # nombre d'ingrédients à mélanger pour obtenir la découverte
-        difficulty_id = group[0][3] # difficulté recette découverte
-        difficulty_number_of_affinities = group [0][4] # difficulté nb affinités recette découverte
+        discovery_color = group[0][2] # couleur recette découverte
+        discovery_number_of_ingredients = group[0][3] # nombre d'ingrédients à mélanger pour obtenir la découverte
+        difficulty_id = group[0][4] # difficulté recette découverte
+        difficulty_number_of_affinities = group [0][5] # difficulté nb affinités recette découverte
         
 
-        for _, _, _, _,_, icon, value in group:
+        for _, _, _, _,_,_, icon, value in group:
             signature.append((icon, value))
         signature.sort(key=lambda x: x[1], reverse=True)
         
-        discoveries_affinities[discovery_id] = (discovery_name, discovery_number_of_ingredients, difficulty_id, difficulty_number_of_affinities, signature)
+        discoveries_affinities[discovery_id] = (discovery_name, discovery_color, discovery_number_of_ingredients, difficulty_id, difficulty_number_of_affinities, signature)
 
     return discoveries_affinities
