@@ -188,6 +188,7 @@ def join_corresponding_recipe_to_blend(cursor):
 
     for recipe_id, (
         recipe_name,
+        recipe_color,
         discovery_number_of_ingredients,
         difficulty_id,
         difficulty_number_of_affinities,

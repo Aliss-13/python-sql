@@ -667,8 +667,10 @@ def add_recipe_ingredients(cursor, connection):
         display_all_ingredients(cursor)
         print()
         print("[0] = Terminer")
+        print()
+        print("[q] = Abandonner la saisie")
 
-        choice = input("> (q pour quitter)")
+        choice = input("> ")
 
         if choice == "q":
             return

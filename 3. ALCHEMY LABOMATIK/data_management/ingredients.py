@@ -62,7 +62,7 @@ def add_ingredient(cursor, connection):
     try:
         cursor.execute("""
             INSERT INTO ingredients (name, description, level, rarity_id, unlock_discoveries)
-            VALUES (?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?)
         """, (name, description, level, rarity_id, unlock_discoveries_threshold))
 
         connection.commit()

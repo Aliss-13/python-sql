@@ -203,6 +203,7 @@ def reset_discovery_affinities(cursor, connection):
             break
         
         print("Choix invalide.")
+        return
 
     cursor.execute("""  
         DELETE FROM recipe_discovery

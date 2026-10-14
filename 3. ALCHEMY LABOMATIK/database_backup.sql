@@ -14,6 +14,7 @@ CREATE TABLE container_inventory (
     quantity INTEGER NOT NULL DEFAULT 0,
     FOREIGN KEY (equipment_id) REFERENCES equipment(id)
 );
+INSERT INTO "container_inventory" VALUES(4,1);
 CREATE TABLE containers (
 
         equipment_id INTEGER PRIMARY KEY,
@@ -58,18 +59,18 @@ INSERT INTO "equipment" VALUES(4,'Fiole en verre',1,'Comme ça, on en met pas de
 INSERT INTO "equipment" VALUES(5,'Fiole piriforme',2,'Un joli contenant en forme de poire.',4,0);
 INSERT INTO "equipment" VALUES(6,'Mortier d''alchimiste',1,'Un mélangeur semi-professionnel.',1,5);
 INSERT INTO "equipment" VALUES(7,'Mixeur arcanique',2,'Destructure l''intemporalité grâce à la technologie Brushless® de ses lames rotatives.',1,15);
-INSERT INTO "equipment" VALUES(8,'Moulingex Baby Cook®',3,'Indispensable pour tout alchimiste qui se respecte. Prépare aussi facilement et rapidement les repas de Bébé.',1,30);
+INSERT INTO "equipment" VALUES(8,'Moulingex Baby Cook®',3,'Indispensable pour tout alchimiste qui se respecte. Prépare aussi facilement et rapidement les repas de Bébé.',1,25);
 INSERT INTO "equipment" VALUES(9,'Thermomix 9000 DolbyTHX',4,'Si vous pouvez tâcher moyen de vous éloigner de vingt-cinq pieds, bon pieds hein, parce que ça va gicler un peu.',1,40);
 INSERT INTO "equipment" VALUES(10,'Gazinière cryogénique',2,'Frissons garantis !',3,20);
 INSERT INTO "equipment" VALUES(11,'Générateur de courant alternatif',2,'Bien charger en plutonium avant utilisation.',3,15);
-INSERT INTO "equipment" VALUES(12,'Mini trou noir portatif',3,'Ne pas avaler.',3,25);
+INSERT INTO "equipment" VALUES(12,'Mini trou noir portatif',3,'Ne pas avaler.',3,20);
 INSERT INTO "equipment" VALUES(13,'Tornade naine',3,'Mieux connue simplement sous le nom de Taz.',3,30);
 INSERT INTO "equipment" VALUES(14,'Tcherno-Bulle',4,'La fusion nucléaire sans risque !',3,35);
 INSERT INTO "equipment" VALUES(15,'La Colère de la Daronne',4,'Quand elle t''appelle par tous tes prénoms ET ton nom de famille, tu sais que ça va chier.',3,40);
 INSERT INTO "equipment" VALUES(16,'Plancha caramba',2,'Old El Paso, tacos y sombreros.',2,15);
 INSERT INTO "equipment" VALUES(17,'Cocotte-milliseconde Pouftroptard',1,'Là, c''est trop tard...',2,20);
 INSERT INTO "equipment" VALUES(18,'Alambic H.i.C.',2,'Fourni avec une boîte de 10 alcootests !',2,20);
-INSERT INTO "equipment" VALUES(19,'Centrifugeur Gerboulex',2,'Peut aussi servir d''essoreur à salade.',2,25);
+INSERT INTO "equipment" VALUES(19,'Centrifugeur Gerboulex',2,'Peut aussi servir d''essoreur à salade.',2,20);
 INSERT INTO "equipment" VALUES(20,'Ampoule à décanter Paul Bocal',1,'"Bien agiter - Laisser reposer." - Manuel d''éducation positive.',2,10);
 INSERT INTO "equipment" VALUES(21,'Pipotron',4,'Virtuosité moléculaire, abnégation expérimentale et langue de bois.',2,40);
 INSERT INTO "equipment" VALUES(22,'Plaque à induction',3,'12 feux, 18 tailles et 25 diamètres.',2,30);
@@ -131,6 +132,31 @@ INSERT INTO "equipment_craft" VALUES(6,7,5);
 INSERT INTO "equipment_craft" VALUES(6,15,10);
 INSERT INTO "equipment_craft" VALUES(6,37,8);
 INSERT INTO "equipment_craft" VALUES(6,9,6);
+INSERT INTO "equipment_craft" VALUES(18,32,4);
+INSERT INTO "equipment_craft" VALUES(18,34,10);
+INSERT INTO "equipment_craft" VALUES(18,42,2);
+INSERT INTO "equipment_craft" VALUES(18,41,3);
+INSERT INTO "equipment_craft" VALUES(18,17,10);
+INSERT INTO "equipment_craft" VALUES(18,9,20);
+INSERT INTO "equipment_craft" VALUES(17,42,5);
+INSERT INTO "equipment_craft" VALUES(17,32,2);
+INSERT INTO "equipment_craft" VALUES(17,23,8);
+INSERT INTO "equipment_craft" VALUES(17,35,10);
+INSERT INTO "equipment_craft" VALUES(12,40,2);
+INSERT INTO "equipment_craft" VALUES(12,45,15);
+INSERT INTO "equipment_craft" VALUES(12,32,2);
+INSERT INTO "equipment_craft" VALUES(12,35,5);
+INSERT INTO "equipment_craft" VALUES(19,42,5);
+INSERT INTO "equipment_craft" VALUES(19,40,2);
+INSERT INTO "equipment_craft" VALUES(19,30,5);
+INSERT INTO "equipment_craft" VALUES(19,38,10);
+INSERT INTO "equipment_craft" VALUES(8,38,25);
+INSERT INTO "equipment_craft" VALUES(8,30,5);
+INSERT INTO "equipment_craft" VALUES(8,6,10);
+INSERT INTO "equipment_craft" VALUES(7,30,5);
+INSERT INTO "equipment_craft" VALUES(7,27,5);
+INSERT INTO "equipment_craft" VALUES(7,38,10);
+INSERT INTO "equipment_craft" VALUES(7,22,5);
 CREATE TABLE ingredient_affinities (
     ingredient_id INTEGER,
     affinity_id INTEGER,
@@ -216,6 +242,15 @@ INSERT INTO "ingredient_affinities" VALUES(43,6,0.6);
 INSERT INTO "ingredient_affinities" VALUES(43,5,0.4);
 INSERT INTO "ingredient_affinities" VALUES(44,6,0.5);
 INSERT INTO "ingredient_affinities" VALUES(44,1,0.5);
+INSERT INTO "ingredient_affinities" VALUES(45,2,1.0);
+INSERT INTO "ingredient_affinities" VALUES(46,2,0.8);
+INSERT INTO "ingredient_affinities" VALUES(46,6,0.2);
+INSERT INTO "ingredient_affinities" VALUES(47,4,0.5);
+INSERT INTO "ingredient_affinities" VALUES(47,5,0.5);
+INSERT INTO "ingredient_affinities" VALUES(49,3,0.7);
+INSERT INTO "ingredient_affinities" VALUES(49,2,0.3);
+INSERT INTO "ingredient_affinities" VALUES(48,1,0.6);
+INSERT INTO "ingredient_affinities" VALUES(48,4,0.4);
 CREATE TABLE ingredients (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
@@ -257,23 +292,45 @@ INSERT INTO "ingredients" VALUES(29,'Fourmi rouge Soprano','Sa piqûre provoque 
 INSERT INTO "ingredients" VALUES(30,'Fébellule','Créature peu commune, quasiment invisible à l''oeil nu. Elle se prend parfois dans les toiles d''araignée.',1,3,10);
 INSERT INTO "ingredients" VALUES(31,'Plumefeuille','C''est presque pareil !',1,1,0);
 INSERT INTO "ingredients" VALUES(32,'Diamantine','Du carbone pur avec une structure cristalline cubique.',1,4,10);
-INSERT INTO "ingredients" VALUES(33,'Sang de troll','Certains l''aiment chaud.',1,4,50);
+INSERT INTO "ingredients" VALUES(33,'Sang de troll','Certains l''aiment chaud.',1,4,20);
 INSERT INTO "ingredients" VALUES(34,'Minerai d''argent','La Lune.',1,3,10);
 INSERT INTO "ingredients" VALUES(35,'Minerai de mercure','Mercure.',1,3,0);
 INSERT INTO "ingredients" VALUES(36,'Minerai de fer','Mars.',1,1,0);
 INSERT INTO "ingredients" VALUES(37,'Minerai de plomb','Saturne.',1,1,0);
 INSERT INTO "ingredients" VALUES(38,'Minerai d''étain','Jupiter.',1,2,0);
-INSERT INTO "ingredients" VALUES(39,'Pépite d''or','Le Soleil.',1,4,30);
-INSERT INTO "ingredients" VALUES(40,'Croc de serpent Ouroboros','Le cycle éternel, l''unité des contraires et le paradoxe du venin.',1,4,50);
-INSERT INTO "ingredients" VALUES(41,'Glaçon entropique','Il ne fond jamais, même au coeur des plus fortes chaleurs.',1,4,30);
-INSERT INTO "ingredients" VALUES(42,'Souffle d''Éole','Exhalé par les vesses à vent entre 00:53 et 1h du matin les nuits de nouvelle lune d''élections présidentielles.',1,4,50);
+INSERT INTO "ingredients" VALUES(39,'Pépite d''or','Le Soleil.',1,4,20);
+INSERT INTO "ingredients" VALUES(40,'Croc de serpent Ouroboros','Le cycle éternel, l''unité des contraires et le paradoxe du venin.',1,4,20);
+INSERT INTO "ingredients" VALUES(41,'Glaçon entropique','Il ne fond jamais, même au coeur des plus fortes chaleurs.',1,4,20);
+INSERT INTO "ingredients" VALUES(42,'Souffle d''Éole','Exhalé par les vesses à vent entre 00:53 et 1h du matin les nuits de nouvelle lune d''élections présidentielles.',1,4,20);
 INSERT INTO "ingredients" VALUES(43,'Vesse à vent','Champignon piriforme avec un trou au dessus. On dirait une couille !',1,2,0);
 INSERT INTO "ingredients" VALUES(44,'Graines d''hellébore','En octobre, l''hellébore illumine le jardin jusqu''à -10 °C.',1,1,10);
+INSERT INTO "ingredients" VALUES(45,'Matière noire','Elle n''émet, ne réfléchit et n''absorbe aucune lumière. On repère sa présence grâce à ses effets gravitationnels sur la matière visible.',1,2,20);
+INSERT INTO "ingredients" VALUES(46,'Clairon des morts','Le clairon des morts est un champignon proche de la girelle et de la chanterolle. Noirâtre, flétri et creux, il est très apprécié par les grands chefs cuisiniers.',1,3,20);
+INSERT INTO "ingredients" VALUES(47,'Poussière d''Ô','Nous ne sommes qu''eau et poussière, qu''os et courant d''air, misère.',1,2,20);
+INSERT INTO "ingredients" VALUES(48,'Sel','Indispensable pour assaisonner les plats et purifier les photocopieuses.',1,1,20);
+INSERT INTO "ingredients" VALUES(49,'Soufre','Une odeur d''oeufs pourris.',1,1,20);
 CREATE TABLE inventory (
         ingredient_id INTEGER PRIMARY KEY,
         quantity INTEGER NOT NULL DEFAULT 0,
         FOREIGN KEY (ingredient_id) REFERENCES ingredients(id)
 );
+INSERT INTO "inventory" VALUES(1,2);
+INSERT INTO "inventory" VALUES(2,8);
+INSERT INTO "inventory" VALUES(7,1);
+INSERT INTO "inventory" VALUES(9,2);
+INSERT INTO "inventory" VALUES(10,1);
+INSERT INTO "inventory" VALUES(11,6);
+INSERT INTO "inventory" VALUES(15,7);
+INSERT INTO "inventory" VALUES(16,1);
+INSERT INTO "inventory" VALUES(17,2);
+INSERT INTO "inventory" VALUES(18,3);
+INSERT INTO "inventory" VALUES(20,9);
+INSERT INTO "inventory" VALUES(24,5);
+INSERT INTO "inventory" VALUES(27,3);
+INSERT INTO "inventory" VALUES(35,1);
+INSERT INTO "inventory" VALUES(36,3);
+INSERT INTO "inventory" VALUES(38,2);
+INSERT INTO "inventory" VALUES(43,3);
 CREATE TABLE mixing_tools (
     equipment_id INTEGER PRIMARY KEY,
     capacity INTEGER,
@@ -291,13 +348,13 @@ CREATE TABLE player (
             CHECK (money >= 0)
 
     );
-INSERT INTO "player" VALUES(1,100);
+INSERT INTO "player" VALUES(1,98);
 CREATE TABLE player_equipment (
     equipment_id INTEGER PRIMARY KEY,
     crafted INTEGER NOT NULL DEFAULT 0 CHECK (crafted IN (0, 1)),
     FOREIGN KEY (equipment_id) REFERENCES equipment(id)
 );
-INSERT INTO "player_equipment" VALUES(1,0);
+INSERT INTO "player_equipment" VALUES(1,1);
 INSERT INTO "player_equipment" VALUES(2,0);
 INSERT INTO "player_equipment" VALUES(3,0);
 INSERT INTO "player_equipment" VALUES(4,0);
@@ -315,19 +372,13 @@ CREATE TABLE player_recipe_research (
         FOREIGN KEY (recipe_id) REFERENCES recipes(id)
        
     );
-INSERT INTO "player_recipe_research" VALUES(1,0);
-INSERT INTO "player_recipe_research" VALUES(1,1);
-INSERT INTO "player_recipe_research" VALUES(1,2);
-INSERT INTO "player_recipe_research" VALUES(2,0);
-INSERT INTO "player_recipe_research" VALUES(2,2);
-INSERT INTO "player_recipe_research" VALUES(3,0);
-INSERT INTO "player_recipe_research" VALUES(3,1);
 CREATE TABLE player_recipes (
     recipe_id INTEGER PRIMARY KEY,
     crafted INTEGER NOT NULL DEFAULT 0
     	CHECK (crafted IN (0, 1)),
     FOREIGN KEY (recipe_id) REFERENCES recipes(id)
 );
+INSERT INTO "player_recipes" VALUES(2,1);
 CREATE TABLE product_inventory (
     recipe_id INTEGER PRIMARY KEY,
     quantity INTEGER NOT NULL DEFAULT 0,
@@ -400,6 +451,42 @@ INSERT INTO "recipe_discovery" VALUES(19,4,1,0.05);
 INSERT INTO "recipe_discovery" VALUES(20,4,1,0.6);
 INSERT INTO "recipe_discovery" VALUES(20,4,6,0.3);
 INSERT INTO "recipe_discovery" VALUES(20,4,4,0.1);
+INSERT INTO "recipe_discovery" VALUES(21,4,2,0.6);
+INSERT INTO "recipe_discovery" VALUES(21,4,1,0.3);
+INSERT INTO "recipe_discovery" VALUES(21,4,4,0.1);
+INSERT INTO "recipe_discovery" VALUES(22,4,2,0.6);
+INSERT INTO "recipe_discovery" VALUES(22,4,1,0.25);
+INSERT INTO "recipe_discovery" VALUES(22,4,4,0.1);
+INSERT INTO "recipe_discovery" VALUES(22,4,6,0.05);
+INSERT INTO "recipe_discovery" VALUES(23,4,1,0.5);
+INSERT INTO "recipe_discovery" VALUES(23,4,2,0.3);
+INSERT INTO "recipe_discovery" VALUES(23,4,4,0.15);
+INSERT INTO "recipe_discovery" VALUES(23,4,6,0.05);
+INSERT INTO "recipe_discovery" VALUES(24,3,6,0.6);
+INSERT INTO "recipe_discovery" VALUES(24,3,2,0.3);
+INSERT INTO "recipe_discovery" VALUES(24,3,4,0.1);
+INSERT INTO "recipe_discovery" VALUES(25,4,6,0.55);
+INSERT INTO "recipe_discovery" VALUES(25,4,2,0.2);
+INSERT INTO "recipe_discovery" VALUES(25,4,5,0.15);
+INSERT INTO "recipe_discovery" VALUES(25,4,3,0.1);
+INSERT INTO "recipe_discovery" VALUES(26,4,3,0.5);
+INSERT INTO "recipe_discovery" VALUES(26,4,6,0.3);
+INSERT INTO "recipe_discovery" VALUES(26,4,5,0.15);
+INSERT INTO "recipe_discovery" VALUES(26,4,4,0.05);
+INSERT INTO "recipe_discovery" VALUES(27,3,3,0.5);
+INSERT INTO "recipe_discovery" VALUES(27,3,6,0.3);
+INSERT INTO "recipe_discovery" VALUES(27,3,4,0.2);
+INSERT INTO "recipe_discovery" VALUES(28,5,5,0.5);
+INSERT INTO "recipe_discovery" VALUES(28,5,4,0.3);
+INSERT INTO "recipe_discovery" VALUES(28,5,2,0.15);
+INSERT INTO "recipe_discovery" VALUES(28,5,6,0.05);
+INSERT INTO "recipe_discovery" VALUES(29,4,4,0.5);
+INSERT INTO "recipe_discovery" VALUES(29,4,5,0.3);
+INSERT INTO "recipe_discovery" VALUES(29,4,2,0.15);
+INSERT INTO "recipe_discovery" VALUES(29,4,6,0.05);
+INSERT INTO "recipe_discovery" VALUES(30,3,6,0.6);
+INSERT INTO "recipe_discovery" VALUES(30,3,3,0.3);
+INSERT INTO "recipe_discovery" VALUES(30,3,5,0.1);
 CREATE TABLE recipe_discovery_difficulty (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
@@ -471,6 +558,45 @@ INSERT INTO "recipe_ingredients" VALUES(18,8,2);
 INSERT INTO "recipe_ingredients" VALUES(19,12,8);
 INSERT INTO "recipe_ingredients" VALUES(19,6,2);
 INSERT INTO "recipe_ingredients" VALUES(19,38,5);
+INSERT INTO "recipe_ingredients" VALUES(24,27,5);
+INSERT INTO "recipe_ingredients" VALUES(24,26,5);
+INSERT INTO "recipe_ingredients" VALUES(24,37,15);
+INSERT INTO "recipe_ingredients" VALUES(24,43,6);
+INSERT INTO "recipe_ingredients" VALUES(25,49,10);
+INSERT INTO "recipe_ingredients" VALUES(25,8,10);
+INSERT INTO "recipe_ingredients" VALUES(25,28,10);
+INSERT INTO "recipe_ingredients" VALUES(23,40,3);
+INSERT INTO "recipe_ingredients" VALUES(23,47,10);
+INSERT INTO "recipe_ingredients" VALUES(23,46,15);
+INSERT INTO "recipe_ingredients" VALUES(23,45,5);
+INSERT INTO "recipe_ingredients" VALUES(22,6,10);
+INSERT INTO "recipe_ingredients" VALUES(22,33,5);
+INSERT INTO "recipe_ingredients" VALUES(22,13,15);
+INSERT INTO "recipe_ingredients" VALUES(22,9,20);
+INSERT INTO "recipe_ingredients" VALUES(21,6,5);
+INSERT INTO "recipe_ingredients" VALUES(21,9,15);
+INSERT INTO "recipe_ingredients" VALUES(21,13,7);
+INSERT INTO "recipe_ingredients" VALUES(29,27,5);
+INSERT INTO "recipe_ingredients" VALUES(29,45,10);
+INSERT INTO "recipe_ingredients" VALUES(29,48,15);
+INSERT INTO "recipe_ingredients" VALUES(28,42,5);
+INSERT INTO "recipe_ingredients" VALUES(28,8,10);
+INSERT INTO "recipe_ingredients" VALUES(28,49,15);
+INSERT INTO "recipe_ingredients" VALUES(28,28,5);
+INSERT INTO "recipe_ingredients" VALUES(30,27,10);
+INSERT INTO "recipe_ingredients" VALUES(30,44,10);
+INSERT INTO "recipe_ingredients" VALUES(30,21,9);
+INSERT INTO "recipe_ingredients" VALUES(30,10,5);
+INSERT INTO "recipe_ingredients" VALUES(27,8,8);
+INSERT INTO "recipe_ingredients" VALUES(27,49,10);
+INSERT INTO "recipe_ingredients" VALUES(27,19,15);
+INSERT INTO "recipe_ingredients" VALUES(20,9,20);
+INSERT INTO "recipe_ingredients" VALUES(20,17,15);
+INSERT INTO "recipe_ingredients" VALUES(20,15,5);
+INSERT INTO "recipe_ingredients" VALUES(20,5,10);
+INSERT INTO "recipe_ingredients" VALUES(26,43,10);
+INSERT INTO "recipe_ingredients" VALUES(26,30,9);
+INSERT INTO "recipe_ingredients" VALUES(26,42,2);
 CREATE TABLE recipe_products (
     recipe_id INTEGER NOT NULL,
     product_recipe_id INTEGER NOT NULL,
@@ -488,6 +614,13 @@ INSERT INTO "recipe_products" VALUES(5,1,1);
 INSERT INTO "recipe_products" VALUES(6,7,1);
 INSERT INTO "recipe_products" VALUES(19,14,1);
 INSERT INTO "recipe_products" VALUES(20,1,2);
+INSERT INTO "recipe_products" VALUES(24,14,1);
+INSERT INTO "recipe_products" VALUES(25,12,1);
+INSERT INTO "recipe_products" VALUES(23,19,1);
+INSERT INTO "recipe_products" VALUES(22,21,1);
+INSERT INTO "recipe_products" VALUES(21,2,1);
+INSERT INTO "recipe_products" VALUES(29,10,1);
+INSERT INTO "recipe_products" VALUES(28,26,1);
 CREATE TABLE recipe_types (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL UNIQUE
@@ -533,6 +666,16 @@ INSERT INTO "recipes" VALUES(17,'Concentré de célérité',2,3,'Il contiendrait
 INSERT INTO "recipes" VALUES(18,'Mandala Piment-Armageddon',3,4,'Une référence célèbre et très agressive, évaluée à environ 135 600 SHU.','Applique Brûlure pendant 5 tours',2,3,16,35,2,35,0.9);
 INSERT INTO "recipes" VALUES(19,'Dopage express',2,3,'Très prisé par les cyclistes, garanti indétectable lors des contrôles.','+15 points de puissance pendant 20 minutes de jeu',3,11,20,28,3,80,0.6);
 INSERT INTO "recipes" VALUES(20,'Cure thermale',1,3,'Prise en charge à 65 % sur la base d''un tarif conventionnel.','+80 points de vie pendant 3 tours',2,11,20,28,2,55,0.6);
+INSERT INTO "recipes" VALUES(21,'Magic Happy-Hour™',2,1,'Fourni avec un éthylotest.','Mana illimité pendant 15 minutes',2,10,18,26,2,45,0.9);
+INSERT INTO "recipes" VALUES(22,'Magic Happy-Hour™ - Format familial',2,3,'Fourni avec 5 éthylotests adultes et 3 éthylotests enfants','Mana illimité pendant 20 minutes',3,10,18,26,3,85,0.8);
+INSERT INTO "recipes" VALUES(23,'Réanimation',2,1,'Dans les films américains, l''ennemi a toujours un second souffle.','Résurrection automatique avec 100 points de vie en cas de mort au combat',4,12,17,27,3,100,0.7);
+INSERT INTO "recipes" VALUES(24,'Trois Potes CRS',1,1,'On va bien manigancer avec ma djellaba.','Protection de tous les dégâts pendant 3 tours',2,11,17,29,2,50,0.7);
+INSERT INTO "recipes" VALUES(25,'Flatulences, fragrance et pestilence',1,1,'La nécessité de lâcher des vents est imposée par le risque premier de devenir parfaitement sphérique, et le second (non négligeable) de faire sauter la pièce à la moindre étincelle.','Ajoute 50% de chance d''infliger Poison à chacune de vos attaques pendant un combat',2,12,17,29,3,45,0.6);
+INSERT INTO "recipes" VALUES(26,'Réunion brainstorming',1,1,'Vous êtes proactif et vous vous challengez.','Dégâts des attaques x3 pendant 3 tours',2,11,16,28,3,55,0.8);
+INSERT INTO "recipes" VALUES(27,'Rangoli curry-durian',3,5,'Et en plus, ça donne bon goût.','Applique Poison sur tous les ennemis pendant 3 tours',2,10,19,41,2,45,0.6);
+INSERT INTO "recipes" VALUES(28,'Chantal n°5',3,5,'Les aldéhydes, ça pardonne pas.','Inflige 200 points de dégâts à tous les ennemis',3,12,19,38,3,100,0.6);
+INSERT INTO "recipes" VALUES(29,'Sigil de Lâcher-prise',3,5,'Sinon tu peux tenter un pet gras après un repas choucroute-cassoulet, mais c''est risqué pour ton slip.','Vous permet de fuir le combat. Ne fonctionne pas sur les ennemis uniques',3,12,17,41,3,90,0.5);
+INSERT INTO "recipes" VALUES(30,'Coloriage anti-stress German Souplex',3,5,'Tu aimes le catch et les licornes à paillettes ? Mais si.','Applique Stun sur tous les ennemis pendant 3 tours',2,11,17,40,2,55,0.7);
 CREATE TABLE sales_history (
 
         recipe_id INTEGER NOT NULL,
@@ -540,11 +683,13 @@ CREATE TABLE sales_history (
 
         FOREIGN KEY (recipe_id) REFERENCES recipes(id)
     );
+INSERT INTO "sales_history" VALUES(2,1);
 CREATE TABLE shop_inventory (
     recipe_id INTEGER PRIMARY KEY,
     quantity INTEGER NOT NULL DEFAULT 0,
     FOREIGN KEY (recipe_id) REFERENCES recipes(id)
 );
+INSERT INTO "shop_inventory" VALUES(2,0);
 CREATE TABLE targets (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL UNIQUE
