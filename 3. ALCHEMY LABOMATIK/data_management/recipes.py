@@ -78,15 +78,18 @@ def choose_recipe_to_update(cursor):
     
     while True:
     
-        choice = input("Recette choisie : ")
+        choice = input("Recette choisie (666 pour quitter) : ")
 
         # Tu récupères le tuple correspondant à son choix
         if choice.isdigit() and 1 <= int(choice) <= len(recipes):
             selected_recipe = recipes[int(choice) - 1]
             break
+
+        elif choice == "666":
+            return
         
         print("Choix invalide.")
-
+        
     recipe_id = selected_recipe[0]
     return recipe_id
 
@@ -94,6 +97,9 @@ def choose_recipe_to_update(cursor):
 def update_recipe_name(cursor, connection):
             
     recipe_id = choose_recipe_to_update(cursor)
+
+    if not recipe_id:
+        return
 
     new_name = input("Nouveau nom : ")
 
@@ -117,6 +123,9 @@ def update_recipe_description(cursor, connection):
     
     recipe_id = choose_recipe_to_update(cursor)
 
+    if not recipe_id:
+        return
+
     new_description = input("Nouveau descriptif : ")
 
     cursor.execute("""
@@ -132,6 +141,9 @@ def update_recipe_description(cursor, connection):
 def update_recipe_effect(cursor, connection):
             
     recipe_id = choose_recipe_to_update(cursor)
+
+    if not recipe_id:
+        return
 
     new_effect = input("Nouvel effet : ")
 
@@ -149,6 +161,9 @@ def update_recipe_rarity(cursor, connection):
             
     recipe_id = choose_recipe_to_update(cursor)
 
+    if not recipe_id:
+        return
+
     new_rarity_id = add_recipe_rarity(cursor)
 
     cursor.execute("""
@@ -164,6 +179,9 @@ def update_recipe_rarity(cursor, connection):
 def update_recipe_type(cursor, connection):
             
     recipe_id = choose_recipe_to_update(cursor)
+
+    if not recipe_id:
+        return
 
     new_category_id = add_recipe_type
 
@@ -181,6 +199,9 @@ def update_recipe_target(cursor, connection):
             
     recipe_id = choose_recipe_to_update(cursor)
 
+    if not recipe_id:
+        return
+
     new_target_id = add_recipe_target(cursor)
 
     cursor.execute("""
@@ -196,6 +217,9 @@ def update_recipe_target(cursor, connection):
 def update_recipe_fire(cursor, connection):
             
     recipe_id = choose_recipe_to_update(cursor)
+
+    if not recipe_id:
+        return
 
     new_fire_id = add_recipe_fire(cursor)
 
@@ -214,6 +238,9 @@ def update_recipe_melting_pot(cursor, connection):
             
     recipe_id = choose_recipe_to_update(cursor)
 
+    if not recipe_id:
+        return
+
     new_melting_pot_id = add_recipe_melting_pot(cursor)
        
     cursor.execute("""
@@ -229,6 +256,9 @@ def update_recipe_melting_pot(cursor, connection):
 def update_recipe_container(cursor, connection):
             
     recipe_id = choose_recipe_to_update(cursor)
+
+    if not recipe_id:
+        return
 
     new_container_id = add_recipe_container(cursor)
 
@@ -247,6 +277,9 @@ def update_recipe_discovery_difficulty(cursor, connection):
             
     recipe_id = choose_recipe_to_update(cursor)
 
+    if not recipe_id:
+        return
+
     new_difficulty_id = add_recipe_discovery_difficulty(cursor)
 
     cursor.execute("""
@@ -263,6 +296,9 @@ def update_recipe_selling_price(cursor, connection):
             
     recipe_id = choose_recipe_to_update(cursor)
 
+    if not recipe_id:
+        return
+
     new_selling_price = add_recipe_selling_price()
 
     cursor.execute("""
@@ -278,6 +314,9 @@ def update_recipe_selling_price(cursor, connection):
 def update_recipe_demand(cursor, connection):
             
     recipe_id = choose_recipe_to_update(cursor)
+
+    if not recipe_id:
+        return
 
     new_demand = add_recipe_demand()
 
