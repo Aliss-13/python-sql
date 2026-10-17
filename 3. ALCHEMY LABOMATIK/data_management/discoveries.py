@@ -1,6 +1,7 @@
 from display.display_affinities_and_portals import display_all_affinities
 from display.display_recipes import display_all_recipes
 from display.display_discoveries import display_all_discoveries, display_discoveries_to_modify
+from display.display_refactor import group_data_under_same_id
 
 from utils import id_exists, ask_positive_int, ask_positive_float_0_1
 
@@ -214,3 +215,68 @@ def reset_discovery_affinities(cursor, connection):
 
     connection.commit()
     print("Affinités de la découverte supprimées.")
+
+
+
+# ------------------------------------------------ Récupère les signatures des découvertes ----------------------------------------------------------------
+
+def get_discovery_affinity_signature(cursor):
+
+    cursor.execute("""
+
+        SELECT 
+            recipes.id,
+            recipes.name,
+            recipe_types.name,
+            rarities.color,
+            recipe_discovery.number_of_ingredients,
+            recipes.discovery_difficulty_id,
+            recipe_discovery_difficulty.number_of_affinities,
+            affinities.icon,
+            recipe_discovery.value
+            
+        FROM recipe_discovery
+
+        JOIN recipes
+            ON recipes.id = recipe_discovery.recipe_id
+
+        JOIN recipe_types
+            ON recipes.type_id = recipe_types.id
+
+        JOIN rarities
+            ON rarities.id = recipes.rarity_id
+
+        JOIN recipe_discovery_difficulty
+            ON recipe_discovery_difficulty.id = recipes.discovery_difficulty_id
+
+        JOIN affinities
+            ON affinities.id = recipe_discovery.affinity_id
+
+        ORDER BY recipe_discovery.recipe_id
+    """)
+
+    result = cursor.fetchall()
+
+    groups = group_data_under_same_id(result)
+
+    discoveries_affinities = {}
+
+    for group in groups:
+
+        signature = []
+        discovery_id = group[0][0] # id recette découverte > construction signature > tri > regroupement par id > signature
+        discovery_name = group[0][1] # nom recette découverte
+        discovery_type = group[0][2] # type recette découverte potion, élixir, pentagramme
+        discovery_color = group[0][3] # couleur recette découverte
+        discovery_number_of_ingredients = group[0][4] # nombre d'ingrédients à mélanger pour obtenir la découverte
+        difficulty_id = group[0][5] # difficulté recette découverte
+        difficulty_number_of_affinities = group [0][6] # difficulté nb affinités recette découverte
+        
+
+        for _, _, _, _, _, _, _, icon, value in group:
+            signature.append((icon, value))
+        signature.sort(key=lambda x: x[1], reverse=True)
+        
+        discoveries_affinities[discovery_id] = (discovery_name, discovery_type, discovery_color, discovery_number_of_ingredients, difficulty_id, difficulty_number_of_affinities, signature)
+
+    return discoveries_affinities

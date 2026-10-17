@@ -366,7 +366,7 @@ def create_tables(cursor):
     )""")
 
 
-    #------------------------------------------ sales_history ------------------------------------------------------
+    #------------------------------------------ player_recipe_research ------------------------------------------------------
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS player_recipe_research (
     

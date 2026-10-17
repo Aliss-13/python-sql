@@ -4,6 +4,9 @@ from display.display_refactor import group_data_under_same_id
 from display.display_utils import COLORS, RESET
 
 from player_game.initialization import initialize_player_equipment
+from player_game.recipe_research import get_unknown_recipes
+
+from data_management.discoveries import get_discovery_affinity_signature
 
 def pick_mixing_tool(cursor):
 
@@ -109,6 +112,7 @@ def pick_ingredients_to_blend(cursor, capacity):
     
     return blending_ingredients
     
+# ---------------------------------------------------- Affinités du mélange ----------------------------------------------------------
 
 def blend_affinities_result(cursor, capacity, blending_ingredients):
 
@@ -142,7 +146,7 @@ def blend_affinities_result(cursor, capacity, blending_ingredients):
 
     return blending_affinities
 
-
+# -------------------------------------------- Mélanger ------------------------------------------------------------------------------
 
 def blending(cursor):
 
@@ -172,88 +176,7 @@ def blending(cursor):
 
     return blending_affinities, capacity
 
-
-def join_corresponding_recipe_to_blend(cursor, recipe_id=None):
-
-    result = blending(cursor)
-
-    if result is None:
-        return
-
-    blending_affinities, capacity = result
-
-    blend_affinity_signature = get_blend_affinity_signature(blending_affinities)
-    
-    discoveries_affinities_signatures = get_discovery_affinity_signature(cursor)
-
-
-    if recipe_id is None:
-                
-        for recipe_id, (recipe_name, recipe_type, recipe_color, discovery_number_of_ingredients, difficulty_id,
-        difficulty_number_of_affinities, signature) in discoveries_affinities_signatures.items():
-
-            if capacity != discovery_number_of_ingredients:
-                print("Pas de correspondance du nombre d'ingrédients.")
-                continue
-
-            result = compare_recipe_to_blend(recipe_id, recipe_name, difficulty_id, difficulty_number_of_affinities, signature,
-            blend_affinity_signature)
-
-            if result:
-                return result
-
-    else:
-        recipe_data = discoveries_affinities_signatures[recipe_id]
-        
-        (recipe_name, recipe_type, recipe_color, discovery_number_of_ingredients, difficulty_id, 
-        difficulty_number_of_affinities, signature) = recipe_data 
-
-        if capacity != discovery_number_of_ingredients:
-            print("Pas de correspondance du nombre d'ingrédients.")
-            return # on est pas dans une boucle comme plus haut
-
-        result = compare_recipe_to_blend(recipe_id, recipe_name, difficulty_id, difficulty_number_of_affinities, signature,
-        blend_affinity_signature)
-
-        if result:
-            return result
-
-
-def compare_recipe_to_blend(recipe_id, recipe_name, difficulty_id, difficulty_number_of_affinities, signature, blend_affinity_signature):
-
-    corresponding_affinities = 0
-
-    required_signature = signature[:difficulty_number_of_affinities]
-    blend_signature = blend_affinity_signature[:difficulty_number_of_affinities]
-    
-    if len(required_signature) != len(blend_signature): # nombre d'affinités prises en compte
-        print("Pas de correspondance du nombre d'affinités prises en compte.")
-        return
-    
-    for i in range(len(required_signature)):# required_signature[i] = id affinité i-ème position
-    
-        discovery_affinity_icon = required_signature[i][0] # required_signature[i][0] = icône affinité (en premier dans la parenthèse (icon, value))
-        blend_affinity_icon = blend_signature[i][0]
-    
-        if discovery_affinity_icon != blend_affinity_icon: # on vérifie les icônes
-            print("Pas de correspondance d'affinités.")
-            break
-    
-        if i < len(blend_signature) - 1: # si ce n'est pas la dernière, valeur actuelle strictement supérieure à la suivante ?
-            current_value = blend_signature[i][1]
-            next_value = blend_signature[i + 1][1]
-    
-            if current_value <= next_value:
-                print("Ordre des valeurs incorrect.")
-                break
-    
-        corresponding_affinities += 1
-    
-    if corresponding_affinities == len(required_signature):
-        print("Correspondance trouvée ✅")
-        return recipe_id, recipe_name, difficulty_id            
-
-
+# ------------------------------------------------ Récupère la signature du mélange ----------------------------------------------------------------
 
 def get_blend_affinity_signature(blending_affinities):
 
@@ -274,9 +197,118 @@ def get_blend_affinity_signature(blending_affinities):
     return signature
 
 
+# ---------------------------------------------- Son rôle : chercher quelle recette correspond au mélange effectué --------------------------
+# Effectue un mélange, récupère sa signature et recherche
+# une recette dont le nombre d'ingrédients et les affinités
+# correspondent aux conditions de découverte.
+# Renvoie (recipe_id, recipe_name, difficulty_id) si trouvée,
+# sinon None.
+
+def join_corresponding_recipe_to_blend(cursor, connection, recipe_id=None):
+
+    result = blending(cursor)
+
+    if result is None:
+        return
+
+    blending_affinities, capacity = result
+
+    blend_affinity_signature = get_blend_affinity_signature(blending_affinities)
+    
+    discoveries_affinities_signatures = get_discovery_affinity_signature(cursor)
+
+    unknown_recipes = get_unknown_recipes(cursor)
+
+    for unknown_recipe, recipe_data in unknown_recipes:
+        number_of_ingredients = recipe_data[3]
+        difficulty_number_of_affinities = recipe_data[5]
+        signature = recipe_data[6]
+
+        if capacity != number_of_ingredients:
+            continue
+
+        save_clues_to_player_recipe_research(unknown_recipe, difficulty_number_of_affinities, signature, blend_affinity_signature, cursor, connection)
+
+
+    if recipe_id is None:
+                
+        for recipe_id, (recipe_name, recipe_type, recipe_color, discovery_number_of_ingredients, difficulty_id,
+        difficulty_number_of_affinities, signature) in discoveries_affinities_signatures.items():
+
+            if capacity != discovery_number_of_ingredients:
+                #print("Pas de correspondance du nombre d'ingrédients.")
+                continue
+
+            result = compare_recipe_to_blend(recipe_id, recipe_name, difficulty_id, difficulty_number_of_affinities, signature,
+            blend_affinity_signature)
+
+            if result:
+                return result
+
+    else:
+        recipe_data = discoveries_affinities_signatures[recipe_id]
+        
+        (recipe_name, recipe_type, recipe_color, discovery_number_of_ingredients, difficulty_id, 
+        difficulty_number_of_affinities, signature) = recipe_data 
+
+        if capacity != discovery_number_of_ingredients:
+            #print("Pas de correspondance du nombre d'ingrédients.")
+            return # on est pas dans une boucle comme plus haut
+
+        result = compare_recipe_to_blend(recipe_id, recipe_name, difficulty_id, difficulty_number_of_affinities, signature,
+        blend_affinity_signature)
+
+        if result:
+            return result
+        
+# ------------------------------------ Son rôle : déterminer si les affinités d'un mélange satisfont 
+#                                        les conditions de découverte d'une recette précise -------------------------------------------
+
+# Compare la signature du mélange à celle d'une recette.
+# Vérifie les affinités exigées par la difficulté :
+# nombre, icônes et ordre strictement décroissant des valeurs.
+# Renvoie les informations de la recette si elle correspond,
+# sinon None.
+
+def compare_recipe_to_blend(recipe_id, recipe_name, difficulty_id, difficulty_number_of_affinities, signature, blend_affinity_signature):
+
+    corresponding_affinities = 0
+
+    required_signature = signature[:difficulty_number_of_affinities]
+    blend_signature = blend_affinity_signature[:difficulty_number_of_affinities]
+    
+    if len(required_signature) != len(blend_signature): # nombre d'affinités prises en compte
+        #print("Pas de correspondance du nombre d'affinités prises en compte.")
+        return
+    
+    for i in range(len(required_signature)):# required_signature[i] = id affinité i-ème position
+    
+        discovery_affinity_icon = required_signature[i][0] # required_signature[i][0] = icône affinité (en premier dans la parenthèse (icon, value))
+        blend_affinity_icon = blend_signature[i][0]
+    
+        if discovery_affinity_icon != blend_affinity_icon: # on vérifie les icônes
+            #print("Pas de correspondance d'affinités.")
+            break
+    
+        if i < len(blend_signature) - 1: # si ce n'est pas la dernière, valeur actuelle strictement supérieure à la suivante ?
+            current_value = blend_signature[i][1]
+            next_value = blend_signature[i + 1][1]
+    
+            if current_value <= next_value:
+                #print("Ordre des valeurs incorrect.")
+                break
+    
+        corresponding_affinities += 1
+    
+    if corresponding_affinities == len(required_signature):
+        print("Correspondance trouvée ✅")
+        return recipe_id, recipe_name, difficulty_id       
+    
+# ------------------------------------------------ Découverte recette ----------------------------------------------------------------
+
 def discover_recipe(cursor, connection, recipe_id=None):
 
-    result = join_corresponding_recipe_to_blend(cursor, recipe_id)
+    result = join_corresponding_recipe_to_blend(cursor, connection, recipe_id)
 
     if result is None:
         return
@@ -319,64 +351,38 @@ def discover_recipe(cursor, connection, recipe_id=None):
 
         initialize_player_equipment(cursor, connection)
 
+# ----------------------------------------------------- CLUES ----------------------------------------------------------------------
 
-def get_discovery_affinity_signature(cursor):
+def compare_clues_to_blend(recipe_id, difficulty_number_of_affinities, signature, blend_affinity_signature):
 
-    cursor.execute("""
+    required_signature = signature[:difficulty_number_of_affinities]
+    blend_signature = blend_affinity_signature[:difficulty_number_of_affinities]
 
-        SELECT 
-            recipes.id,
-            recipes.name,
-            recipe_types.name,
-            rarities.color,
-            recipe_discovery.number_of_ingredients,
-            recipes.discovery_difficulty_id,
-            recipe_discovery_difficulty.number_of_affinities,
-            affinities.icon,
-            recipe_discovery.value
-            
-        FROM recipe_discovery
+    discovered_clues = []
 
-        JOIN recipes
-            ON recipes.id = recipe_discovery.recipe_id
+    for i in range(min(len(required_signature), len(blend_signature))):
+        discovery_affinity_icon = required_signature[i][0]
+        blend_affinity_icon = blend_signature[i][0]
 
-        JOIN recipe_types
-            ON recipes.type_id = recipe_types.id
+        if discovery_affinity_icon == blend_affinity_icon: # on vérifie les icônes
+            clue_rank = i + 1
+            discovered_clues.append((recipe_id, clue_rank))
 
-        JOIN rarities
-            ON rarities.id = recipes.rarity_id
+    return discovered_clues
 
-        JOIN recipe_discovery_difficulty
-            ON recipe_discovery_difficulty.id = recipes.discovery_difficulty_id
 
-        JOIN affinities
-            ON affinities.id = recipe_discovery.affinity_id
+def save_clues_to_player_recipe_research(recipe_id, difficulty_number_of_affinities, signature, blend_affinity_signature, cursor, connection):
 
-        ORDER BY recipe_discovery.recipe_id
-    """)
+    discovered_clues = compare_clues_to_blend (recipe_id, difficulty_number_of_affinities, signature, blend_affinity_signature)
 
-    result = cursor.fetchall()
+    for recipe_id, clue_rank in discovered_clues:
+        cursor.execute("""
+        INSERT OR IGNORE INTO player_recipe_research
+        (recipe_id, clue_rank)
+        VALUES (?, ?)
+        """, (recipe_id, clue_rank))
 
-    groups = group_data_under_same_id(result)
+        if cursor.rowcount == 1:
+            print("Nouvel indice découvert !")
 
-    discoveries_affinities = {}
-
-    for group in groups:
-
-        signature = []
-        discovery_id = group[0][0] # id recette découverte > construction signature > tri > regroupement par id > signature
-        discovery_name = group[0][1] # nom recette découverte
-        discovery_type = group[0][2] # type recette découverte potion, élixir, pentagramme
-        discovery_color = group[0][3] # couleur recette découverte
-        discovery_number_of_ingredients = group[0][4] # nombre d'ingrédients à mélanger pour obtenir la découverte
-        difficulty_id = group[0][5] # difficulté recette découverte
-        difficulty_number_of_affinities = group [0][6] # difficulté nb affinités recette découverte
-        
-
-        for _, _, _, _, _, _, _, icon, value in group:
-            signature.append((icon, value))
-        signature.sort(key=lambda x: x[1], reverse=True)
-        
-        discoveries_affinities[discovery_id] = (discovery_name, discovery_type, discovery_color, discovery_number_of_ingredients, difficulty_id, difficulty_number_of_affinities, signature)
-
-    return discoveries_affinities
+    connection.commit()

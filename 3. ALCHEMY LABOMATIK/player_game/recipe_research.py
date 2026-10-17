@@ -1,4 +1,4 @@
-from player_game.blending import get_discovery_affinity_signature
+from data_management.discoveries import get_discovery_affinity_signature
 from display.display_utils import COLORS, YELLOW, RESET, format_difficulty_stars, info_format_difficulty_stars
 
 
@@ -106,13 +106,17 @@ def menu_unknown_recipes(cursor):
         print()
         print("📑 RECHERCHE DE RECETTE")
 
+        info_format_difficulty_stars()
+
         for number, number_of_ingredients in enumerate(possible_number_of_ingredients, start=1):
 
             if number_of_ingredients > max_capacity:
-                print(f"[{number}] 🔒 Recettes à {number_of_ingredients} ingrédients")
+                print(f"{YELLOW}[{number}] 🔒 Recettes à {number_of_ingredients} ingrédients{RESET}")
 
             else:
-                print(f"[{number}] Recettes à {number_of_ingredients} ingrédients")
+                print(f"{YELLOW}[{number}] Recettes à {number_of_ingredients} ingrédients{RESET}")
+                print()
+                show_unknown_recipes(cursor, number_of_ingredients)
 
         print("[r] Retour")
 
@@ -129,11 +133,6 @@ def menu_unknown_recipes(cursor):
                 print (f"Catégorie verrouillée 🔒")
                 continue
 
-            selected_recipe_id = choose_recipe_to_test(cursor, selected_group)
-
-            if selected_recipe_id is not None:
-                return selected_recipe_id
-
         else:
             print("Choix invalide.")
 
@@ -144,9 +143,6 @@ def show_unknown_recipes(cursor, selected_group):
     possible_number_of_ingredients, number_groups = group_by_number_of_ingredients(unknown_recipes)
     recipes_to_show = number_groups[selected_group]
 
-    
-    info_format_difficulty_stars()
-
     for number, recipe_to_show in enumerate(recipes_to_show, start=1):
 
         recipe_to_show_id = recipe_to_show[0]
@@ -156,29 +152,6 @@ def show_unknown_recipes(cursor, selected_group):
         print()
 
     return recipes_to_show
-
-
-def choose_recipe_to_test(cursor, selected_group):
-
-    recipes_to_show = show_unknown_recipes(cursor, selected_group)
-
-    while True: 
-        
-        choice = input("Choix de la découverte à tenter (Entrée pour quitter) : ")
-
-        if choice =="":
-            return
-        
-        elif choice.isdigit() and 1 <= int(choice) <= len(recipes_to_show):
-            selected_recipe = recipes_to_show[int(choice) - 1]
-
-            selected_recipe_id = selected_recipe[0]
-            
-            return selected_recipe_id
-
-        else:
-            print("Choix invalide.")
-
 
 
 def group_by_number_of_ingredients(items):

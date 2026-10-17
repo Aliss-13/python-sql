@@ -22,8 +22,8 @@ def menu_laboratory(cursor, connection):
     
         print()
         print("🧪 LABORATOIRE")
-        print(f"[1] 🥣 Mélange libre {DIM}- Mélange ce que tu veux parce que YOLO. Quitte ou double mon poto.{RESET}")
-        print(f"[2] 📓 Recherche de recette {DIM}- Tente une découverte précise, révèle des indices et sois ton propre Colombo.{RESET}")
+        print(f"[1] 🥣 Tenter un mélange {DIM}- Le mélange, c'est comme le mariage. Imprévisible et potentiellement explosif.{RESET}")
+        print(f"[2] 📓 Carnet de laboratoire {DIM}- Liste les indices découverts sur chaque recette inconnue. Une enquête palpitante.{RESET}")
             
         print("[r] Retour")
     
@@ -36,12 +36,7 @@ def menu_laboratory(cursor, connection):
             discover_recipe(cursor, connection)
             
         elif choix == "2":
-            print("      === Recherche méthodique ===")
-            
-            unknown_recipe_id = menu_unknown_recipes(cursor)
-            
-            if unknown_recipe_id is not None:
-                discover_recipe(cursor, connection, unknown_recipe_id)
+            menu_unknown_recipes(cursor)
             
         elif choix == "r":
             return
