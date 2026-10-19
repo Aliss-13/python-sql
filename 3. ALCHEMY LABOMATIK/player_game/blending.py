@@ -19,6 +19,7 @@ def pick_mixing_tool(cursor):
     while True:
             
         choix = input("Instrument de mélange choisi (Entrée pour revenir) : ")
+        print()
 
         if not choix:
             return
@@ -81,7 +82,8 @@ def pick_ingredients_to_blend(cursor, capacity):
 
                 group = ingredient_groups[int(choice) - 1]
 
-                ingredient_id = group[0][0]
+                ingredient_id = group[0][0] # ref requête sql return_inventory
+                available_quantity = group[0][2]
 
                 cursor.execute("""
                     SELECT
@@ -98,6 +100,11 @@ def pick_ingredients_to_blend(cursor, capacity):
                 name = result[0]
                 color = result[1]
 
+                already_selected = blending_ingredients.count(ingredient_id)
+                if already_selected >= available_quantity:
+                    print("Tu n'as plus assez de cet ingrédient !")
+                    continue
+
                 blending_ingredients.append(ingredient_id)
 
                 print(f"{COLORS[color]}{name}{RESET}")
@@ -111,6 +118,24 @@ def pick_ingredients_to_blend(cursor, capacity):
         print()
     
     return blending_ingredients
+
+
+def consume_blending_ingredients(cursor, connection, blending_ingredients):
+
+    for ingredient_id in blending_ingredients:
+
+        cursor.execute("""
+        UPDATE inventory
+        SET quantity = quantity - 1
+        WHERE ingredient_id = ? AND quantity > 0
+        """, (ingredient_id,))
+
+        if cursor.rowcount != 1:   # Si la quantité est déjà à zéro, SQLite n'effectue aucune modification et ne déclenche pas d'erreur.
+            connection.rollback()
+            return False
+
+    connection.commit()
+    return True # Renvoie True une fois que tout est validé.
     
 # ---------------------------------------------------- Affinités du mélange ----------------------------------------------------------
 
@@ -148,7 +173,7 @@ def blend_affinities_result(cursor, capacity, blending_ingredients):
 
 # -------------------------------------------- Mélanger ------------------------------------------------------------------------------
 
-def blending(cursor):
+def blending(cursor, connection):
 
     mixing_tool_id = pick_mixing_tool(cursor)
 
@@ -172,6 +197,10 @@ def blending(cursor):
     )
 
     if blending_affinities is None:
+        return
+
+    consume_blending_ingredients(cursor, connection, blending_ingredients)
+    if not consume_blending_ingredients(cursor, connection, blending_ingredients):
         return
 
     return blending_affinities, capacity
@@ -206,7 +235,7 @@ def get_blend_affinity_signature(blending_affinities):
 
 def join_corresponding_recipe_to_blend(cursor, connection, recipe_id=None):
 
-    result = blending(cursor)
+    result = blending(cursor, connection)
 
     if result is None:
         return
