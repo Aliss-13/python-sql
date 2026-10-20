@@ -271,7 +271,7 @@ def join_corresponding_recipe_to_blend(cursor, connection):
             return result
 
     # Aucune recette ne correspond au mélange
-    if random.random() < 1:
+    if random.random() < 0.5:
         trigger_blending_accident(cursor, connection, blending_ingredients, capacity)
         
 # ------------------------------------ Son rôle : déterminer si les affinités d'un mélange satisfont 
@@ -397,8 +397,5 @@ def save_clues_to_player_recipe_research(recipe_id, difficulty_number_of_affinit
 
         if cursor.rowcount == 1:
             print("Nouvel indice découvert !")
-        print()
 
     connection.commit()
-
-

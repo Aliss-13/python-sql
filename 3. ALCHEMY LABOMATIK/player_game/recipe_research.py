@@ -49,7 +49,6 @@ def show_recipe_research_clues(cursor, recipe_id):
             print(f"Affinité {clue} : ???")
 
 
-
 def get_max_capacity(cursor):
 
     cursor.execute("""
@@ -171,19 +170,3 @@ def group_by_number_of_ingredients(items):
         number_groups[number_of_ingredients].append(item)
 
     return possible_number_of_ingredients, number_groups
-
-
-        
-        
-
-
-
-    
-
-
-        
-        
-
-
-
-

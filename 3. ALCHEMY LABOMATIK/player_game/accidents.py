@@ -4,23 +4,25 @@ import player_game.game_state
 
 from display.display_utils import YELLOW, RESET, CYAN, COLORS
 from player_game.inventory import add_ingredient_to_inventory
+from player_game.recipe_research import group_by_number_of_ingredients, get_unknown_recipes, get_max_capacity
 
 
 def trigger_blending_accident(cursor, connection, blending_ingredients, capacity):
 
     accidents = [
-        #advertising_interference,
-        #lambda: crackling_explosion(cursor, connection),
+        advertising_interference,
+        lambda: crackling_explosion(cursor, connection),
         lambda: transformation_of_matter(cursor, connection, blending_ingredients),
-        #lambda: gemino_gemini(cursor, connection, blending_ingredients),
-        #lambda: surprise_preparation(cursor, connection, capacity),
-        #hes_alive,
-        #taxes_and_fuckeries
+        lambda: gemino_gemini(cursor, connection, blending_ingredients),
+        lambda: surprise_preparation(cursor, connection),
+        hes_alive,
+        taxes_and_fuckeries
     ]
 
     if player_game.game_state.active_event is not None:
         return
-
+    
+    print()
     print("⚠️ ACCIDENT ALCHIMIQUE ⚠️")
     print()
 
@@ -108,8 +110,28 @@ ADVERTISING_INTERFERENCE = [
     "\nLivré avec lancer de culottes, jalousie de votre entourage et promotion canapé. »"
     "\n(Voix qui parle très vite et tout bas)"
     "\n« Attention : pas de garantie de cet ordre, lancer de canapé, promotion de votre entourage et jalousie de culottes sont possibles "
-    "\nà cause des effets de la haine pure. Parlez-en à votre Maman. »"
+    "\nà cause des effets de la haine pure. »",
+
+    "📻 « Vous toussez ? L'Élixir Pulmonaire du Dr. Paracelse à base de soufre pur ne soigne pas votre toux, mais transmute vos cordes vocales en alliage plomb-zinc-inox. "
+    "\nVous pourrez effectuer un solo de guitare de d'Ampoules Dirigeables en une seule quinte ! »"
+    "\n(Bruit de toux grasse qui se transforme en solo de Heavy Metal strident 🎸, suivi d'un rire niais : « Hahaha, une quinte ! »)"
+    "\nMentions légales lues à 400 km/h : "
+    "\n« Effets secondaires possibles : ballonnements, pousse de cheveux et risque de pondre des œufs de canard. Parlez en à votre Médicomage. »",
+
+    "📻 « Chez Midas l'Ancien, on s'occupe de vos balais et aspirateurs de transport."
+    "\nRéparation toutes marques (Dysonne, SpaceX, Wileda, Serpi Bros, Schwiffer, RoVenta, Jaws, Samsong...) »"
+    "\n(Bruit de clé à molette 🔧 suivi d'une incantation magique foireuse et d'un gros « KLANG ! »)"
+    "\n« Révision avant contrôle alchimique quel que soit l'état de votre véhicule ! Résultats garantis !"
+    "\nDécrassage du réservoir et des injecteurs au cadmium 14 pour une conduite toujours plus fluide !"
+    "\nReprise à prix cassé, revente à prix d'enculé !"
+    "\nEn ce moment, grosse promo sur les embouts profilés - Venez en profiter ! »",
+
+    "📻 « Promovacances Astrales, la surprise qui vous emballe ! Destination imprévisible garantie. "
+    "\nVous vouliez aller aux Maldives ? Suite à une erreur de dosage dans le téléporteur géodésique, vous êtes bazardé sur une plage de Dunkerque en 1415. "
+    "\nMais attention, le cocktail de bienvenue est offert ! »"
+    "\n(Musique de ukulélé et bruit de vagues, coupés net par un zoum de distorsion temporelle ultra-bizarre, suivi d'un son de pluie battante et de chevalier en armure qui court.)"
       ]
+
 
 #------------------------------------------------- Il est vivant ! --------------------------------------------------------------
 
@@ -165,11 +187,20 @@ ASTRAL_GOSSIP = [
 
     "🤫 « ... Je l'ai vu dans le Magibus, il avait l'air é-pui-sé. Depuis qu'il est devenu végétarien, ça ne lui réussit pas. Non mais un "
     "\nvampire végétarien, avoue que ça ne ressemble à rien, c'est comme une tartiflette sans fromage ou un contrat d'assurance honnête... »",
+
+    "🤫 « Il a le nouveau Jaws Turbovore 5000 d'accord, mais moi je dis qu'avant d'acheter une grosse cylindrée, faudrait déjà qu'il paye "
+    "\nsa pension alimentaire au lieu de faire le bellâtre devant les Vélanes. »",
+
+    "🤫 « Becquerette a tenté l'expérience Promovacances Astrales, elle est ravie ! Mais oui, elle est arrivée dans une caverne en 4529 avant "
+    "\nParacelse, elle a assisté à la découverte du feu, elle a A-DO-RÉ. Oui, bon, si on omet l'incident avec les météorites, là... Oui, son coiffeur " 
+    "\nlui a fait un prix... Tu sais le petit jeune au coin, Beau de l'Hair. »"
     ]
 
 CATASTROPHIC_ADVISOR =  [
     "😎 « Franchement tu devrais mettre des billes dans Roger Bacon Logistics, c'est une valeur sûre ! »",
-    "😎 « Pourquoi tu refuses les invitations du voisin ? Il a l'air d'être un mec super, et tu vas pas en rajeunissant ma grande. »",
+    "😎 « Mais t'as pas besoin d'avoir trois containers de couleur différente pour les produits radioactifs, ça risque rien j'te dis ! »",
+    "😎 « Tu as besoin de vacances, pourquoi t'essaies pas Promovacances Astrales ? Tous ceux que je connais sont revenus, mais oui ! »",
+    "😎 « Mais teins-toi les cheveux en violet, tu vas perdre 15 ans ! Tiens, prends un rendez-vous chez Beau de l'Hair, c'est à côté. »",
     "😎 « Tu devrais parler de ta super idée à Papotine. Elle est discrète et de bon conseil. »", 
     "😎 « T'enlèves un zéro du Compta-Grim, oui là, sur cette ligne. Tranquille Émile ! Mon pote Randall fait ça tout le temps. »",
     "😎 « Je sens que l'élixir d'invisibilité dans le noir total va être un banger cette année. »",
@@ -240,10 +271,55 @@ TAX_AUDIT = [
 
 #------------------------------------------------- Explosion pétaradante --------------------------------------------------------------
 
-def crackling_explosion():
+def crackling_explosion(cursor, connection):
 
     print("💥 Explosion pétaradante !")
-    print("Vous essuyez la perte de machin x qtté, truc x qqté, bidule x qqté !")
+
+    cursor.execute("""
+        SELECT
+            ingredients.id,
+            ingredients.name,
+            rarities.color,
+            inventory.quantity
+        FROM inventory
+        JOIN ingredients
+            ON ingredients.id = inventory.ingredient_id
+        JOIN rarities
+            ON rarities.id = ingredients.rarity_id
+        WHERE inventory.quantity > 2
+    """)
+
+    ingredients = cursor.fetchall()
+    
+    if not ingredients:
+        return
+    
+    number_to_lose = min(random.randint(1, 3), len(ingredients))
+    picked_ingredients = random.sample(ingredients, k=number_to_lose)
+
+    messages = []
+
+    for ingredient_id, ingredient_name, ingredient_color, available_quantity in picked_ingredients:
+    
+        lost_quantity = random.randint(1, 3)
+    
+        cursor.execute("""
+        UPDATE inventory
+        SET quantity = quantity - ?
+        WHERE ingredient_id = ?
+            AND quantity >= ?
+        """, (lost_quantity, ingredient_id, lost_quantity))
+      
+        if cursor.rowcount != 1:   # Aucune ligne modifiée ou modification inattendue.
+            connection.rollback()
+            return
+        
+        messages.append(f"Vous perdez {COLORS[ingredient_color]}{ingredient_name}{RESET} x{lost_quantity} !")
+        
+    connection.commit()
+
+    for message in messages:
+        print(message)
 
     # coder la perte des ingrédients avec fonction random :
     # quantité de 1 à 3 ingrédients perdus,
@@ -285,14 +361,76 @@ def transformation_of_matter(cursor, connection, blending_ingredients):
 
 #------------------------------------------------------ Réaction instable ------------------------------------------------------------------
 
-def surprise_preparation():
+def surprise_preparation(cursor, connection):
 
     print("🧪 Vous obtenez une préparation impeccable ! Comment ça se fait ? Ca ne vous ressemble pas... ")
-    print("   Vous récoltez {item} !")
 
-    # coder l'ajout du produit dans product_inventory, 
-    # choix random parmi les produits correspondant à la capacité de l'outil de mélange.
+    unknown_recipes = get_unknown_recipes(cursor)
+    _, number_groups = group_by_number_of_ingredients(unknown_recipes)
+    capacity = get_max_capacity(cursor)
 
+    possible_recipes = []
+
+    for number, recipes in number_groups.items():
+        if number <= capacity:
+            possible_recipes.extend(recipes)
+
+    # Pourquoi extend() plutôt que append() ?
+    #   - append(recipes) ajouterait une liste entière comme un seul élément.
+    #   - extend(recipes) ajoute individuellement toutes les recettes de ce groupe.
+
+    if not possible_recipes:
+        print("Aucune préparation compatible avec votre équipement.")
+        return
+
+    picked_recipe = random.choice(possible_recipes)
+
+    # (recipe_name, recipe_type, recipe_color, number_of_ingredients, difficulty_id, number_of_affinities, signature) = recipe_data
+    # vient de get_discovery_affinity_signature (module blending)
+
+    picked_recipe_id, recipe_data = picked_recipe
+    picked_recipe_name = recipe_data[0]
+    picked_recipe_color = recipe_data[2]
+
+    cursor.execute("""
+        SELECT 
+            product_inventory.recipe_id, 
+            recipes.name, 
+            rarities.color
+        FROM product_inventory
+
+        JOIN recipes
+            ON recipes.id = product_inventory.recipe_id
+        
+        JOIN rarities
+            ON rarities.id = recipes.rarity_id
+
+    """)
+    
+    product_inventory_recipes = cursor.fetchall()
+    
+    product_inventory_recipe_ids = []
+
+    for product_inventory_recipe in product_inventory_recipes:
+        product_inventory_recipe_ids.append(product_inventory_recipe[0])
+        
+
+    if picked_recipe_id not in product_inventory_recipe_ids:
+    
+        cursor.execute("""
+            INSERT INTO product_inventory (recipe_id, quantity)
+            VALUES (?, ?)
+        """, (picked_recipe_id, 1))
+    
+    else:
+        cursor.execute("""
+            UPDATE product_inventory
+            SET quantity = quantity + ?
+            WHERE recipe_id = ?
+        """, (1, picked_recipe_id))
+
+    connection.commit()
+    print(f"Vous fabriquez {COLORS[picked_recipe_color]}{picked_recipe_name}{RESET} !")
 
 #------------------------------------------------------- Gemino Gemini ---------------------------------------------------------------------
 
@@ -325,12 +463,3 @@ def gemino_gemini(cursor, connection, blending_ingredients):
         quantity = random.randint(1, 3)
         add_ingredient_to_inventory(cursor, connection, ingredient_id, quantity)
         print(f"Vous récoltez {COLORS[ingredient_color]}{ingredient_name}{RESET} x{quantity} !")
-
-
-
-
-
-
-    
-
-    # coder le gain des ingrédients contenus dans blending_ingredients, quantité entre 1 et 3.
