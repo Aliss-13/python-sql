@@ -82,11 +82,10 @@ def harvest_portal(cursor, connection, portal):
         ingredient_id = result[0]
         
         display_harvest_portal(cursor, quantity, ingredient_id)
-        
 
         add_ingredient_to_inventory(cursor, connection, ingredient_id, quantity)
 
-        advance_game_tick(cursor, connection)
+    advance_game_tick(cursor, connection)
         
     print()
 
