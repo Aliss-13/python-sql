@@ -239,6 +239,9 @@ def join_corresponding_recipe_to_blend(cursor, connection):
 
     result = blending(cursor, connection)
 
+    if result is None:
+        return
+
     blending_affinities, capacity, blending_ingredients = result
 
     blend_affinity_signature = get_blend_affinity_signature(blending_affinities)
