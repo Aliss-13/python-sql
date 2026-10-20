@@ -10,8 +10,7 @@ from player_game.recipe_research import menu_unknown_recipes
 from player_game.craft_recipe import craft_recipe
 from player_game.craft_equipment import craft_equipment
 from player_game.containers import buy_container
-from player_game.youtique import auto_sell
-import player_game.game_state
+from player_game.advance_game_tick import advance_game_tick
 from player_game.reset_game import menu_reset_game
 
 from menu_data import menu_database_management
@@ -77,8 +76,7 @@ def menu(cursor, connection):
         
         elif choix == "2":
             menu_laboratory(cursor, connection)
-            player_game.game_state.game_tick +=1
-            auto_sell(cursor, connection, player_game.game_state.game_tick)
+            advance_game_tick(cursor, connection)
 
 
         elif choix == "3":

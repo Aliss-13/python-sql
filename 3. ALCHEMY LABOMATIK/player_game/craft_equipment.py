@@ -1,6 +1,5 @@
 from player_game.craft_recipe import check_inventory_for_ingredients_and_quantity
-from player_game.youtique import auto_sell
-import player_game.game_state
+from player_game.advance_game_tick import advance_game_tick
 
 from display.display_utils import COLORS, RESET
 from display.display_equipment_and_equipment_craft import display_equipment_craft
@@ -88,8 +87,6 @@ def pick_equipment(cursor):
 
 def craft_equipment(cursor, connection):
 
-    global game_tick
-
     equipment_id, equipment_to_craft = pick_equipment(cursor)
 
     if equipment_id is None:
@@ -129,8 +126,7 @@ def craft_equipment(cursor, connection):
 
     connection.commit()
 
-    player_game.game_state.game_tick +=1
-    auto_sell(cursor, connection, player_game.game_state.game_tick)
+    advance_game_tick(cursor, connection)
 
 
 def crafted_equipment_is_true(cursor, equipment_id):

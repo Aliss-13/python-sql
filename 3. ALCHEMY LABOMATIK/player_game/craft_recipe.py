@@ -2,7 +2,7 @@ from display.display_player_recipes import display_all_player_recipes_ingredient
 from display.display_utils import COLORS, RESET
 
 from player_game.youtique import auto_sell
-import player_game.game_state
+from player_game.advance_game_tick import advance_game_tick
 
 #----------------------------------------------- craft recettes ----------------------------------------
 
@@ -278,8 +278,7 @@ def craft_recipe(cursor, connection):
 
                     connection.commit()
 
-                    player_game.game_state.game_tick +=1
-                    auto_sell(cursor, connection, player_game.game_state.game_tick)
+                    advance_game_tick(cursor, connection)
 
 
 def crafted_recipe_is_true(cursor, recipe_id):

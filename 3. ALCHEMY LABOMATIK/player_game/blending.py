@@ -1,3 +1,5 @@
+import random
+
 from display.display_equipment_and_equipment_craft import display_all_available_mixing_tools
 from display.display_inventories import display_inventory
 from display.display_refactor import group_data_under_same_id
@@ -5,6 +7,7 @@ from display.display_utils import COLORS, RESET
 
 from player_game.initialization import initialize_player_equipment
 from player_game.recipe_research import get_unknown_recipes
+from player_game.accidents import trigger_blending_accident
 
 from data_management.discoveries import get_discovery_affinity_signature
 
@@ -29,7 +32,7 @@ def pick_mixing_tool(cursor):
             mixing_tool_id = mixing_tools[int(choix) - 1][0]
             break
     
-        print("choix invalide")
+        print("Choix invalide")
 
     return mixing_tool_id
 
@@ -199,11 +202,10 @@ def blending(cursor, connection):
     if blending_affinities is None:
         return
 
-    consume_blending_ingredients(cursor, connection, blending_ingredients)
     if not consume_blending_ingredients(cursor, connection, blending_ingredients):
         return
 
-    return blending_affinities, capacity
+    return blending_affinities, capacity, blending_ingredients
 
 # ------------------------------------------------ Récupère la signature du mélange ----------------------------------------------------------------
 
@@ -233,14 +235,11 @@ def get_blend_affinity_signature(blending_affinities):
 # Renvoie (recipe_id, recipe_name, difficulty_id) si trouvée,
 # sinon None.
 
-def join_corresponding_recipe_to_blend(cursor, connection, recipe_id=None):
+def join_corresponding_recipe_to_blend(cursor, connection):
 
     result = blending(cursor, connection)
 
-    if result is None:
-        return
-
-    blending_affinities, capacity = result
+    blending_affinities, capacity, blending_ingredients = result
 
     blend_affinity_signature = get_blend_affinity_signature(blending_affinities)
     
@@ -258,37 +257,22 @@ def join_corresponding_recipe_to_blend(cursor, connection, recipe_id=None):
 
         save_clues_to_player_recipe_research(unknown_recipe, difficulty_number_of_affinities, signature, blend_affinity_signature, cursor, connection)
 
-
-    if recipe_id is None:
-                
-        for recipe_id, (recipe_name, recipe_type, recipe_color, discovery_number_of_ingredients, difficulty_id,
-        difficulty_number_of_affinities, signature) in discoveries_affinities_signatures.items():
-
-            if capacity != discovery_number_of_ingredients:
-                #print("Pas de correspondance du nombre d'ingrédients.")
-                continue
-
-            result = compare_recipe_to_blend(recipe_id, recipe_name, difficulty_id, difficulty_number_of_affinities, signature,
-            blend_affinity_signature)
-
-            if result:
-                return result
-
-    else:
-        recipe_data = discoveries_affinities_signatures[recipe_id]
-        
-        (recipe_name, recipe_type, recipe_color, discovery_number_of_ingredients, difficulty_id, 
-        difficulty_number_of_affinities, signature) = recipe_data 
+    for recipe_id, (recipe_name, recipe_type, recipe_color, discovery_number_of_ingredients, difficulty_id,
+    difficulty_number_of_affinities, signature) in discoveries_affinities_signatures.items():
 
         if capacity != discovery_number_of_ingredients:
             #print("Pas de correspondance du nombre d'ingrédients.")
-            return # on est pas dans une boucle comme plus haut
+            continue
 
         result = compare_recipe_to_blend(recipe_id, recipe_name, difficulty_id, difficulty_number_of_affinities, signature,
         blend_affinity_signature)
 
         if result:
             return result
+
+    # Aucune recette ne correspond au mélange
+    if random.random() < 1:
+        trigger_blending_accident(cursor, connection, blending_ingredients, capacity)
         
 # ------------------------------------ Son rôle : déterminer si les affinités d'un mélange satisfont 
 #                                        les conditions de découverte d'une recette précise -------------------------------------------
@@ -335,9 +319,9 @@ def compare_recipe_to_blend(recipe_id, recipe_name, difficulty_id, difficulty_nu
     
 # ------------------------------------------------ Découverte recette ----------------------------------------------------------------
 
-def discover_recipe(cursor, connection, recipe_id=None):
+def discover_recipe(cursor, connection):
 
-    result = join_corresponding_recipe_to_blend(cursor, connection, recipe_id)
+    result = join_corresponding_recipe_to_blend(cursor, connection)
 
     if result is None:
         return
@@ -350,7 +334,7 @@ def discover_recipe(cursor, connection, recipe_id=None):
     """)
 
     player_recipes_ids_packed = cursor.fetchall()
-    player_recipes_ids_unpacked = [recipe[0] for recipe in  player_recipes_ids_packed]
+    player_recipes_ids_unpacked = [recipe[0] for recipe in player_recipes_ids_packed]
 
     if recipe_id not in player_recipes_ids_unpacked:
         
@@ -413,5 +397,8 @@ def save_clues_to_player_recipe_research(recipe_id, difficulty_number_of_affinit
 
         if cursor.rowcount == 1:
             print("Nouvel indice découvert !")
+        print()
 
     connection.commit()
+
+

@@ -1,6 +1,3 @@
-import time
-
-
 from sale_dialogues import random_sale_dialogue
 
 BASE_SELL_TICKS = 5
