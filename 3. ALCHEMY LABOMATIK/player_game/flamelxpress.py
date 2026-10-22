@@ -1,8 +1,24 @@
-from display.display_utils import COLORS, RESET, DIM, YELLOW
+from display.display_utils import COLORS, RESET, DIM, YELLOW, CYAN
 from utils import ask_positive_int
 
 from player_game.game_functions.initialization import initialize_containers
 from player_game.game_functions.advance_game_tick import advance_game_tick
+from player_game.dialogues import FLAMELXPRESS_BANNERS
+
+
+import random
+
+
+def flamel_xpress():
+    print(f"🌐 {CYAN}FlamelXpress© = N°1 mondial de l'alchimie = {RESET}")
+    print("   « Le prix et la qualité en instantané ! »*")
+    print(f"{DIM}   *Voir conditions générales de transmutation.{RESET}")
+    print()
+
+
+def display_random_banner():
+    banner = random.choice(FLAMELXPRESS_BANNERS)
+    print(banner)
 
 
 def get_available_containers(cursor, connection):

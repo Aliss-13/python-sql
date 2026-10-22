@@ -1,7 +1,7 @@
 from display.display_inventories import display_inventory, display_container_inventory, display_product_inventory, get_player_money
 from display.display_player_equipment import display_all_player_equipments
-from display.display_utils import DIM, RESET, flamel_xpress, youtique
-from display.display_player_shop import display_player_shop
+from display.display_utils import DIM, RESET
+from display.display_player_shop_youtique import display_player_shop
 
 
 from player_game.portals import menu_portal
@@ -9,8 +9,9 @@ from player_game.blending import discover_recipe
 from player_game.recipe_research import menu_unknown_recipes
 from player_game.craft_recipe import craft_recipe
 from player_game.craft_equipment import craft_equipment
-from player_game.containers import buy_container
+from player_game.flamelxpress import buy_container, flamel_xpress
 from player_game.objectives import menu_objectives
+from player_game.youtique import youtique
 
 from player_game.game_functions.advance_game_tick import advance_game_tick
 from player_game.game_functions.reset_game import menu_reset_game

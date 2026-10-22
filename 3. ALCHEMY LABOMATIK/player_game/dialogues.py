@@ -165,3 +165,42 @@ TAX_AUDIT = [
     "🏦 Lucien Cheval, Contrôleur fiscal de la DDDP : « Tout a l'air en ordre... J'ai une dernière question avant de partir. »",
     "🏦 Lucien Cheval, Contrôleur fiscal de la DDDP : « Vous recevrez une copie de mon rapport à la prochaine pleine-lune. »",
     ]
+
+
+#---------------------------------------------------- FLAMELXPRESS --------------------------------------------------------
+
+FLAMELXPRESS_BANNERS = [
+
+    "« 🌱 Pour chaque feuille de Bananarama achetée, nous finançons la plantation d'un quart de graine d'arbre magique en forêt d'Aramas ! 🌱 »",
+
+    "« 🔥HOT🔥 Pack Éco - 50x Flasques souples. Des solutions simples pour vos PV, garanties sans pesticides d'orques, livrées "
+    "\ndans un emballage 100% plastique magique recyclable ! 🔥HOT🔥 »",
+
+    "« 🍃 Le circuit court par téléportation : nos contenants empreinte carbone minimale sont livrés instantanément de nos Méga-Zines à votre inventaire ! 🍃 »",
+    
+    "« 🆕 Réapprovisionnement EXCEPTIONNEL de PLANS DIMENSIONNELS et d'AFFICHES ÉLECTORALES à PRIX CASSÉS ! STOCKS LIMITÉS ! 🆕 »",
+
+    "« 🚨 PROMOS de CINGLÉS sur toutes les FLASQUES et FLACONS ! -40% avec le code BALANCE_TON_FLAC ! 🚨 »",
+
+    "« ♻️ Trouvez le contenant adapté pour chacune de vos préparations avec FlamelXpress™, partenaire officiel de votre réussite alchimique depuis 1387 ! ♻️ »",
+
+    "« 🔥SOLDES DE LA NOUVELLE LUNE🔥 Jusqu'à -70% sur tout notre site avec le code NEWMOON ! -50% de plus avec le code TEAM_JACOB_8_PACK_BOO_EDWARD ! 🔥SOLDES DE LA NOUVELLE LUNE🔥 »",
+
+    "« 🆕 Découvrez la ALCHI LUNCHBOX 🆕 ! 5x Tireuses à bière, 10x Thermos de chantier, 10x Bocal à anchois et 10x Serviettes de table prêts à emporter ! »",
+
+    "« 🎵 FlamelXpress™, c'est LA solution pour TOUTES vos préparations ! 🎵 »",
+
+    "« 🎶 FlamelXpress™, l'alchimie NO STRESS ! 🎶 »",
+
+    "« 💲 FlamelXpress™, la qualité à prix sacrifiés ! 💲»",
+
+    "« 🎁 Pour toute commande supérieure à 50 pièces, un tablier « TRUST ME I'M AN ALCHIMIST » offert ! 🎁 »",
+
+    "« 🎸 Tentez de gagner DEUX PLACES pour le concert d'AMPOULES DIRIGEABLES en achetant une Cloison de logement social ou un Tonnelet en bois-sorcier ! 🎸 »",
+
+    "« 💬 Un problème avec votre contenant ? Notre SAV par boule de cristal vous répond en MOINS DE DEUX LUNES* ! *hors éclipses 💬 »",
+
+    "« 💳 Prenez la carte de fidélité FlamelGold pour des OFFRES et RÉDUCTIONS EXCLUSIVES et bénéficier de la LIVRAISON MILLISECONDE OUFPASTROPTARD ! 💳 »"
+    
+    
+    ]

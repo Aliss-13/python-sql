@@ -1,5 +1,23 @@
-from display.display_utils import display_reset_game
+from display.display_utils import YELLOW, RESET
 
+
+def display_reset_game():
+
+    print(f"      ⚠️  {YELLOW}RÉINITIALISATION DE LA PARTIE{RESET}")
+    print()
+    print("Cette action supprimera toute votre progression :")
+    print("- ingrédients")
+    print("- recettes découvertes")
+    print("- équipements fabriqués")
+    print("- produits")
+    print("- ventes")
+    print("- recherches du grimoire")
+    print("- etc.")
+    print()
+    print("Votre argent sera réinitialisé à 100 pièces.")
+    print()
+    print(f"Pour confirmer, tapez {YELLOW}reset_game{RESET}")
+    print()
 
 def reset_game(cursor, connection):
 

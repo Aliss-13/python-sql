@@ -1,8 +1,14 @@
 import random
 from player_game.dialogues import SALE_DIALOGUES
+from display.display_utils import LIGHT_GREEN, RESET, DIM
 
 BASE_SELL_TICKS = 5
 last_sales = {}
+
+def youtique():
+    print(f"🐍 {LIGHT_GREEN}La Youtique© - Parce qu'il faut bien que je vende mes merdes 🤸 {RESET}")
+    print(f"{DIM}   Récupère le flouze, le pèze, la moula, le pognon et à toi les gourgandines et l'opium !{RESET}")
+    print()
 
 def random_sale_dialogue(item):
     text = random.choice(SALE_DIALOGUES)

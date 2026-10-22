@@ -60,35 +60,3 @@ def info_format_difficulty_stars():
           f'★★ facile {LIGHT_PINK}(3){RESET} - ★★★ moyen {LIGHT_PINK}(4){RESET} - ★★★★ difficile {LIGHT_PINK}(5){RESET} - '
           f'★★★★★ très difficile {LIGHT_PINK}(6){RESET}')
     print()
-
-
-def flamel_xpress():
-    print(f"🌐 {CYAN}FlamelXpress© = N°1 mondial de l'alchimie = {RESET}")
-    print("   « Le prix et la qualité en instantané ! »*")
-    print(f"{DIM}   *Voir conditions générales de transmutation.{RESET}")
-    print()
-
-def youtique():
-    print(f"🐍 {LIGHT_GREEN}La Youtique© - Parce qu'il faut bien que je vende mes merdes 🤸 {RESET}")
-    print(f"{DIM}   Récupère le flouze, le pèze, la moula, le pognon et à toi les gourgandines et l'opium !{RESET}")
-    print()
-
-
-def display_reset_game():
-
-    print(f"      ⚠️  {YELLOW}RÉINITIALISATION DE LA PARTIE{RESET}")
-    print()
-    print("Cette action supprimera toute votre progression :")
-    print("- ingrédients")
-    print("- recettes découvertes")
-    print("- équipements fabriqués")
-    print("- produits")
-    print("- ventes")
-    print("- recherches du grimoire")
-    print("- etc.")
-    print()
-    print("Votre argent sera réinitialisé à 100 pièces.")
-    print()
-    print(f"Pour confirmer, tapez {YELLOW}reset_game{RESET}")
-    print()
-
