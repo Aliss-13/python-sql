@@ -10,8 +10,10 @@ from player_game.recipe_research import menu_unknown_recipes
 from player_game.craft_recipe import craft_recipe
 from player_game.craft_equipment import craft_equipment
 from player_game.containers import buy_container
-from player_game.advance_game_tick import advance_game_tick
-from player_game.reset_game import menu_reset_game
+from player_game.objectives import menu_objectives
+
+from player_game.game_functions.advance_game_tick import advance_game_tick
+from player_game.game_functions.reset_game import menu_reset_game
 
 from menu_data import menu_database_management
 
@@ -56,7 +58,8 @@ def menu(cursor, connection):
         print(f"[5] 🌐 FlamelXpress© {DIM}- Fournisseur incontournable des contenants alchimiques : contenants certifiés, prix transmutés !{RESET}")
         print(f"[6] 📓 Inventaire {DIM}- Ingrédients, contenants et produits fabriqués. Deuxième porte à droite.{RESET}")
         print(f"[7] ⚗️ Matériel d'alchimie {DIM}- Instruments de mélange, creusets et feux manufacturés. Dernière porte à gauche.{RESET}")
-        print(f"[8] 🐍 La Youtique© {DIM}- Vente des potions, élixirs et pentagrammes préparés avec amour : enrichissement personnel, statistiques et contrôle fiscal.{RESET}")
+        print(f"[8] 🐍 La Youtique© {DIM}- Vente des potions, élixirs et pentagrammes concoctés : enrichissement personnel, statistiques et contrôle fiscal.{RESET}")
+        print(f"[9] 📈 Objectifs {DIM}- C'est qui le patron ?{RESET}")
         print("")
         print(f"[q] 🔚 Quitter {DIM}- Je m'en vais comme un prince !{RESET}")
         print()
@@ -113,6 +116,9 @@ def menu(cursor, connection):
             youtique()
             get_player_money(cursor)
             display_player_shop(cursor)
+
+        elif choix == "9":
+            menu_objectives(cursor)
 
         elif choix == "q":
             return

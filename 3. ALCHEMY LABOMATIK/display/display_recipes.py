@@ -43,7 +43,7 @@ def display_all_recipes(cursor):
     LEFT JOIN equipment AS container
         ON container.id = recipes.container_equipment_id
 
-    ORDER BY recipe_types.id ASC, recipes.rarity_id ASC
+    ORDER BY recipe_types.id ASC, recipes.rarity_id ASC, recipes.selling_price ASC
     """)
    
     result = cursor.fetchall()

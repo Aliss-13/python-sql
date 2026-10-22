@@ -476,8 +476,7 @@ def add_recipe_fire(cursor):
             fire_id = int(choice)
             break
 
-        print("Choix invalide.")
-        return
+        print("Choix invalide.") # pas de return car la fonction peut renvoyer None.
 
     return fire_id
 
@@ -516,8 +515,7 @@ def add_recipe_melting_pot(cursor):
             melting_pot_id = int(choice)
             break
 
-        print("Choix invalide.")
-        return
+        print("Choix invalide.") # pas de return car la fonction peut renvoyer None.
 
     return melting_pot_id
 
@@ -556,8 +554,7 @@ def add_recipe_container(cursor):
             container_id = int(choice)
             break
 
-        print("Choix invalide.")
-        return
+        print("Choix invalide.") # pas de return car la fonction peut renvoyer None.
     
     return container_id
 

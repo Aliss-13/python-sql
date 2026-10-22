@@ -5,7 +5,7 @@ from display.display_affinities_and_portals import display_all_affinities, displ
 from utils import id_exists
 
 from player_game.inventory import add_ingredient_to_inventory
-from player_game.advance_game_tick import advance_game_tick
+from player_game.game_functions.advance_game_tick import advance_game_tick
 
 
 def menu_portal(cursor, connection):

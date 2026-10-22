@@ -1,8 +1,7 @@
 from display.display_player_recipes import display_all_player_recipes_ingredients_products_and_equipments
 from display.display_utils import COLORS, RESET
 
-from player_game.youtique import auto_sell
-from player_game.advance_game_tick import advance_game_tick
+from player_game.game_functions.advance_game_tick import advance_game_tick
 
 #----------------------------------------------- craft recettes ----------------------------------------
 

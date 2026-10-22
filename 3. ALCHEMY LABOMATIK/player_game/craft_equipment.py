@@ -1,5 +1,5 @@
 from player_game.craft_recipe import check_inventory_for_ingredients_and_quantity
-from player_game.advance_game_tick import advance_game_tick
+from player_game.game_functions.advance_game_tick import advance_game_tick
 
 from display.display_utils import COLORS, RESET
 from display.display_equipment_and_equipment_craft import display_equipment_craft

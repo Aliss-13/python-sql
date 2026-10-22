@@ -5,7 +5,7 @@ from display.display_inventories import display_inventory
 from display.display_refactor import group_data_under_same_id
 from display.display_utils import COLORS, RESET
 
-from player_game.initialization import initialize_player_equipment
+from player_game.game_functions.initialization import initialize_player_equipment
 from player_game.recipe_research import get_unknown_recipes
 from player_game.accidents import trigger_blending_accident
 

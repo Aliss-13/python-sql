@@ -1,8 +1,12 @@
-from sale_dialogues import random_sale_dialogue
+import random
+from player_game.dialogues import SALE_DIALOGUES
 
 BASE_SELL_TICKS = 5
 last_sales = {}
 
+def random_sale_dialogue(item):
+    text = random.choice(SALE_DIALOGUES)
+    return text.format(item=item)
 
 def sell_recipe(cursor, connection, recipe_id):
 

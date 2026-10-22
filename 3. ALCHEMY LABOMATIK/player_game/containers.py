@@ -1,8 +1,8 @@
 from display.display_utils import COLORS, RESET, DIM, YELLOW
 from utils import ask_positive_int
 
-from player_game.initialization import initialize_containers
-from player_game.advance_game_tick import advance_game_tick
+from player_game.game_functions.initialization import initialize_containers
+from player_game.game_functions.advance_game_tick import advance_game_tick
 
 
 def get_available_containers(cursor, connection):
@@ -51,8 +51,8 @@ def get_available_containers(cursor, connection):
     for display_number, (equipment_id, name, description, container_color, price, unlock_discoveries) in enumerate(available_containers, start=1):
         
         color = COLORS[container_color]
-        print(f'{display_number} - {color}{name}{RESET} - {YELLOW}{price} pièces.{RESET}')
-        print(f'    Déblocage : {unlock_discoveries} découvertes - {DIM}{description}{RESET}')
+        print(f'{display_number:<2} - {color}{name}{RESET} - {YELLOW}{price} pièces.{RESET}')
+        print(f'     Déblocage : {unlock_discoveries} découvertes - {DIM}{description}{RESET}')
         print()
 
     return available_containers
