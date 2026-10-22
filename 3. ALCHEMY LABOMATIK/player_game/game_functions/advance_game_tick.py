@@ -6,4 +6,4 @@ def advance_game_tick(cursor, connection):
 
     game_state.game_tick += 1
     auto_sell(cursor, connection, game_state.game_tick)
-    tick_temporary_event(game_state.game_tick)
+    tick_temporary_event()

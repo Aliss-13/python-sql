@@ -275,7 +275,7 @@ def join_corresponding_recipe_to_blend(cursor, connection):
 
     # Aucune recette ne correspond au mélange
     if random.random() < 0.5:
-        trigger_blending_accident(cursor, connection, blending_ingredients, capacity)
+        trigger_blending_accident(cursor, connection, blending_ingredients)
         
 # ------------------------------------ Son rôle : déterminer si les affinités d'un mélange satisfont 
 #                                        les conditions de découverte d'une recette précise -------------------------------------------
