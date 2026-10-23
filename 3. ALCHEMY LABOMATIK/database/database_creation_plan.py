@@ -365,8 +365,7 @@ def create_tables(cursor):
 
     )""")
 
-
-    #------------------------------------------ player_recipe_research ------------------------------------------------------
+    #------------------------------------- player_recipe_research ------------------------------------------------------
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS player_recipe_research (
     
@@ -377,4 +376,26 @@ def create_tables(cursor):
     
         FOREIGN KEY (recipe_id) REFERENCES recipes(id)
        
+    )""")
+
+    #--------------------------------------------- achievements ----------------------------------------------------------
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS achievements (
+
+        id INTEGER PRIMARY KEY,
+        name TEXT NOT NULL,
+        category TEXT NOT NULL,
+        description TEXT,
+        parent_id INTEGER REFERENCES achievements(id)
+
+    )""")
+
+    #------------------------------------------ player_achievements ------------------------------------------------------
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS player_achievements (
+
+        achievement_id INTEGER PRIMARY KEY,
+
+        FOREIGN KEY (achievement_id) REFERENCES achievements(id)
+
     )""")

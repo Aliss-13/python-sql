@@ -1,3 +1,6 @@
+from data_management.achievements import check_ingredients_achievement
+
+
 # --------------------------------------- concerne la table inventory
 
 def add_ingredient_to_inventory(cursor, connection, ingredient_id, quantity):
@@ -28,6 +31,8 @@ def add_ingredient_to_inventory(cursor, connection, ingredient_id, quantity):
         """, (ingredient_id, quantity))
             
         connection.commit()
+
+        check_ingredients_achievement(cursor, connection)
 
 # --------------------------------------- concerne la table container_inventory
 

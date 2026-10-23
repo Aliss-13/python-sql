@@ -280,3 +280,14 @@ def get_discovery_affinity_signature(cursor):
         discoveries_affinities[discovery_id] = (discovery_name, discovery_type, discovery_color, discovery_number_of_ingredients, difficulty_id, difficulty_number_of_affinities, signature)
 
     return discoveries_affinities
+
+
+def get_number_of_discoveries(cursor):
+
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM player_recipes
+    """)
+    discovery_count = cursor.fetchone()[0]
+
+    return discovery_count

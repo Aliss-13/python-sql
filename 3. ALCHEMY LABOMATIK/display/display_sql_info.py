@@ -19,7 +19,8 @@ def display_tables_info(cursor):
                   "player", "inventory", "product_inventory",
                   "recipe_ingredients", "recipe_products",
                   "container_inventory", "shop_inventory",
-                  "player_equipment", "player_recipes", "sales_history", "player_recipe_research"
+                  "player_equipment", "player_recipes", "sales_history", "player_recipe_research",
+                  "achievements", "player_achievements"
                   ]:
         print(f"\n--- {table} ---")
 
@@ -31,8 +32,8 @@ def display_tables_info(cursor):
 
 def display_new_table_contents(cursor):
     print()
-    print("=> Contenu de player_recipe_research")
-    cursor.execute("SELECT * FROM player_recipe_research")
+    print("=> Contenu de achievements")
+    cursor.execute("SELECT * FROM achievements")
     print(cursor.fetchall())
     print()
 

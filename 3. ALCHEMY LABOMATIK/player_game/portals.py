@@ -7,6 +7,8 @@ from utils import id_exists
 from player_game.inventory import add_ingredient_to_inventory
 from player_game.game_functions.advance_game_tick import advance_game_tick
 
+from data_management.discoveries import get_number_of_discoveries
+
 
 def menu_portal(cursor, connection):
 
@@ -34,9 +36,7 @@ def menu_portal(cursor, connection):
 
 def harvest_portal(cursor, connection, portal):
 
-    global game_tick
-
-    discoveries = get_player_discoveries(cursor)
+    discoveries = get_number_of_discoveries(cursor)
 
     cursor.execute("""
         SELECT 
@@ -92,16 +92,6 @@ def harvest_portal(cursor, connection, portal):
     advance_game_tick(cursor, connection)
         
     print()
-
-
-def get_player_discoveries(cursor):
-
-    cursor.execute("""
-        SELECT COUNT(*)
-        FROM player_recipes
-    """)
-
-    return cursor.fetchone()[0]
 
 
 def get_available_ingredients(cursor, discoveries):

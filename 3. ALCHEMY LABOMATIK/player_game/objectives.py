@@ -1,6 +1,8 @@
 from display.display_utils import YELLOW, RESET, COLORS, DIM, display_recipe_description
 from display.display_refactor import group_data_under_same_id, format_affinity_items
 
+from data_management.discoveries import get_number_of_discoveries
+
 def menu_objectives(cursor):
 
     while True:
@@ -10,7 +12,7 @@ def menu_objectives(cursor):
         print("[1] 🧪 Laboratoire")
         print("[2] 🧫 La Popotte")
         print("[3] 🌀 Portails")
-        print("[5] 🏅 Hauts-faits")
+        print("[4] 🏅 Hauts-faits")
             
         print("[r] Retour")
     
@@ -18,17 +20,17 @@ def menu_objectives(cursor):
         print()
     
         if choix == "1":
-            objective_discovered_recipes(cursor)
+            display_objective_discovered_recipes(cursor)
             
         elif choix == "2":
-            objective_crafting_recipes(cursor, crafted=1)
+            display_objective_crafted_recipes(cursor, crafted=1)
             print()
-            objective_crafting_recipes(cursor, crafted=0)
+            display_objective_crafted_recipes(cursor, crafted=0)
             
         elif choix == "3":
-            objective_unlocked_ingredients(cursor)
+            display_objective_unlocked_ingredients(cursor)
             print()
-            objective_never_obtained_ingredients(cursor)
+            display_objective_never_obtained_ingredients(cursor)
 
         elif choix == "4":
             print("🏅 En construction")
@@ -41,16 +43,25 @@ def menu_objectives(cursor):
 
 #-----------------------------------------------------------------------------------------------------------------------
 
-def get_total_recipes(cursor):
-    cursor.execute("""
-        SELECT COUNT(DISTINCT recipe_id)
-        FROM recipe_discovery
-    """)
+def get_total_recipes(cursor, type_id=None):
+
+    if type_id is None:
+        cursor.execute("""
+            SELECT COUNT(DISTINCT recipe_id)
+            FROM recipe_discovery
+        """)
+    else:
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM recipes
+            WHERE type_id = ?
+        """, (type_id,))
+
     return cursor.fetchone()[0]
 
 #--------------------------------------------- DECOUVERTES --------------------------------------------------------------
 
-def objective_discovered_recipes(cursor):
+def get_objective_discovered_recipes(cursor):
 
 # Pourquoi DISTINCT ?
 # Parce que recipe_discovery contient aussi affinity_id et value. Une même recette peut donc apparaître plusieurs fois, une fois par affinité.
@@ -72,6 +83,12 @@ def objective_discovered_recipes(cursor):
     """)
 
     result = cursor.fetchall()
+    return result
+
+
+def display_objective_discovered_recipes(cursor):
+
+    result = get_objective_discovered_recipes(cursor)
 
     total = 0
     discovered = 0
@@ -80,7 +97,7 @@ def objective_discovered_recipes(cursor):
     print()
 
     for number_of_ingredients, total_recipes, discovered_recipes in result:
-        percentage = round(discovered_recipes * 100 / total_recipes)
+        percentage = round(discovered_recipes * 100 / total_recipes) if total_recipes else 0
         print(f"Mélanges à {number_of_ingredients} ingrédients : {discovered_recipes} / {total_recipes} - {percentage} %")
         total = total + total_recipes
         discovered = discovered + discovered_recipes
@@ -90,12 +107,7 @@ def objective_discovered_recipes(cursor):
 
 #--------------------------------------------- CUISINE --------------------------------------------------------------
 
-def objective_crafting_recipes(cursor, crafted):
-
-    if crafted == 1:
-        title = "Recettes fabriquées"
-    else:
-        title = "Recettes à fabriquer"
+def get_objective_crafted_recipes(cursor, crafted):
 
     cursor.execute("""
     SELECT
@@ -121,8 +133,20 @@ def objective_crafting_recipes(cursor, crafted):
     """, (crafted,))
 
     result = cursor.fetchall()
+    return result
+
+
+def display_objective_crafted_recipes(cursor, crafted):
+
+    if crafted == 1:
+        title = "Recettes fabriquées"
+    else:
+        title = "Recettes à fabriquer"
+
+    result = get_objective_crafted_recipes(cursor, crafted)
+
     number_of_recipes = len(result)
-    total = get_total_recipes(cursor)
+    total = get_total_recipes(cursor, type_id=None)
 
 
     print(f"------------ {title} ({number_of_recipes} / {total}) ------------")
@@ -137,46 +161,41 @@ def objective_crafting_recipes(cursor, crafted):
 
 #--------------------------------------------- INGREDIENTS --------------------------------------------------------------
 
-def objective_unlocked_ingredients(cursor):
+def get_objective_unlocked_ingredients(cursor):
 
 # COUNT(*) compte tous les ingrédients.
 # CASE WHEN unlock_discoveries = 1 THEN 1 END ne compte que ceux qui sont débloqués.
 # Le nombre d'ingrédients verrouillés se calcule ensuite par soustraction.
 
-    cursor.execute("""
-    SELECT COUNT(*)
-    FROM player_recipes
-    """)
-    
-    discovered = cursor.fetchone()[0]
+    discovery_count = get_number_of_discoveries(cursor)
 
     cursor.execute("""
     SELECT
     COUNT(*) AS total_ingredients,
     COUNT(CASE WHEN unlock_discoveries <= ? THEN 1 END) AS unlocked_ingredients
     FROM ingredients
-    """, (discovered,))
+    """, (discovery_count,))
 
     result = cursor.fetchall()
+    return result
+
+def display_objective_unlocked_ingredients(cursor):
+
+    result = get_objective_unlocked_ingredients(cursor)
 
     for total, unlocked in result:
         locked = total - unlocked
-        percentage = round(unlocked * 100 / total)
+        percentage = round(unlocked * 100 / total) if total else 0
         print(f"Ingrédients débloqués : {unlocked} / {total} - {percentage} %")
 
 
-def objective_never_obtained_ingredients(cursor):
+def get_objective_never_obtained_ingredients(cursor):
 
 # COUNT(*) compte tous les ingrédients.
 # CASE WHEN unlock_discoveries = 1 THEN 1 END ne compte que ceux qui sont débloqués.
 # Le nombre d'ingrédients verrouillés se calcule ensuite par soustraction.
 
-    cursor.execute("""
-    SELECT COUNT(*)
-    FROM player_recipes
-    """)
-    
-    discovered = cursor.fetchone()[0]
+    discovery_count = get_number_of_discoveries(cursor)
 
     cursor.execute("""
     SELECT
@@ -204,15 +223,21 @@ def objective_never_obtained_ingredients(cursor):
         AND ingredients.unlock_discoveries <= ?
     
     ORDER BY ingredients.id, affinities.id
-    """, (discovered,))
+    """, (discovery_count,))
 
     result = cursor.fetchall()
+    return result
+
+
+def display_objective_never_obtained_ingredients(cursor):
+
+    result = get_objective_never_obtained_ingredients(cursor)
 
     groups = group_data_under_same_id(result)
 
     display_number = 0
 
-    print("------------ Ingrédients non lootés ------------ ")
+    print("------------ Ingrédients débloqués non lootés ------------ ")
     print()
 
     for group in groups:

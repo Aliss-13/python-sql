@@ -29,7 +29,8 @@ def reset_game(cursor, connection):
         "sales_history",
         "container_inventory",
         "product_inventory", 
-        "player_recipe_research"
+        "player_recipe_research",
+        "player_achievements"
     ]
 
     for table in tables_to_reset:
@@ -71,6 +72,9 @@ def test_reset_game(cursor):
 
     cursor.execute("SELECT * FROM player")
     print("player :", cursor.fetchall())
+
+    cursor.execute("SELECT * FROM player_achievements")
+    print("player_achievements :", cursor.fetchall())
 
 
 def menu_reset_game(cursor, connection):

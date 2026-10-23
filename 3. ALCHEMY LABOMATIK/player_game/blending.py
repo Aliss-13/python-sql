@@ -10,6 +10,7 @@ from player_game.recipe_research import get_unknown_recipes
 from player_game.accidents import trigger_blending_accident
 
 from data_management.discoveries import get_discovery_affinity_signature
+from data_management.achievements import check_discovery_achievements
 
 def pick_mixing_tool(cursor):
 
@@ -364,6 +365,8 @@ def discover_recipe(cursor, connection):
         """, (recipe_id,))
 
         connection.commit()
+
+        check_discovery_achievements(cursor, connection)
 
         initialize_player_equipment(cursor, connection)
 

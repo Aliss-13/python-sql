@@ -5,6 +5,8 @@ from player_game.game_functions.initialization import initialize_containers
 from player_game.game_functions.advance_game_tick import advance_game_tick
 from player_game.dialogues import FLAMELXPRESS_BANNERS
 
+from data_management.discoveries import get_number_of_discoveries
+
 
 import random
 
@@ -25,11 +27,8 @@ def get_available_containers(cursor, connection):
 
     initialize_containers(cursor, connection)
 
-    cursor.execute("""
-        SELECT COUNT(*)
-        FROM player_recipes
-    """)
-    discovery_count = cursor.fetchone()[0]
+    discovery_count = get_number_of_discoveries(cursor)
+
     print(f"      {DIM}Nombre de découvertes : {discovery_count}{RESET}      ")
 
     cursor.execute("""

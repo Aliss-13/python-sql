@@ -39,7 +39,7 @@ ASTRAL_GOSSIP = [
     "🤫 La Commère astrale : « Non, tu sais pas ce que m'a confié Archix l'archiviste ? Il a vu passer des papyrus pour de la lingerie en soie d'araignée venant "
     "\nde chez Gigi Hendrix. Mais SI ! Oui, tout le monde la croyait anéantie par la perte de son mari, le corps est encore chaud... »", 
 
-    "🤫 La Commère astrale : « Sais-tu ce qu'a enendu Papotine au Nessie-Café tout à l'heure ? Roger Bacon Logistics aurait de gros problèmes financiers. "
+    "🤫 La Commère astrale : « Sais-tu ce qu'a entendu Papotine au Nessie-Café tout à l'heure ? Roger Bacon Logistics aurait de gros problèmes financiers. "
     "\nUn audit de la DDDP qui aurait mal tourné... Oui, la DDDP, la Direction Dimensionnelle des Deniers Publics... "
     "\nTu connais pas ? Tu devrais. Je dis ça je dis rien, hein. »",
 

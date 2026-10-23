@@ -1,6 +1,7 @@
 import random
 from player_game.dialogues import SALE_DIALOGUES
 from display.display_utils import LIGHT_GREEN, RESET, DIM
+from data_management.achievements import check_commercial_achievements
 
 BASE_SELL_TICKS = 5
 last_sales = {}
@@ -56,11 +57,15 @@ def sell_recipe(cursor, connection, recipe_id):
         """, (recipe_id,))
 
         connection.commit()
-        return True
 
     except Exception:
         connection.rollback()
         raise
+
+    check_commercial_achievements(cursor, connection)
+    return True
+
+    
 
 
 def auto_sell(cursor, connection, game_tick):

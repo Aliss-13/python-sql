@@ -3,6 +3,8 @@ from display.display_utils import COLORS, RESET
 
 from player_game.game_functions.advance_game_tick import advance_game_tick
 
+from data_management.achievements import check_crafted_recipes_achievements
+
 #----------------------------------------------- craft recettes ----------------------------------------
 
 def pick_recipe(cursor):
@@ -277,6 +279,8 @@ def craft_recipe(cursor, connection):
 
                     connection.commit()
 
+                    check_crafted_recipes_achievements(cursor, connection)
+
                     advance_game_tick(cursor, connection)
 
 
@@ -287,7 +291,6 @@ def crafted_recipe_is_true(cursor, recipe_id):
         SET crafted = 1
     WHERE recipe_id = ?
     """, (recipe_id,))
-
 
 
 # ------------------------------------------ inventaire et craft ---------------------------------------
