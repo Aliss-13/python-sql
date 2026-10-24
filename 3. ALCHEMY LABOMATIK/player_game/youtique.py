@@ -1,7 +1,7 @@
 import random
 from player_game.dialogues import SALE_DIALOGUES
 from display.display_utils import LIGHT_GREEN, RESET, DIM
-from data_management.achievements import check_commercial_achievements
+from player_game.get_achievements import check_commercial_achievements
 
 BASE_SELL_TICKS = 5
 last_sales = {}

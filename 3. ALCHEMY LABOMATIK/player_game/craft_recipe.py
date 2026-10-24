@@ -3,7 +3,7 @@ from display.display_utils import COLORS, RESET
 
 from player_game.game_functions.advance_game_tick import advance_game_tick
 
-from data_management.achievements import check_crafted_recipes_achievements
+from player_game.get_achievements import check_crafted_recipes_achievements
 
 #----------------------------------------------- craft recettes ----------------------------------------
 

@@ -13,6 +13,7 @@ from data_management.discoveries import add_recipe_discovery, menu_update_discov
 from data_management.affinities import add_affinity_to_ingredient
 from data_management.ingredients import reset_ingredient_affinities, add_ingredient, menu_update_ingredient
 from data_management.equipment import add_equipment, menu_update_equipment
+from data_management.achievements import menu_update_achievement, display_all_achievements, add_achievement
 
 
 
@@ -28,7 +29,8 @@ def menu_database_management(cursor, connection):
         print("[3] ⚗️ Matériel")
         print("[4] 📜 Recettes")
         print("[5] 💡 Découvertes")
-        print("[6] 🪑 Tables")
+        print("[6] 🏆 Objectifs")
+        print("[7] 🪑 Tables")
         print("")
         print("[r] 🔚 Retour")
         print("")
@@ -52,6 +54,9 @@ def menu_database_management(cursor, connection):
             menu_discoveries(cursor, connection)
 
         elif choix == "6":
+            menu_achievements(cursor, connection)
+
+        elif choix == "7":
             print("======= SQL database info =======")
             print()
             display_tables(cursor)
@@ -63,6 +68,37 @@ def menu_database_management(cursor, connection):
         elif choix == "r":
             return
         
+        else:
+            print("Choix invalide")
+
+
+def menu_achievements(cursor, connection):
+
+    while True:
+    
+        print()
+        print("🏆 OBJECTIFS JOUEUR")
+        print("[1] Liste objectifs")
+        print("[2] Ajouter objectif")
+        print("[3] Modifier objectif")
+            
+        print("[r] Retour")
+    
+        choix = input("> ")
+        print()
+    
+        if choix == "1":
+            display_all_achievements(cursor)
+            
+        elif choix == "2":
+            add_achievement(cursor, connection)
+            
+        elif choix == "3":
+            menu_update_achievement(cursor, connection)
+
+        elif choix == "r":
+            return
+    
         else:
             print("Choix invalide")
 

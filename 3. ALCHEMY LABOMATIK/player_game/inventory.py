@@ -1,4 +1,4 @@
-from data_management.achievements import check_ingredients_achievement
+from player_game.get_achievements import check_ingredients_achievement
 
 
 # --------------------------------------- concerne la table inventory

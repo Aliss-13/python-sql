@@ -8,9 +8,10 @@ from display.display_utils import COLORS, RESET
 from player_game.game_functions.initialization import initialize_player_equipment
 from player_game.recipe_research import get_unknown_recipes
 from player_game.accidents import trigger_blending_accident
+from player_game.get_achievements import check_discovery_achievements
 
 from data_management.discoveries import get_discovery_affinity_signature
-from data_management.achievements import check_discovery_achievements
+
 
 def pick_mixing_tool(cursor):
 
