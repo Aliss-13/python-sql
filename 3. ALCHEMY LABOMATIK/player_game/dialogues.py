@@ -1,3 +1,17 @@
+import random
+
+
+remaining_dialogues = {}
+
+def random_dialogue(dialogues, category):
+
+    if category not in remaining_dialogues or not remaining_dialogues[category]:
+        remaining_dialogues[category] = dialogues.copy()
+        random.shuffle(remaining_dialogues[category])
+
+    return remaining_dialogues[category].pop()
+
+
 SALE_DIALOGUES = [
     "La jolie guerrière repart ravie, laissant derrière elle les effluves d'un parfum agréable.",
     "Le draeneï glisse quelques pièces sur le comptoir et récupère {item}.",
@@ -180,7 +194,7 @@ FLAMELXPRESS_BANNERS = [
     
     "« 🆕 Réapprovisionnement EXCEPTIONNEL de PLANS DIMENSIONNELS et d'AFFICHES ÉLECTORALES à PRIX CASSÉS ! STOCKS LIMITÉS ! 🆕 »",
 
-    "« 🚨 PROMOS de CINGLÉS sur toutes les FLASQUES et FLACONS ! -40% avec le code BALANCE_TON_FLAC ! 🚨 »",
+    "« 🚨 PROMOS de CINGLÉS sur tout le rayon FLASQUES et FLACONS ! -40% avec le code BALANCE_TON_FLAC ! 🚨 »",
 
     "« ♻️ Trouvez le contenant adapté pour chacune de vos préparations avec FlamelXpress™, partenaire officiel de votre réussite alchimique depuis 1387 ! ♻️ »",
 
@@ -201,6 +215,5 @@ FLAMELXPRESS_BANNERS = [
     "« 💬 Un problème avec votre contenant ? Notre SAV par boule de cristal vous répond en MOINS DE DEUX LUNES* ! *hors éclipses 💬 »",
 
     "« 💳 Prenez la carte de fidélité FlamelGold pour des OFFRES et RÉDUCTIONS EXCLUSIVES et bénéficier de la LIVRAISON MILLISECONDE OUFPASTROPTARD ! 💳 »"
-    
     
     ]

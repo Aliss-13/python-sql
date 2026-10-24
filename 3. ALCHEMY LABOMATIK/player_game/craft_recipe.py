@@ -161,7 +161,7 @@ def pick_product_destination(cursor, recipe_id):
     while True:
         print("--- Destination du produit ---")
         print("[1] 📓 Inventaire")
-        print("[2] 💰 Boutique")
+        print("[2] 🐍 Youtique©")
 
         destination = input("Destination : ")
 
@@ -222,6 +222,99 @@ def pick_product_destination(cursor, recipe_id):
         print("Choix invalide.")
 
 
+#------------------------------------------------------ CRAFT RECIPE -------------------------------------------------------------
+
+def consume_ingredients(cursor, required_ingredients):
+
+    for ingredient_id, required_quantity in required_ingredients:
+        cursor.execute("""
+            UPDATE inventory
+            SET quantity = quantity - ?
+            WHERE ingredient_id = ?
+              AND quantity >= ?
+        """, (required_quantity, ingredient_id, required_quantity))
+
+        if cursor.rowcount != 1:
+            raise ValueError("Stock d'ingrédients insuffisant.")
+
+
+def consume_products(cursor, required_products):
+
+    for product_recipe_id, required_quantity in required_products:
+        cursor.execute("""
+            UPDATE product_inventory
+            SET quantity = quantity - ?
+            WHERE recipe_id = ?
+              AND quantity >= ?
+        """, (required_quantity, product_recipe_id, required_quantity))
+
+        if cursor.rowcount != 1:
+            raise ValueError("Stock de produits insuffisant.")
+
+
+def consume_container(cursor, container_equipment_id):
+
+    cursor.execute("""
+        UPDATE container_inventory
+        SET quantity = quantity - 1
+        WHERE equipment_id = ?
+          AND quantity >= 1
+    """, (container_equipment_id,))
+
+    if cursor.rowcount != 1:
+        raise ValueError("Contenant indisponible.")
+    
+#-------------------------------------------------------------------------------------------------------------------------
+
+def check_recipe_craftability(cursor, recipe_id):
+
+    player_equipment_has_required_fire = check_fire(cursor, recipe_id)
+
+    player_equipment_has_required_melting_pot = check_melting_pot(cursor, recipe_id)
+
+    inventory_has_required_ingredients, required_ingredients = (check_inventory_for_items_and_quantity(
+        cursor,
+        "recipe_ingredients",
+        "recipe_id",
+        recipe_id,
+        "ingredient_id",
+        "inventory",
+        "ingredient_id",
+        "cette recette"
+    ))
+
+
+    product_inventory_has_required_products, required_products = (
+    check_inventory_for_items_and_quantity(
+        cursor,
+        "recipe_products",
+        "recipe_id",
+        recipe_id,
+        "product_recipe_id",
+        "product_inventory",
+        "recipe_id",
+        "cette recette"
+    )
+)
+
+    container_inventory_has_required_containers, container_equipment_id = check_container_inventory_for_containers_and_quantity(cursor, recipe_id)
+
+    recipe_is_craftable = all((
+        player_equipment_has_required_fire,
+        player_equipment_has_required_melting_pot,
+        inventory_has_required_ingredients,
+        product_inventory_has_required_products,
+        container_inventory_has_required_containers
+    ))
+
+    return (
+        recipe_is_craftable,
+        required_ingredients,
+        required_products,
+        container_equipment_id
+    )
+
+    
 def craft_recipe(cursor, connection):
 
     recipe_id = pick_recipe(cursor)
@@ -242,46 +335,36 @@ def craft_recipe(cursor, connection):
     recipe_nc = cursor.fetchone()
     recipe_name = recipe_nc[0]
     recipe_color = recipe_nc[1]
-
-    player_equipment_has_required_fire = check_fire(cursor, recipe_id)
-
-    player_equipment_has_required_melting_pot = check_melting_pot(cursor, recipe_id)
-
-    inventory_has_required_ingredients, result_item_to_craft_ingredients = check_inventory_for_ingredients_and_quantity(
-    cursor, "recipe_ingredients", "recipe_id", recipe_id, "cette recette")
-
-    container_inventory_has_required_containers, container_equipment_id = check_container_inventory_for_containers_and_quantity(cursor, recipe_id)
                               
-    if player_equipment_has_required_fire:
-        if player_equipment_has_required_melting_pot:
-            if inventory_has_required_ingredients:
-                if container_inventory_has_required_containers:
-                    print(f"Vous fabriquez {COLORS[recipe_color]}{recipe_name}{RESET} !")
-                    print()
+    recipe_is_craftable, required_ingredients, required_products, container_equipment_id = (
+    check_recipe_craftability(cursor, recipe_id))
 
-                    pick_product_destination(cursor, recipe_id)
+    if not recipe_is_craftable:
+        return
 
-                    for ingredient_id, required_quantity in result_item_to_craft_ingredients:
+    try:
 
-                        cursor.execute("""
-                            UPDATE inventory
-                            SET quantity = quantity - ?
-                        WHERE ingredient_id = ?
-                        """, (required_quantity, ingredient_id))
-                
-                    cursor.execute("""
-                        UPDATE container_inventory
-                        SET quantity = quantity - ?
-                        WHERE equipment_id = ?
-                    """, (1, container_equipment_id))
+        consume_ingredients(cursor, required_ingredients)
+        consume_products(cursor, required_products)
+        consume_container(cursor, container_equipment_id)
 
-                    crafted_recipe_is_true(cursor, recipe_id)
+        pick_product_destination(cursor, recipe_id)
+        
+        crafted_recipe_is_true(cursor, recipe_id)
 
-                    connection.commit()
+        connection.commit()
 
-                    check_crafted_recipes_achievements(cursor, connection)
+    except Exception:
+        connection.rollback()
+        raise
 
-                    advance_game_tick(cursor, connection)
+    else:
+        print(f"Vous fabriquez {COLORS[recipe_color]}{recipe_name}{RESET} !")
+        print()
+
+        check_crafted_recipes_achievements(cursor, connection)
+        advance_game_tick(cursor, connection)
+
 
 
 def crafted_recipe_is_true(cursor, recipe_id):
@@ -292,59 +375,48 @@ def crafted_recipe_is_true(cursor, recipe_id):
     WHERE recipe_id = ?
     """, (recipe_id,))
 
-
 # ------------------------------------------ inventaire et craft ---------------------------------------
 
-def check_inventory_for_ingredients_and_quantity(
+def check_inventory_for_items_and_quantity(
     cursor,
     source_table,
     source_id_column,
     source_id,
+    source_item_column,
+    inventory_table,
+    inventory_item_column,
     item_type
 ):
 
     cursor.execute(f"""
-    SELECT
-        ingredient_id,
-        quantity
-    FROM {source_table}
-    WHERE {source_id_column} = ?
+        SELECT
+            {source_item_column},
+            quantity
+        FROM {source_table}
+        WHERE {source_id_column} = ?
     """, (source_id,))
 
-    result_item_to_craft_ingredients = cursor.fetchall()
+    required_items = cursor.fetchall()
 
-    cursor.execute("""
+    cursor.execute(f"""
         SELECT
-            ingredient_id,
+            {inventory_item_column},
             quantity
-        FROM inventory
+        FROM {inventory_table}
     """)
-    
-    result_inventory = cursor.fetchall()
-    
-    inventory_has_required_ingredients = True
-    
-    for ingredient_id, required_quantity in result_item_to_craft_ingredients :
-    # | for a, b in liste_de_tuples: | signifie : « Pour chaque tuple de deux éléments, mets le premier dans a et le second dans b. »
-    
-        ingredient_found = False
-        ingredient_has_required_quantity = False
-    
-        for inventory_ingredient_id, inventory_quantity in result_inventory:
-    
-            if ingredient_id == inventory_ingredient_id:
-                ingredient_found = True
-    
-                if required_quantity <= inventory_quantity:
-                    ingredient_has_required_quantity = True
-    
-        if not ingredient_found:
-            inventory_has_required_ingredients = False
-    
-        elif not ingredient_has_required_quantity:
-            inventory_has_required_ingredients = False
 
-    if not inventory_has_required_ingredients:
-        print(f"Vous n'avez pas assez d'ingrédients pour fabriquer {item_type}.")
-    
-    return inventory_has_required_ingredients, result_item_to_craft_ingredients
+    inventory_items = dict(cursor.fetchall())
+
+    inventory_has_required_items = True
+
+    for item_id, required_quantity in required_items:
+
+        available_quantity = inventory_items.get(item_id, 0)
+
+        if available_quantity < required_quantity:
+            inventory_has_required_items = False
+
+    if not inventory_has_required_items:
+        print(f"Vous n'avez pas assez de ressources pour fabriquer {item_type}.")
+
+    return inventory_has_required_items, required_items

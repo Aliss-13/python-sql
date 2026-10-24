@@ -99,10 +99,14 @@ def display_container_inventory(cursor):
             equipment.description,
             container_inventory.quantity
         FROM container_inventory
+
         JOIN equipment
             ON equipment.id = container_inventory.equipment_id
         JOIN rarities
             ON rarities.id = equipment.rarity_id
+
+        WHERE container_inventory.quantity > 0
+
         ORDER BY equipment.rarity_id ASC
     """)
 
@@ -152,10 +156,15 @@ def display_product_inventory(cursor):
             recipes.description,
             product_inventory.quantity
         FROM product_inventory
+
         JOIN recipes
             ON recipes.id = product_inventory.recipe_id
+
         JOIN rarities
             ON rarities.id = recipes.rarity_id
+
+        WHERE product_inventory.quantity > 0
+
         ORDER BY recipes.rarity_id ASC
     """)
 
@@ -175,19 +184,11 @@ def display_product_inventory(cursor):
 
 def display_product_from_product_inventory(product_inventory):
 
-    groups = group_data_under_same_id(product_inventory)
-    
-    display_number = 0
+    for display_number, product in enumerate(product_inventory, start=1):
 
-    for group in groups:
+        recipe_id, name, color, description, quantity = product
 
-        display_number += 1
-
-        product = group[0]  # On prend le premier élément du groupe pour obtenir les informations du produit
-
-        name = product[1]
-        color = COLORS[product[2]]
-        description = product[3]
-        quantity = product[4]
-
-        print(f"{display_number} - {color}{name}{RESET} {YELLOW}x{quantity}{RESET} - {DIM}{description}{RESET}")
+        print(
+            f"{display_number} - {COLORS[color]}{name}{RESET} "
+            f"{YELLOW}x{quantity}{RESET} - {DIM}{description}{RESET}"
+        )

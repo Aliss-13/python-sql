@@ -7,7 +7,7 @@ from player_game.inventory import add_ingredient_to_inventory
 from player_game.recipe_research import group_by_number_of_ingredients, get_unknown_recipes, get_max_capacity
 
 from player_game.dialogues import ADVERTISING_INTERFERENCE, ASTRAL_GOSSIP, DIMENSIONAL_COMIC, CATASTROPHIC_ADVISOR
-from player_game.dialogues import SANITARY_INSPECTION, TAX_AUDIT
+from player_game.dialogues import SANITARY_INSPECTION, TAX_AUDIT, random_dialogue
 
 
 def trigger_blending_accident(cursor, connection, blending_ingredients):
@@ -77,14 +77,12 @@ def tick_temporary_event():
 
 def advertising_interference():
 
+    advertising = random_dialogue(ADVERTISING_INTERFERENCE, "advertising")
+
     print("📡 INTERFÉRENCE PUBLICITAIRE ARCANIQUE DÉTECTÉE !")
     print("Une fréquence commerciale parasite votre laboratoire...")
     print()
-    start_temporary_event(random_advertising_interference, "✨ Le signal publicitaire arcanique s'est dissipé.")
-
-def random_advertising_interference():
-    text = random.choice(ADVERTISING_INTERFERENCE)
-    return text
+    start_temporary_event(advertising, "✨ Le signal publicitaire arcanique s'est dissipé.")
 
 #------------------------------------------------- Il est vivant ! --------------------------------------------------------------
 
@@ -95,29 +93,18 @@ def hes_alive():
     print()
 
     companions = {
-    "La Commère astrale": random_astral_gossip_dialogue,
-    "Le Conseiller catastrophique": random_catastrophic_advisor_dialogue,
-    "Le Bouffon dimensionnel": random_dimensional_comic_dialogue
+    "La Commère astrale": (ASTRAL_GOSSIP, "astral_gossip"),
+    "Le Conseiller catastrophique": (CATASTROPHIC_ADVISOR, "catastrophic_advisor"),
+    "Le Bouffon dimensionnel": (DIMENSIONAL_COMIC, "dimensional_comic")
     }
 
-    name, dialogue_function = random.choice(list(companions.items()))
+    name, (dialogues, category) = random.choice(list(companions.items()))
+
+    dialogue = random_dialogue(dialogues, category)
 
     print(f"✨ Vous avez invoqué {YELLOW}{name}{RESET} !")
     print()
-    start_temporary_event(dialogue_function, f"✨ {name} disparaît... Ouf.")
-
-
-def random_astral_gossip_dialogue():
-    text = random.choice(ASTRAL_GOSSIP)
-    return text
-
-def random_catastrophic_advisor_dialogue():
-    text = random.choice(CATASTROPHIC_ADVISOR)
-    return text
-
-def random_dimensional_comic_dialogue():
-    text = random.choice(DIMENSIONAL_COMIC)
-    return text
+    start_temporary_event(dialogue, f"✨ {name} disparaît... Ouf.")
 
 #------------------------------------------------------ Taxes et emmerdes ----------------------------------------------è---------------------
 
@@ -128,24 +115,17 @@ def taxes_and_fuckeries():
     print()
 
     fuckeries = {
-    "Hermine Pingelig, Inspectrice sanitaire de l'ASEPM": random_sanitary_inspection_dialogue,
-    "Lucien Cheval, Contrôleur fiscal de la DDDP": random_tax_audit_dialogue
+    "Hermine Pingelig, Inspectrice sanitaire de l'ASEPM": (SANITARY_INSPECTION, "hermine_pingelig"),
+    "Lucien Cheval, Contrôleur fiscal de la DDDP": (TAX_AUDIT, "lucien_cheval")
     }
 
-    name, dialogue_function = random.choice(list(fuckeries.items()))
+    name, (dialogues, category) = random.choice(list(fuckeries.items()))
+
+    dialogue = random_dialogue(dialogues, category)
     
     print(f"✨ Vous avez rameuté {CYAN}{name}{RESET} !")
     print()
-    start_temporary_event(dialogue_function, f"✨ {name} part, l'air très satisfait. Pfiou... Vous vous demandez s'il vous reste du Transmut-o-Plomb...")
-
-
-def random_sanitary_inspection_dialogue():
-    text = random.choice(SANITARY_INSPECTION)
-    return text
-
-def random_tax_audit_dialogue():
-    text = random.choice(TAX_AUDIT)
-    return text
+    start_temporary_event(dialogue, f"✨ {name} part, l'air très satisfait. Pfiou... Vous vous demandez s'il vous reste du Transmut-o-Plomb...")
 
 #------------------------------------------------- Explosion pétaradante --------------------------------------------------------------
 

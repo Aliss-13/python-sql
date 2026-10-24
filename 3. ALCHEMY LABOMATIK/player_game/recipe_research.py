@@ -105,8 +105,6 @@ def menu_unknown_recipes(cursor):
         print()
         print("📑 RECHERCHE DE RECETTE")
 
-        info_format_difficulty_stars()
-
         for number, number_of_ingredients in enumerate(possible_number_of_ingredients, start=1):
 
             if number_of_ingredients > max_capacity:

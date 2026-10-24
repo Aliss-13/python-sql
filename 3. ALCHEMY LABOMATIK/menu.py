@@ -1,17 +1,16 @@
 from display.display_inventories import display_inventory, display_container_inventory, display_product_inventory, get_player_money
 from display.display_player_equipment import display_all_player_equipments
 from display.display_utils import DIM, RESET
-from display.display_player_shop_youtique import display_player_shop
-
+from display.display_shop_inventory import display_shop_inventory
 
 from player_game.portals import menu_portal
 from player_game.blending import discover_recipe
 from player_game.recipe_research import menu_unknown_recipes
 from player_game.craft_recipe import craft_recipe
 from player_game.craft_equipment import craft_equipment
-from player_game.flamelxpress import buy_container, flamel_xpress
+from player_game.flamelxpress import buy_container, flamel_xpress, display_random_banner
 from player_game.objectives import menu_objectives
-from player_game.youtique import youtique
+from player_game.youtique import youtique, menu_transfer_products, display_shop_sales_report
 
 from player_game.game_functions.advance_game_tick import advance_game_tick
 from player_game.game_functions.reset_game import menu_reset_game
@@ -60,7 +59,7 @@ def menu(cursor, connection):
         print(f"[6] 📓 Inventaire {DIM}- Ingrédients, contenants et produits fabriqués. Deuxième porte à droite.{RESET}")
         print(f"[7] ⚗️ Matériel d'alchimie {DIM}- Instruments de mélange, creusets et feux manufacturés. Dernière porte à gauche.{RESET}")
         print(f"[8] 🐍 La Youtique© {DIM}- Vente des potions, élixirs et pentagrammes concoctés : enrichissement personnel, statistiques et contrôle fiscal.{RESET}")
-        print(f"[9] 📈 Objectifs {DIM}- C'est qui le patron ?{RESET}")
+        print(f"[9] 📈 Objectifs {DIM}- On se voit au prochain copil ? Ah non c’est au coproj, autant pour moi ! Tu as bien prévenu les membres du codir ?{RESET}")
         print("")
         print(f"[q] 🔚 Quitter {DIM}- Je m'en vais comme un prince !{RESET}")
         print()
@@ -95,6 +94,8 @@ def menu(cursor, connection):
 
         elif choix == "5":
             flamel_xpress()
+            display_random_banner()
+            print()
             get_player_money(cursor)
             buy_container(cursor, connection) 
 
@@ -116,7 +117,9 @@ def menu(cursor, connection):
         elif choix == "8":
             youtique()
             get_player_money(cursor)
-            display_player_shop(cursor)
+            display_shop_inventory(cursor)
+            display_shop_sales_report(cursor)
+            menu_transfer_products(cursor, connection)
 
         elif choix == "9":
             menu_objectives(cursor)

@@ -61,8 +61,11 @@ def harvest_portal(cursor, connection, portal):
     for ingredient_id, affinity_id, value, rarity_id, weight, unlock_discoveries in portaff_ingredients:
         if value >= 0.4 and unlock_discoveries <= discoveries:
 
-            if discoveries >= 22 and rarity_id == 4:
+            if discoveries >= 22 and rarity_id in (3, 4):
                 weight *= 6
+
+            if discoveries >= 30 and rarity_id == 4:
+                weight *= 3
 
             portal_ingredients.append((ingredient_id, affinity_id, value, rarity_id, weight))
 
