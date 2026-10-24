@@ -1,4 +1,7 @@
-from player_game.craft_recipe import check_inventory_for_ingredients_and_quantity
+from player_game.craft_recipe import (
+    check_inventory_for_items_and_quantity,
+    consume_ingredients
+)
 from player_game.game_functions.advance_game_tick import advance_game_tick
 
 from display.display_utils import COLORS, RESET
@@ -55,8 +58,11 @@ def pick_equipment(cursor):
 
     equipment_to_craft = cursor.fetchall()
 
-    display_equipment_craft(equipment_to_craft)
+    if not equipment_to_craft:
+        print("              Tout a été fabriqué ! J'sais pas où j'vais mettre tout ça ...")
+        return None, None
 
+    display_equipment_craft(equipment_to_craft)
 
     available_equipment = []
 
@@ -65,12 +71,12 @@ def pick_equipment(cursor):
 
         if equipment_id not in available_equipment:
             available_equipment.append(equipment_id)
-
+        
     # choix du joueur
 
     while True:
 
-        choice = input("Equipement à fabriquer (q pour revenir) : ") 
+        choice = input("Matériel à fabriquer (q pour revenir) : ") 
 
         if choice.lower() == "q":
             return None, None
@@ -92,8 +98,8 @@ def craft_equipment(cursor, connection):
     if equipment_id is None:
         return
 
-    inventory_has_required_ingredients, result_item_to_craft_ingredients = check_inventory_for_ingredients_and_quantity(
-    cursor, "equipment_craft", "equipment_id", equipment_id, "cet équipement")
+    inventory_has_required_ingredients, result_item_to_craft_ingredients = check_inventory_for_items_and_quantity(
+    cursor, "equipment_craft", "equipment_id", equipment_id, "ingredient_id", "inventory", "ingredient_id", "cet équipement")
 
     if not inventory_has_required_ingredients:
         return
@@ -112,21 +118,23 @@ def craft_equipment(cursor, connection):
         print("Impossible de retrouver cet équipement.")
         return
 
-    print(f"Vous fabriquez {COLORS[equipment_color]}{equipment_name}{RESET} !")
-    print()
+
+    try:
+        consume_ingredients(cursor, result_item_to_craft_ingredients)
     
-    for ingredient_id, required_quantity in result_item_to_craft_ingredients:
-        cursor.execute("""
-            UPDATE inventory
-            SET quantity = quantity - ?
-            WHERE ingredient_id = ?
-        """, (required_quantity, ingredient_id))
-   
-    crafted_equipment_is_true(cursor, equipment_id)
+        crafted_equipment_is_true(cursor, equipment_id)
 
-    connection.commit()
+        connection.commit()
 
-    advance_game_tick(cursor, connection)
+    except Exception:
+        connection.rollback()
+        raise
+
+    else:
+        print(f"Vous fabriquez {COLORS[equipment_color]}{equipment_name}{RESET} !")
+        print()
+
+        advance_game_tick(cursor, connection)
 
 
 def crafted_equipment_is_true(cursor, equipment_id):

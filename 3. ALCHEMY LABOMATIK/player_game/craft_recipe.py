@@ -347,6 +347,9 @@ def craft_recipe(cursor, connection):
         consume_ingredients(cursor, required_ingredients)
         consume_products(cursor, required_products)
         consume_container(cursor, container_equipment_id)
+        
+        print(f"Vous fabriquez {COLORS[recipe_color]}{recipe_name}{RESET} !")
+        print()
 
         pick_product_destination(cursor, recipe_id)
         
@@ -359,12 +362,8 @@ def craft_recipe(cursor, connection):
         raise
 
     else:
-        print(f"Vous fabriquez {COLORS[recipe_color]}{recipe_name}{RESET} !")
-        print()
-
         check_crafted_recipes_achievements(cursor, connection)
         advance_game_tick(cursor, connection)
-
 
 
 def crafted_recipe_is_true(cursor, recipe_id):

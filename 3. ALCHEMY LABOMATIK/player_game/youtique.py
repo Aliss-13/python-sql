@@ -347,7 +347,7 @@ def display_shop_sales_report(cursor):
         recipe_id, name, color, type, total_sold, revenue, stock = product
         total_sold_global = total_sold_global + total_sold
         revenue_global = revenue_global + revenue
-        print(f"{display_number:<2} - {CYAN}CA : {revenue}{RESET} - {ORANGE}Ventes : {total_sold}{RESET} - "
+        print(f"{display_number:<2} - {CYAN}CA : {revenue:<3}{RESET} - {ORANGE}Ventes : {total_sold:<2}{RESET} - "
               f"{COLORS[color]}{name}{RESET} - {YELLOW}{type}{RESET}")
         
     print()
