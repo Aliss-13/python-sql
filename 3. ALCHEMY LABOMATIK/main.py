@@ -1,13 +1,22 @@
+import sys
 from pathlib import Path
 import sqlite3
 
 from database.database_creation_plan import create_tables
 from menu import menu
 from display.display_utils import display_main_menu
-from player_game.game_functions.initialization import initialize_containers, initialize_player_equipment, initialize_player_money
+from player_game.game_functions.initialization import (
+    initialize_containers,
+    initialize_player_equipment,
+    initialize_player_money
+)
 
 
-BASE_DIR = Path(__file__).resolve().parent #C:\Users\lisas\OneDrive\Documents\Python\python-sql\3. ALCHEMY LABOMATIK
+if getattr(sys, "frozen", False):
+    BASE_DIR = Path(sys.executable).resolve().parent
+else:
+    BASE_DIR = Path(__file__).resolve().parent
+
 DATABASE_PATH = BASE_DIR / "database.db"
 
 connection = sqlite3.connect(DATABASE_PATH)
