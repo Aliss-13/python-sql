@@ -1,246 +1,126 @@
-# Alchemy Labomatik
+# ALCHEMY LAB-O-MATIK (A-LAB pour les intimes)
 
-Alchemy Labomatik est un projet personnel développé en **Python** et **SQLite** autour d'un **système d'alchimie** destiné à un jeu vidéo.
+## 🎮 Présentation du jeu
 
-Le projet sert à expérimenter et construire progressivement différents systèmes de gameplay : gestion des ingrédients, inventaire, affinités, mélange, découverte de recettes, fabrication et progression.
+**ALCHEMY LAB-O-MATIK (A-LAB)** est un jeu de gestion et d'expérimentation alchimique en terminal, développé en **Python** avec une base de données **SQLite**.
 
-Le projet est actuellement en développement.
+Le joueur incarne un alchimiste chargé de découvrir des recettes, de fabriquer des préparations et de développer son laboratoire.
+
+Pour progresser, il devra explorer des portails, récolter des ingrédients aux propriétés mystérieuses, expérimenter différentes combinaisons et améliorer son matériel.
+
+Mais l'alchimie n'est pas qu'une affaire de science occulte : entre les fournisseurs douteux de Flamel Industries, les campagnes publicitaires invasives et les exigences commerciales de la Youtique©, le laboratoire devra également composer avec les absurdités du monde de l'entreprise.
+
+## ⚗️ Fonctionnalités principales
+
+### 🌀 Exploration des portails
+- Explorer différents portails pour récolter des ingrédients.
+- Découvrir des ressources de raretés et d'affinités variées.
+- Faire face à des événements aléatoires au cours des explorations.
+
+### 🧪 Laboratoire
+- Expérimenter des mélanges d'ingrédients avec différents instruments.
+- Exploiter les affinités alchimiques pour découvrir de nouvelles recettes.
+- Consulter les indices de découverte dans le carnet de laboratoire.
+
+### 🧫 La Popotte
+- Fabriquer des potions, élixirs et pentagrammes à partir des recettes découvertes.
+- Utiliser les ingrédients, produits intermédiaires et équipements requis.
+- Conserver les créations dans l'inventaire ou les destiner à la vente.
+
+### 🥽 La Fonderie
+- Fabriquer des instruments de mélange, des feux et des creusets.
+- Débloquer progressivement de nouveaux équipements.
+- Développer les capacités de fabrication du laboratoire.
+
+### 🌐 FlamelXpress©
+- Acheter les contenants nécessaires aux préparations.
+- Découvrir les offres et publicités de l'incontournable fournisseur alchimique.
+
+### 🐍 La Youtique©
+- Gérer les produits destinés à la vente.
+- Transférer les préparations entre l'inventaire et la boutique.
+- Générer des revenus grâce aux ventes.
+- Consulter les statistiques commerciales : chiffre d'affaires, quantités vendues et classement des produits.
+
+### 📈 Progression et objectifs
+
+Le jeu propose un suivi détaillé de la progression du joueur :
+
+- **Découvertes alchimiques :** statistiques sur les recettes découvertes, réparties selon la complexité des mélanges.
+- **Fabrication :** suivi des préparations déjà réalisées et de celles restant à fabriquer.
+- **Exploration :** suivi des ingrédients débloqués et de ceux qui n'ont jamais été récoltés.
+- **Objectifs de victoire :** accomplissements à débloquer pour progresser vers la réussite du laboratoire.
+- **Hauts faits commerciaux :** défis consistant à commercialiser des collections de préparations spécifiques.
+
+Les objectifs affichent leur état d'avancement et permettent au joueur de consulter sa progression sans révéler les recettes qu'il n'a pas encore découvertes.
+
+## 🕹️ Comment jouer
+
+Le jeu se contrôle entièrement au clavier, à travers des menus numérotés.
+
+1. **Explorez les portails** pour récolter vos premiers ingrédients.
+2. **Rendez-vous au laboratoire** pour expérimenter des mélanges et découvrir des recettes.
+3. **Fabriquez de nouveaux équipements** afin d'améliorer vos possibilités d'expérimentation.
+4. **Préparez vos créations** dans la Popotte, en réunissant les ressources nécessaires.
+5. **Développez votre activité commerciale** avec la Youtique©.
+6. **Accomplissez les objectifs** pour progresser dans votre carrière d'alchimiste.
+
+La progression est enregistrée dans une base de données SQLite. Une option du menu principal permet également de réinitialiser la partie.
 
 
-## Technologies
+## Installation et lancement
 
-- Python
+### Prérequis
+
+- Python 3
+- SQLite (intégré à la bibliothèque standard de Python)
+
+### Lancement depuis le code source
+
+Depuis le répertoire du projet, exécuter :
+
+```bash
+python main.py
+```
+
+Au démarrage, le programme se connecte à la base de données SQLite `database.db`, crée les tables manquantes et initialise les données nécessaires au joueur.
+
+Le menu principal s'affiche ensuite et permet d'accéder aux différentes fonctionnalités du jeu.
+
+### Sauvegarde
+
+La progression du joueur est conservée dans la base de données SQLite `database.db`, située à la racine du projet.
+
+
+# RUBRIQUE "SOUS LE CAPOT"
+
+## 🛠️ Technologies utilisées
+
+- Python 3
 - SQLite
-- Git / GitHub
+- Bibliothèque standard Python
 
+## 🗄️ Architecture de la base de données
 
-## Fonctionnalités actuelles
+Le jeu utilise une base de données relationnelle SQLite
+pour gérer les recettes, ingrédients, équipements,
+inventaires, découvertes et progression du joueur.
 
+![Schéma relationnel de la base de données](sql%20map.png)
 
-### Gestion des ingrédients
-
-Les ingrédients possèdent notamment :
-
-- un nom ;
-- une description ;
-- un niveau ;
-- une rareté ;
-- une ou plusieurs affinités.
-
-Les **affinités** sont associées aux ingrédients par une **relation many-to-many** via une table de liaison.
-
-Chaque association possède une valeur représentant la contribution de l'ingrédient à l'affinité concernée.
-
-
-### Raretés
-
-Les ingrédients et équipements utilisent un **système de rareté**.
-
-Chaque rareté possède :
-
-- un nom ;
-- une couleur d'affichage ;
-- un poids utilisé pour les sélections aléatoires.
-
-Les **poids** permettent notamment de réaliser une **sélection aléatoire pondérée** lors de la récupération d'ingrédients.
-
-
-### Inventaire
-
-L'inventaire conserve les quantités actuellement possédées par le joueur.
-
-Les ingrédients sont identifiés par leur ingredient_id et leur quantité.
-
-Le système permet notamment d'ajouter des quantités à l'inventaire et prépare leur consommation lors des mélanges et fabrications.
-
-
-### Portails
-
-Les portails permettent au joueur de **récupérer des ingrédients**.
-
-Chaque portail est associé à une **affinité**.
-
-La sélection des ingrédients disponibles dépend notamment :
-
-- de l'affinité du portail ;
-- du niveau du joueur ;
-- de la valeur d'affinité de l'ingrédient ;
-- de la rareté.
-
-Les ingrédients sont sélectionnés aléatoirement avec une pondération basée sur leur rareté.
-
-
-## Matériel d'alchimie
-
-Le matériel est organisé en plusieurs catégories :
-
-- Instruments ;
-- Creusets ;
-- Feux ;
-- Contenants.
-
-Le matériel possède un **catalogue de référence** décrivant ses caractéristiques.
-
-Certains instruments de mélange possèdent également une capacité définissant le nombre d'ingrédients qu'ils peuvent accepter.
-
-### Mélange
-
-Le système de mélange permet au joueur :
-
-- de choisir un instrument ;
-- de sélectionner les ingrédients ;
-- de mélanger les ingrédients ;
-- de calculer la signature d'affinités du mélange.
-
-La **capacité de l'instrument*** détermine le **nombre d'ingrédients** pouvant être mélangés.
-
-Les valeurs d'affinité des ingrédients sélectionnés sont additionnées puis normalisées afin d'obtenir la signature finale du mélange.
-
-
-### Recettes
-
-Les recettes possèdent notamment :
-
-- un nom ;
-- un type ;
-- une cible ;
-- une description ;
-- un effet ;
-- une rareté ;
-- un éventuel feu requis ;
-- un éventuel creuset requis.
-
-Les types de recettes actuellement prévus sont **Potion**, **Élixir** et **Pentagramme**.
-
-Les cibles actuellement disponibles sont Soi, Allié, Équipe, Ennemi, Tous les ennemis.
-
-
-### Découverte de recettes
-
-La découverte d'une recette repose sur la **signature d'affinités du mélange** et sur le **nombre d'ingrédients utilisés**.
-
-Les conditions de découverte sont stockées séparément des recettes afin de pouvoir définir des critères de découverte indépendamment de leur fabrication.
-
-La fabrication d'une recette constitue une étape distincte de sa découverte.
-
-
-## Structure de la base de données
-
-La base de données SQLite contient actuellement plusieurs tables permettant de séparer les différentes responsabilités du système.
-
-### Principales tables :
-
+## 📁 Organisation du projet
 ```bash
-affinities
-ingredients
-ingredient_affinities
-rarities
-inventory
-
-equipment
-equipment_categories
-equipment_craft
-mixing_tools
-
-recipe_types
-targets
-recipes
-recipe_discovery
+ALCHEMY LAB-O-MATIK/
+├── database/                Création de la structure de la base et sauvegarde SQL
+├── data_management/         Accès et gestion des données du jeu
+├── display/                 Fonctions d'affichage dans le terminal
+├── player_game/             Mécaniques de jeu : exploration, mélange, fabrication, commerce
+│   └── game_functions/      Initialisation, gestion du temps, état et réinitialisation de la partie
+├── database.db
+├── database_backup.sql
+├── main.py
+├── menu.py
+├── menu_data.py
+├── utils.py
+└── README.md
 ```
-### Liaisons :
-
-Le projet utilise des clés étrangères pour maintenir les relations entre les différentes tables.
-
-Les tables de liaison permettent notamment de représenter les relations entre :
-
-- ingrédients et affinités ;
-- équipements et ingrédients utilisés pour leur fabrication.
-- Catalogue, disponibilité et possession
-
-Le projet distingue progressivement trois notions :
-
-```bash
-CATALOGUE
-    |
-    | définition de l'objet
-    v
-DISPONIBILITÉ
-    |
-    | progression / déblocage
-    v
-INVENTAIRE
-    |
-    | quantité possédée
-    v
-UTILISATION
-```
-
-**Le catalogue** décrit les objets existant dans le jeu.
-
-**La disponibilité** détermine quels objets sont accessibles au joueur.
-
-**L'inventaire** représente les objets actuellement possédés et disponibles pour être utilisés.
-
-Cette distinction sera notamment utilisée pour les **contenants**, qui peuvent être fabriqués puis utilisés comme composants lors de la fabrication d'autres objets.
-
-
-## État du projet
-
-Le projet est actuellement au stade de prototypage et de développement du modèle de données.
-
-Les principaux systèmes déjà mis en place sont :
-
-- Base de données SQLite
-- Données de référence
-- Affinités
-- Ingrédients
-- Raretés
-- Inventaire
-- Portails
-- Matériel d'alchimie
-- Catégories de matériel
-- Outils de mélange
-- Calcul de la signature d'affinités
-- Types de recettes
-- Cibles
-- Recettes
-- Conditions de découverte des recettes
-- Consommation des ingrédients
-- Fabrication des contenants
-- Fabrication des recettes
-- Système de disponibilité du matériel
-- Progression du joueur
-- Système complet de découverte des recettes
-- Sauvegarde de la base de données
-
-La base SQLite utilisée pendant le développement est conservée localement et n'est pas versionnée directement.
-
-Un **dump SQL** de la base est utilisé pour conserver des snapshots versionnés de son état :
-
-```bash
-database.db
-     |
-     | dump SQL
-     v
-database_backup.sql
-     |
-     v
-Git / GitHub
-```
-
-Cela permet de conserver une version reconstruisible de la base tout en gardant la base SQLite de travail hors du dépôt Git.
-
-## À venir
-
-Les prochaines étapes concernent notamment :
-
-- la consommation des ingrédients lors des mélanges ;
-- la fabrication et le stockage des contenants dans l'inventaire ;
-- la fabrication et le stockage du matériel dans une table dédiée ;
-- la gestion de la disponibilité du matériel ;
-- la fabrication des recettes ;
-- la finalisation du système de découverte ;
-- la progression du joueur ;
-- l'enrichissement du contenu alchimique.
-
-Le projet servira de base à une intégration ultérieure dans Funky Final Fantasy (FFF) pour alimenter un artisanat.

@@ -9,7 +9,6 @@ from player_game.game_functions.initialization import initialize_containers, ini
 
 BASE_DIR = Path(__file__).resolve().parent #C:\Users\lisas\OneDrive\Documents\Python\python-sql\3. ALCHEMY LABOMATIK
 DATABASE_PATH = BASE_DIR / "database.db"
-print(DATABASE_PATH.resolve())
 
 connection = sqlite3.connect(DATABASE_PATH)
 
@@ -36,8 +35,8 @@ connection.commit()
 
 # ------------------------------------------------ menu
 
-display_main_menu()
-
-menu(cursor, connection)
-
-connection.close()
+try:
+    display_main_menu()
+    menu(cursor, connection)
+finally:
+    connection.close()
