@@ -33,15 +33,21 @@ def reset_game(cursor, connection):
         "player_achievements"
     ]
 
-    for table in tables_to_reset:
-        cursor.execute(f"DELETE FROM {table}")
+    try:
+        for table in tables_to_reset:
+            cursor.execute(f"DELETE FROM {table}")
 
-    cursor.execute("""
-        UPDATE player
-        SET money = 100
-    """)
+        cursor.execute("""
+            UPDATE player
+            SET money = 100
+            WHERE id = 1
+        """)
 
-    connection.commit()
+        connection.commit()
+
+    except Exception:
+        connection.rollback()
+        raise
 
 
 def test_reset_game(cursor):
@@ -88,7 +94,6 @@ def menu_reset_game(cursor, connection):
 
         if choice == "reset_game":
             reset_game(cursor, connection)
-            test_reset_game(cursor)
             print()
             print ("Partie réinitialisée ✅")
             break

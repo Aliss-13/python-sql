@@ -69,7 +69,7 @@ def menu(cursor, connection):
         choix = input("> ")
         print()
 
-        if choix == "b":
+        if choix == "bddforever":
             menu_database_management(cursor, connection)
 
         elif choix == "1":

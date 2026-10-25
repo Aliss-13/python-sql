@@ -66,6 +66,10 @@ def get_max_capacity(cursor):
     
     max_capacity = result[0]
 
+    if max_capacity is None:
+        print("Vous ne possédez pas d'outil de mélange, rendez-vous à la Fonderie pour en fabriquer un !")
+        return 0
+
     return max_capacity
 
 

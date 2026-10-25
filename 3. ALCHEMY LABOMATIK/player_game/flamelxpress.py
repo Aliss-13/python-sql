@@ -107,11 +107,13 @@ def buy_container(cursor, connection):
 
         try:
             cursor.execute("""
-            UPDATE player
-            SET money = money - ?
-            WHERE id = ?
-            """, (price*quantity, 1))
+                UPDATE player
+                SET money = money - ?
+                WHERE id = ? AND money >= ?
+            """, (price * quantity, 1, price * quantity))
 
+            if cursor.rowcount != 1:
+                raise ValueError("Fonds insuffisants.")
 
             cursor.execute("""
             SELECT equipment_id
@@ -140,6 +142,7 @@ def buy_container(cursor, connection):
         except Exception as error:
             connection.rollback()
             print(f"La transaction a échoué : {error}")
+            return
 
         print(f"Vous achetez {COLORS[selected_container[3]]}{selected_container[1]}{RESET} x{quantity} !")
 

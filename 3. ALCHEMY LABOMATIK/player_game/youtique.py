@@ -22,57 +22,6 @@ def random_sale_dialogue(item):
     text = random.choice(SALE_DIALOGUES)
     return text.format(item=item)
 
-
-def sell_recipe(cursor, connection, recipe_id):
-
-    try:
-        cursor.execute("""
-            SELECT selling_price
-            FROM recipes
-            WHERE id = ?
-        """, (recipe_id,))
-
-        result = cursor.fetchone()
-
-        if result is None:
-            return False
-
-        selling_price = result[0] # Déballer le tuple
-
-        cursor.execute("""
-            UPDATE shop_inventory
-            SET quantity = quantity - 1
-            WHERE recipe_id = ?
-              AND quantity > 0
-        """, (recipe_id,))
-
-        if cursor.rowcount == 0:
-            connection.rollback()
-            return False
-
-        cursor.execute("""
-            UPDATE player
-            SET money = money + ?
-            WHERE id = 1
-        """, (selling_price,))
-
-        if cursor.rowcount == 0:
-            raise ValueError("Joueur introuvable.")
-
-        cursor.execute("""
-            INSERT INTO sales_history (recipe_id, quantity)
-            VALUES (?, 1)
-        """, (recipe_id,))
-
-        connection.commit()
-
-    except Exception:
-        connection.rollback()
-        raise
-
-    check_commercial_achievements(cursor)
-    return True
-
     
 def auto_sell(cursor, connection, game_tick):
 
@@ -111,9 +60,13 @@ def auto_sell(cursor, connection, game_tick):
              
                     cursor.execute("""
                         UPDATE shop_inventory
-                        SET quantity = quantity - ?
+                        SET quantity = quantity - 1
                         WHERE recipe_id = ?
-                    """, (1, recipe_id))
+                        AND quantity >= 1
+                    """, (recipe_id,))
+
+                    if cursor.rowcount != 1:
+                        raise ValueError("Stock insuffisant pour la vente.")
 
                     cursor.execute("""
                         UPDATE player
@@ -143,7 +96,6 @@ def auto_sell(cursor, connection, game_tick):
                             SET quantity = quantity + ?
                             WHERE recipe_id = ?
                         """, (1, recipe_id))
-
                     
                 except Exception:
                     connection.rollback()
@@ -273,7 +225,7 @@ def transfer_product(cursor, connection, recipe_id, quantity, source, destinatio
             ON CONFLICT(recipe_id)
             DO UPDATE SET quantity = quantity + excluded.quantity
         """, (recipe_id, quantity))
-
+    
         connection.commit()
 
     except Exception:

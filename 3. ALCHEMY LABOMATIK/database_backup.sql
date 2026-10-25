@@ -1,4 +1,27 @@
 BEGIN TRANSACTION;
+CREATE TABLE achievements (
+
+        id INTEGER PRIMARY KEY,
+        name TEXT NOT NULL,
+        category TEXT NOT NULL
+
+    , parent_id INTEGER REFERENCES achievements(id), description TEXT);
+INSERT INTO "achievements" VALUES(1,'Le Maître des Mélanges','victory',NULL,NULL);
+INSERT INTO "achievements" VALUES(2,'Mélanges à 2 ingrédients','victory',1,NULL);
+INSERT INTO "achievements" VALUES(3,'Mélanges à 3 ingrédients','victory',1,NULL);
+INSERT INTO "achievements" VALUES(4,'Mélanges à 4 ingrédients','victory',1,NULL);
+INSERT INTO "achievements" VALUES(5,'Mélanges à 5 ingrédients','victory',1,NULL);
+INSERT INTO "achievements" VALUES(6,'Mélanges à 6 ingrédients','victory',1,NULL);
+INSERT INTO "achievements" VALUES(7,'Le Collectionneur Compulsif','victory',NULL,NULL);
+INSERT INTO "achievements" VALUES(8,'La Popotte Étoilée','victory',NULL,NULL);
+INSERT INTO "achievements" VALUES(9,'Fabriquer toutes les potions','victory',8,NULL);
+INSERT INTO "achievements" VALUES(10,'Fabriquer tous les élixirs','victory',8,NULL);
+INSERT INTO "achievements" VALUES(11,'Fabriquer tous les pentagrammes','victory',8,NULL);
+INSERT INTO "achievements" VALUES(12,'La Gastro Explosive','fun',NULL,'Avoir vendu tous les articles provoquant des troubles digestifs sévères.');
+INSERT INTO "achievements" VALUES(13,'La 4 Grammes','fun',NULL,'Avoir vendu un exemplaire de chaque article conduisant directement en cellule de dégrisement.');
+INSERT INTO "achievements" VALUES(14,'La Raclée de sa Mère','fun',NULL,'Avoir vendu tous les articles en rapport avec une prise de branlée monumentale.');
+INSERT INTO "achievements" VALUES(15,'Le Trou de la Sécu','fun',NULL,'Avoir vendu tous les articles remboursés par la Société d''Équilibration de la Cupelle.');
+INSERT INTO "achievements" VALUES(16,'Le Focus sur les Quick-Win','fun',NULL,'Avoir vendu tous les articles prédictifs d''une reconversion post-burnout en élevage caprin dans le Cantal.');
 CREATE TABLE affinities (
         id INTEGER PRIMARY KEY,
         name TEXT NOT NULL UNIQUE
@@ -14,7 +37,6 @@ CREATE TABLE container_inventory (
     quantity INTEGER NOT NULL DEFAULT 0,
     FOREIGN KEY (equipment_id) REFERENCES equipment(id)
 );
-INSERT INTO "container_inventory" VALUES(4,1);
 CREATE TABLE containers (
 
         equipment_id INTEGER PRIMARY KEY,
@@ -60,22 +82,22 @@ INSERT INTO "equipment" VALUES(5,'Fiole piriforme',2,'Un joli contenant en forme
 INSERT INTO "equipment" VALUES(6,'Mortier d''alchimiste',1,'Un mélangeur semi-professionnel.',1,5);
 INSERT INTO "equipment" VALUES(7,'Mixeur arcanique',2,'Destructure l''intemporalité grâce à la technologie Brushless® de ses lames rotatives.',1,15);
 INSERT INTO "equipment" VALUES(8,'Moulingex Baby Cook®',3,'Indispensable pour tout alchimiste qui se respecte. Prépare aussi facilement et rapidement les repas de Bébé.',1,25);
-INSERT INTO "equipment" VALUES(9,'Thermomix 9000 DolbyTHX',4,'Si vous pouvez tâcher moyen de vous éloigner de vingt-cinq pieds, bon pieds hein, parce que ça va gicler un peu.',1,40);
+INSERT INTO "equipment" VALUES(9,'Thermomix 9000 DolbyTHX',4,'Si vous pouvez tâcher moyen de vous éloigner de vingt-cinq pieds, bon pieds hein, parce que ça va gicler un peu.',1,30);
 INSERT INTO "equipment" VALUES(10,'Gazinière cryogénique',2,'Frissons garantis !',3,20);
 INSERT INTO "equipment" VALUES(11,'Générateur de courant alternatif',2,'Bien charger en plutonium avant utilisation.',3,15);
 INSERT INTO "equipment" VALUES(12,'Mini trou noir portatif',3,'Ne pas avaler.',3,20);
 INSERT INTO "equipment" VALUES(13,'Tornade naine',3,'Mieux connue simplement sous le nom de Taz.',3,30);
-INSERT INTO "equipment" VALUES(14,'Tcherno-Bulle',4,'La fusion nucléaire sans risque !',3,35);
-INSERT INTO "equipment" VALUES(15,'La Colère de la Daronne',4,'Quand elle t''appelle par tous tes prénoms ET ton nom de famille, tu sais que ça va chier.',3,40);
+INSERT INTO "equipment" VALUES(14,'Tcherno-Bulle',4,'La fusion nucléaire sans risque !',3,30);
+INSERT INTO "equipment" VALUES(15,'La Colère de la Daronne',4,'Quand elle t''appelle par tous tes prénoms ET ton nom de famille, tu sais que ça va chier.',3,33);
 INSERT INTO "equipment" VALUES(16,'Plancha caramba',2,'Old El Paso, tacos y sombreros.',2,15);
 INSERT INTO "equipment" VALUES(17,'Cocotte-milliseconde Pouftroptard',1,'Là, c''est trop tard...',2,20);
 INSERT INTO "equipment" VALUES(18,'Alambic H.i.C.',2,'Fourni avec une boîte de 10 alcootests !',2,20);
 INSERT INTO "equipment" VALUES(19,'Centrifugeur Gerboulex',2,'Peut aussi servir d''essoreur à salade.',2,20);
 INSERT INTO "equipment" VALUES(20,'Ampoule à décanter Paul Bocal',1,'"Bien agiter - Laisser reposer." - Manuel d''éducation positive.',2,10);
-INSERT INTO "equipment" VALUES(21,'Pipotron',4,'Virtuosité moléculaire, abnégation expérimentale et langue de bois.',2,40);
+INSERT INTO "equipment" VALUES(21,'Pipotron',4,'Virtuosité moléculaire, abnégation expérimentale et langue de bois.',2,35);
 INSERT INTO "equipment" VALUES(22,'Plaque à induction',3,'12 feux, 18 tailles et 25 diamètres.',2,30);
 INSERT INTO "equipment" VALUES(23,'Easy-Filtration®',3,'Une solution complète pour toutes vos expérimentations !',2,35);
-INSERT INTO "equipment" VALUES(24,'Sphère flottante SpaceX',3,'Les sons pleine balle de Katy Perry font partie intégrante du processus infra-atomique résonnanciel de transmutation.',2,40);
+INSERT INTO "equipment" VALUES(24,'Sphère flottante SpaceX',3,'Les sons pleine balle de Katy Perry font partie intégrante du processus infra-atomique résonnanciel de transmutation.',2,30);
 INSERT INTO "equipment" VALUES(25,'Flasque souple',1,'En silicone magique recyclable.',4,0);
 INSERT INTO "equipment" VALUES(26,'Thermos de chantier',2,'Récipient isotherme ultra-robuste conçu pour maintenir les boissons chaudes ou froides dans des conditions de travail difficiles.',4,15);
 INSERT INTO "equipment" VALUES(27,'Flacon en cristal ciselé',2,'Un bel ouvrage de la marque prestigieuse Pierre Brochant.',4,20);
@@ -83,9 +105,9 @@ INSERT INTO "equipment" VALUES(28,'Mini baril plombé',1,'Idéal pour les mélan
 INSERT INTO "equipment" VALUES(29,'Bocal à anchois',1,'Plébiscité par Joseph d''Arimathie pour sa polyvalence et sa praticité.',4,20);
 INSERT INTO "equipment" VALUES(30,'Flasque Metal Gear Solid',3,'En métal hypoallergénique, non testé sur les animaux.',4,25);
 INSERT INTO "equipment" VALUES(31,'Tonnelet en bois-sorcier',3,'Son bois précieux issu du commerce équitable conserve tous les bienfaits de votre boisson.',4,30);
-INSERT INTO "equipment" VALUES(32,'Poche à perfusion',3,'Pour toute administration intraveineuse de substance à diffusion lente.',4,35);
-INSERT INTO "equipment" VALUES(33,'Tireuse à bière',4,'Sert votre potion ou élixir à pression optimale.',4,40);
-INSERT INTO "equipment" VALUES(34,'Flacon Oeil-de-Dragon',4,'Baisse les yeux.',4,40);
+INSERT INTO "equipment" VALUES(32,'Poche à perfusion',3,'Pour toute administration intraveineuse de substance à diffusion lente.',4,30);
+INSERT INTO "equipment" VALUES(33,'Tireuse à bière',4,'Sert votre potion ou élixir à pression optimale.',4,30);
+INSERT INTO "equipment" VALUES(34,'Flacon Oeil-de-Dragon',4,'Baisse les yeux.',4,32);
 INSERT INTO "equipment" VALUES(35,'Cuir tanné',1,'Non vegan. Provenance couverte par notre clause de confidentialité.',4,0);
 INSERT INTO "equipment" VALUES(36,'Parchemin maudit',1,'Issu de la synergie de nos chaînes de montage hi-tech et du savoir-faire millénaire de nos partenaires en poisse et emmerdements. ',4,25);
 INSERT INTO "equipment" VALUES(37,'Serviette de table',1,'En coton bio éco-sourcé.',4,0);
@@ -94,9 +116,9 @@ INSERT INTO "equipment" VALUES(39,'Affiche électorale',2,'Tous bords politiques
 INSERT INTO "equipment" VALUES(40,'Papyrus',2,'En provenance directe de nos pyramides, extra-fraîcheur garantie !',4,20);
 INSERT INTO "equipment" VALUES(41,'Notice de montage IKEA',3,'Il restera toujours une vis à la fin.',4,20);
 INSERT INTO "equipment" VALUES(42,'Feuille de Bananarama',3,'Issue de la cueillette intensive et raisonnée par nos bulldozers magiques.',4,25);
-INSERT INTO "equipment" VALUES(43,'Cloison de logement social',4,'D''une finesse inégalée !',4,40);
-INSERT INTO "equipment" VALUES(44,'Contrat d''assurance',4,'Sélectionné avec soin selon le degré de putasserie des mentions en petits caractères et des clauses suspensives.',4,40);
-INSERT INTO "equipment" VALUES(45,'Plan dimensionnel',4,'Provenance 99,9 % de dimensions alternatives. Possibles traces d''arachides, de noix ou d''amandes.',4,40);
+INSERT INTO "equipment" VALUES(43,'Cloison de logement social',4,'D''une finesse inégalée !',4,30);
+INSERT INTO "equipment" VALUES(44,'Contrat d''assurance',4,'Sélectionné avec soin selon le degré de putasserie des mentions en petits caractères et des clauses suspensives.',4,30);
+INSERT INTO "equipment" VALUES(45,'Plan dimensionnel',4,'Provenance 99,9 % de dimensions alternatives. Possibles traces d''arachides, de noix ou d''amandes.',4,35);
 CREATE TABLE equipment_categories (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL UNIQUE
@@ -157,6 +179,44 @@ INSERT INTO "equipment_craft" VALUES(7,30,5);
 INSERT INTO "equipment_craft" VALUES(7,27,5);
 INSERT INTO "equipment_craft" VALUES(7,38,10);
 INSERT INTO "equipment_craft" VALUES(7,22,5);
+INSERT INTO "equipment_craft" VALUES(13,42,10);
+INSERT INTO "equipment_craft" VALUES(13,30,10);
+INSERT INTO "equipment_craft" VALUES(13,38,15);
+INSERT INTO "equipment_craft" VALUES(13,17,12);
+INSERT INTO "equipment_craft" VALUES(14,35,15);
+INSERT INTO "equipment_craft" VALUES(14,16,15);
+INSERT INTO "equipment_craft" VALUES(14,45,6);
+INSERT INTO "equipment_craft" VALUES(14,4,20);
+INSERT INTO "equipment_craft" VALUES(14,41,5);
+INSERT INTO "equipment_craft" VALUES(15,33,15);
+INSERT INTO "equipment_craft" VALUES(15,40,5);
+INSERT INTO "equipment_craft" VALUES(15,27,15);
+INSERT INTO "equipment_craft" VALUES(15,26,15);
+INSERT INTO "equipment_craft" VALUES(15,46,8);
+INSERT INTO "equipment_craft" VALUES(15,45,6);
+INSERT INTO "equipment_craft" VALUES(22,32,5);
+INSERT INTO "equipment_craft" VALUES(22,23,15);
+INSERT INTO "equipment_craft" VALUES(22,52,15);
+INSERT INTO "equipment_craft" VALUES(22,53,10);
+INSERT INTO "equipment_craft" VALUES(22,47,8);
+INSERT INTO "equipment_craft" VALUES(22,45,8);
+INSERT INTO "equipment_craft" VALUES(23,1,25);
+INSERT INTO "equipment_craft" VALUES(23,32,5);
+INSERT INTO "equipment_craft" VALUES(23,50,12);
+INSERT INTO "equipment_craft" VALUES(23,51,9);
+INSERT INTO "equipment_craft" VALUES(23,53,14);
+INSERT INTO "equipment_craft" VALUES(23,52,6);
+INSERT INTO "equipment_craft" VALUES(24,41,5);
+INSERT INTO "equipment_craft" VALUES(24,32,5);
+INSERT INTO "equipment_craft" VALUES(24,39,5);
+INSERT INTO "equipment_craft" VALUES(21,40,8);
+INSERT INTO "equipment_craft" VALUES(21,39,8);
+INSERT INTO "equipment_craft" VALUES(21,42,8);
+INSERT INTO "equipment_craft" VALUES(21,43,20);
+INSERT INTO "equipment_craft" VALUES(9,42,15);
+INSERT INTO "equipment_craft" VALUES(9,27,15);
+INSERT INTO "equipment_craft" VALUES(9,32,15);
+INSERT INTO "equipment_craft" VALUES(9,40,8);
 CREATE TABLE ingredient_affinities (
     ingredient_id INTEGER,
     affinity_id INTEGER,
@@ -336,50 +396,6 @@ CREATE TABLE inventory (
         quantity INTEGER NOT NULL DEFAULT 0,
         FOREIGN KEY (ingredient_id) REFERENCES ingredients(id)
 );
-INSERT INTO "inventory" VALUES(1,54);
-INSERT INTO "inventory" VALUES(2,125);
-INSERT INTO "inventory" VALUES(3,3);
-INSERT INTO "inventory" VALUES(4,54);
-INSERT INTO "inventory" VALUES(5,19);
-INSERT INTO "inventory" VALUES(6,21);
-INSERT INTO "inventory" VALUES(7,28);
-INSERT INTO "inventory" VALUES(8,10);
-INSERT INTO "inventory" VALUES(9,12);
-INSERT INTO "inventory" VALUES(10,4);
-INSERT INTO "inventory" VALUES(11,50);
-INSERT INTO "inventory" VALUES(12,108);
-INSERT INTO "inventory" VALUES(13,55);
-INSERT INTO "inventory" VALUES(14,13);
-INSERT INTO "inventory" VALUES(15,102);
-INSERT INTO "inventory" VALUES(16,18);
-INSERT INTO "inventory" VALUES(17,149);
-INSERT INTO "inventory" VALUES(18,6);
-INSERT INTO "inventory" VALUES(19,3);
-INSERT INTO "inventory" VALUES(20,28);
-INSERT INTO "inventory" VALUES(21,10);
-INSERT INTO "inventory" VALUES(22,20);
-INSERT INTO "inventory" VALUES(23,6);
-INSERT INTO "inventory" VALUES(24,104);
-INSERT INTO "inventory" VALUES(25,0);
-INSERT INTO "inventory" VALUES(26,4);
-INSERT INTO "inventory" VALUES(27,10);
-INSERT INTO "inventory" VALUES(28,32);
-INSERT INTO "inventory" VALUES(29,25);
-INSERT INTO "inventory" VALUES(30,15);
-INSERT INTO "inventory" VALUES(31,100);
-INSERT INTO "inventory" VALUES(32,3);
-INSERT INTO "inventory" VALUES(34,28);
-INSERT INTO "inventory" VALUES(35,41);
-INSERT INTO "inventory" VALUES(36,36);
-INSERT INTO "inventory" VALUES(37,16);
-INSERT INTO "inventory" VALUES(38,30);
-INSERT INTO "inventory" VALUES(43,69);
-INSERT INTO "inventory" VALUES(44,75);
-INSERT INTO "inventory" VALUES(45,2);
-INSERT INTO "inventory" VALUES(46,1);
-INSERT INTO "inventory" VALUES(47,9);
-INSERT INTO "inventory" VALUES(48,14);
-INSERT INTO "inventory" VALUES(49,2);
 CREATE TABLE mixing_tools (
     equipment_id INTEGER PRIMARY KEY,
     capacity INTEGER,
@@ -397,38 +413,27 @@ CREATE TABLE player (
             CHECK (money >= 0)
 
     );
-INSERT INTO "player" VALUES(1,98);
+INSERT INTO "player" VALUES(1,100);
+CREATE TABLE player_achievements (
+
+        achievement_id INTEGER PRIMARY KEY,
+
+        FOREIGN KEY (achievement_id) REFERENCES achievements(id)
+        
+    );
 CREATE TABLE player_equipment (
     equipment_id INTEGER PRIMARY KEY,
     crafted INTEGER NOT NULL DEFAULT 0 CHECK (crafted IN (0, 1)),
     FOREIGN KEY (equipment_id) REFERENCES equipment(id)
 );
-INSERT INTO "player_equipment" VALUES(1,1);
-INSERT INTO "player_equipment" VALUES(2,1);
-INSERT INTO "player_equipment" VALUES(3,1);
+INSERT INTO "player_equipment" VALUES(1,0);
+INSERT INTO "player_equipment" VALUES(2,0);
+INSERT INTO "player_equipment" VALUES(3,0);
 INSERT INTO "player_equipment" VALUES(4,0);
 INSERT INTO "player_equipment" VALUES(5,0);
-INSERT INTO "player_equipment" VALUES(6,1);
-INSERT INTO "player_equipment" VALUES(7,1);
-INSERT INTO "player_equipment" VALUES(10,0);
-INSERT INTO "player_equipment" VALUES(11,1);
-INSERT INTO "player_equipment" VALUES(12,0);
-INSERT INTO "player_equipment" VALUES(16,0);
-INSERT INTO "player_equipment" VALUES(17,0);
-INSERT INTO "player_equipment" VALUES(18,0);
-INSERT INTO "player_equipment" VALUES(19,0);
-INSERT INTO "player_equipment" VALUES(20,1);
 INSERT INTO "player_equipment" VALUES(25,0);
-INSERT INTO "player_equipment" VALUES(26,0);
-INSERT INTO "player_equipment" VALUES(27,0);
-INSERT INTO "player_equipment" VALUES(28,0);
-INSERT INTO "player_equipment" VALUES(29,0);
 INSERT INTO "player_equipment" VALUES(35,0);
 INSERT INTO "player_equipment" VALUES(37,0);
-INSERT INTO "player_equipment" VALUES(38,0);
-INSERT INTO "player_equipment" VALUES(39,0);
-INSERT INTO "player_equipment" VALUES(40,0);
-INSERT INTO "player_equipment" VALUES(41,0);
 CREATE TABLE player_recipe_research (
     
         recipe_id INTEGER NOT NULL,
@@ -439,107 +444,17 @@ CREATE TABLE player_recipe_research (
         FOREIGN KEY (recipe_id) REFERENCES recipes(id)
        
     );
-INSERT INTO "player_recipe_research" VALUES(7,1);
-INSERT INTO "player_recipe_research" VALUES(11,1);
-INSERT INTO "player_recipe_research" VALUES(3,1);
-INSERT INTO "player_recipe_research" VALUES(9,1);
-INSERT INTO "player_recipe_research" VALUES(11,2);
-INSERT INTO "player_recipe_research" VALUES(13,1);
-INSERT INTO "player_recipe_research" VALUES(13,2);
-INSERT INTO "player_recipe_research" VALUES(8,1);
-INSERT INTO "player_recipe_research" VALUES(9,2);
-INSERT INTO "player_recipe_research" VALUES(9,3);
-INSERT INTO "player_recipe_research" VALUES(14,3);
-INSERT INTO "player_recipe_research" VALUES(27,2);
-INSERT INTO "player_recipe_research" VALUES(30,3);
-INSERT INTO "player_recipe_research" VALUES(8,2);
-INSERT INTO "player_recipe_research" VALUES(10,2);
-INSERT INTO "player_recipe_research" VALUES(4,2);
-INSERT INTO "player_recipe_research" VALUES(14,2);
-INSERT INTO "player_recipe_research" VALUES(17,2);
-INSERT INTO "player_recipe_research" VALUES(17,3);
-INSERT INTO "player_recipe_research" VALUES(16,3);
-INSERT INTO "player_recipe_research" VALUES(17,1);
-INSERT INTO "player_recipe_research" VALUES(4,1);
-INSERT INTO "player_recipe_research" VALUES(5,1);
-INSERT INTO "player_recipe_research" VALUES(5,2);
-INSERT INTO "player_recipe_research" VALUES(6,1);
-INSERT INTO "player_recipe_research" VALUES(15,2);
-INSERT INTO "player_recipe_research" VALUES(24,1);
-INSERT INTO "player_recipe_research" VALUES(30,1);
-INSERT INTO "player_recipe_research" VALUES(15,1);
-INSERT INTO "player_recipe_research" VALUES(16,1);
-INSERT INTO "player_recipe_research" VALUES(6,2);
-INSERT INTO "player_recipe_research" VALUES(30,2);
-INSERT INTO "player_recipe_research" VALUES(16,2);
-INSERT INTO "player_recipe_research" VALUES(4,3);
-INSERT INTO "player_recipe_research" VALUES(24,3);
-INSERT INTO "player_recipe_research" VALUES(27,3);
-INSERT INTO "player_recipe_research" VALUES(14,1);
-INSERT INTO "player_recipe_research" VALUES(18,1);
-INSERT INTO "player_recipe_research" VALUES(27,1);
-INSERT INTO "player_recipe_research" VALUES(18,2);
-INSERT INTO "player_recipe_research" VALUES(24,2);
-INSERT INTO "player_recipe_research" VALUES(19,1);
-INSERT INTO "player_recipe_research" VALUES(19,3);
-INSERT INTO "player_recipe_research" VALUES(19,4);
-INSERT INTO "player_recipe_research" VALUES(21,1);
-INSERT INTO "player_recipe_research" VALUES(22,1);
-INSERT INTO "player_recipe_research" VALUES(25,3);
-INSERT INTO "player_recipe_research" VALUES(26,3);
-INSERT INTO "player_recipe_research" VALUES(10,1);
-INSERT INTO "player_recipe_research" VALUES(20,3);
-INSERT INTO "player_recipe_research" VALUES(21,2);
-INSERT INTO "player_recipe_research" VALUES(21,3);
-INSERT INTO "player_recipe_research" VALUES(22,2);
-INSERT INTO "player_recipe_research" VALUES(22,3);
-INSERT INTO "player_recipe_research" VALUES(22,4);
-INSERT INTO "player_recipe_research" VALUES(23,3);
-INSERT INTO "player_recipe_research" VALUES(23,4);
-INSERT INTO "player_recipe_research" VALUES(29,4);
-INSERT INTO "player_recipe_research" VALUES(20,2);
-INSERT INTO "player_recipe_research" VALUES(26,2);
-INSERT INTO "player_recipe_research" VALUES(23,2);
-INSERT INTO "player_recipe_research" VALUES(25,2);
-INSERT INTO "player_recipe_research" VALUES(29,1);
-INSERT INTO "player_recipe_research" VALUES(19,2);
-INSERT INTO "player_recipe_research" VALUES(25,4);
-INSERT INTO "player_recipe_research" VALUES(29,2);
 CREATE TABLE player_recipes (
     recipe_id INTEGER PRIMARY KEY,
     crafted INTEGER NOT NULL DEFAULT 0
     	CHECK (crafted IN (0, 1)),
     FOREIGN KEY (recipe_id) REFERENCES recipes(id)
 );
-INSERT INTO "player_recipes" VALUES(1,0);
-INSERT INTO "player_recipes" VALUES(2,1);
-INSERT INTO "player_recipes" VALUES(3,0);
-INSERT INTO "player_recipes" VALUES(4,0);
-INSERT INTO "player_recipes" VALUES(5,0);
-INSERT INTO "player_recipes" VALUES(6,0);
-INSERT INTO "player_recipes" VALUES(7,0);
-INSERT INTO "player_recipes" VALUES(8,0);
-INSERT INTO "player_recipes" VALUES(9,0);
-INSERT INTO "player_recipes" VALUES(10,0);
-INSERT INTO "player_recipes" VALUES(12,0);
-INSERT INTO "player_recipes" VALUES(13,0);
-INSERT INTO "player_recipes" VALUES(14,0);
-INSERT INTO "player_recipes" VALUES(15,0);
-INSERT INTO "player_recipes" VALUES(16,0);
-INSERT INTO "player_recipes" VALUES(17,0);
-INSERT INTO "player_recipes" VALUES(18,0);
-INSERT INTO "player_recipes" VALUES(21,0);
-INSERT INTO "player_recipes" VALUES(24,0);
-INSERT INTO "player_recipes" VALUES(27,0);
-INSERT INTO "player_recipes" VALUES(30,0);
 CREATE TABLE product_inventory (
     recipe_id INTEGER PRIMARY KEY,
     quantity INTEGER NOT NULL DEFAULT 0,
     FOREIGN KEY (recipe_id) REFERENCES recipes(id)
 );
-INSERT INTO "product_inventory" VALUES(11,2);
-INSERT INTO "product_inventory" VALUES(15,1);
-INSERT INTO "product_inventory" VALUES(21,1);
 CREATE TABLE rarities (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
@@ -610,17 +525,13 @@ INSERT INTO "recipe_discovery" VALUES(20,4,4,0.1);
 INSERT INTO "recipe_discovery" VALUES(21,4,2,0.6);
 INSERT INTO "recipe_discovery" VALUES(21,4,1,0.3);
 INSERT INTO "recipe_discovery" VALUES(21,4,4,0.1);
-INSERT INTO "recipe_discovery" VALUES(22,4,2,0.6);
-INSERT INTO "recipe_discovery" VALUES(22,4,1,0.25);
-INSERT INTO "recipe_discovery" VALUES(22,4,4,0.1);
-INSERT INTO "recipe_discovery" VALUES(22,4,6,0.05);
 INSERT INTO "recipe_discovery" VALUES(24,3,6,0.6);
 INSERT INTO "recipe_discovery" VALUES(24,3,2,0.3);
 INSERT INTO "recipe_discovery" VALUES(24,3,4,0.1);
-INSERT INTO "recipe_discovery" VALUES(25,4,6,0.55);
-INSERT INTO "recipe_discovery" VALUES(25,4,2,0.2);
-INSERT INTO "recipe_discovery" VALUES(25,4,5,0.15);
-INSERT INTO "recipe_discovery" VALUES(25,4,3,0.1);
+INSERT INTO "recipe_discovery" VALUES(25,5,6,0.55);
+INSERT INTO "recipe_discovery" VALUES(25,5,2,0.2);
+INSERT INTO "recipe_discovery" VALUES(25,5,5,0.15);
+INSERT INTO "recipe_discovery" VALUES(25,5,3,0.1);
 INSERT INTO "recipe_discovery" VALUES(26,4,3,0.5);
 INSERT INTO "recipe_discovery" VALUES(26,4,6,0.3);
 INSERT INTO "recipe_discovery" VALUES(26,4,5,0.15);
@@ -717,6 +628,10 @@ INSERT INTO "recipe_discovery" VALUES(40,4,4,0.5);
 INSERT INTO "recipe_discovery" VALUES(40,4,6,0.3);
 INSERT INTO "recipe_discovery" VALUES(40,4,3,0.15);
 INSERT INTO "recipe_discovery" VALUES(40,4,5,0.05);
+INSERT INTO "recipe_discovery" VALUES(22,4,1,0.6);
+INSERT INTO "recipe_discovery" VALUES(22,4,2,0.3);
+INSERT INTO "recipe_discovery" VALUES(22,4,6,0.06);
+INSERT INTO "recipe_discovery" VALUES(22,4,5,0.04);
 CREATE TABLE recipe_discovery_difficulty (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
@@ -1016,13 +931,11 @@ CREATE TABLE sales_history (
 
         FOREIGN KEY (recipe_id) REFERENCES recipes(id)
     );
-INSERT INTO "sales_history" VALUES(2,1);
 CREATE TABLE shop_inventory (
     recipe_id INTEGER PRIMARY KEY,
     quantity INTEGER NOT NULL DEFAULT 0,
     FOREIGN KEY (recipe_id) REFERENCES recipes(id)
 );
-INSERT INTO "shop_inventory" VALUES(2,0);
 CREATE TABLE targets (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL UNIQUE

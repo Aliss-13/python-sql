@@ -198,7 +198,7 @@ FLAMELXPRESS_BANNERS = [
 
     "« ♻️ Trouvez le contenant adapté pour chacune de vos préparations avec FlamelXpress™, partenaire officiel de votre réussite alchimique depuis 1387 ! ♻️ »",
 
-    "« 🔥SOLDES DE LA NOUVELLE LUNE🔥 Jusqu'à -70% sur tout notre site avec le code NEWMOON ! -50% de plus avec le code TEAM_JACOB_8_PACK_BOO_EDWARD ! 🔥SOLDES DE LA NOUVELLE LUNE🔥 »",
+    "« 🔥SOLDES DE LA NOUVELLE LUNE🔥 Jusqu'à -70% sur tout notre site avec le code NEWMOON ! -50% de plus avec le code TEAM_JACOB_8_PACK_BOO_EDWARD ! »",
 
     "« 🆕 Découvrez la ALCHI LUNCHBOX 🆕 ! 5x Tireuses à bière, 10x Thermos de chantier, 10x Bocal à anchois et 10x Serviettes de table prêts à emporter ! »",
 

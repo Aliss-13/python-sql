@@ -74,7 +74,7 @@ def pick_mixing_tool(cursor):
     mixing_tools = display_all_available_mixing_tools(cursor)
 
     if not mixing_tools:
-        print("Vous ne possédez aucun instrument de mélange. Essayez d'en fabriquer un !")
+        print("Vous ne possédez pas d'outil de mélange, rendez-vous à la Fonderie pour en fabriquer un !")
         return
     
     while True:
@@ -165,7 +165,7 @@ def pick_ingredients_to_blend(cursor, capacity):
 
                 already_selected = blending_ingredients.count(ingredient_id)
                 if already_selected >= available_quantity:
-                    print("Tu n'as plus assez de cet ingrédient !")
+                    print("Vous n'avez plus assez de cet ingrédient !")
                     continue
 
                 blending_ingredients.append(ingredient_id)
