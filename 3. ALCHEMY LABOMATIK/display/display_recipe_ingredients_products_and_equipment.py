@@ -1,5 +1,5 @@
 from display.display_refactor import group_data_under_same_id, format_recipe_and_craft_items
-from display.display_utils import COLORS, RESET, YELLOW, LIGHT_PINK, CYAN, RED, ORANGE, display_recipe_description
+from display.display_utils import COLORS, RESET, YELLOW, LIGHT_PINK, display_recipe_description, info_fire_melting_pot_container
 
 
 
@@ -170,6 +170,7 @@ def display_recipe_ingredients_products_and_equipments(
     equipment_by_recipe = {}
 
     display_number = 0
+    info_fire_melting_pot_container()
 
     for ingredient_group in ingredient_groups: # 1. construction du dictionnaire des ingrédients par recette
 
@@ -243,17 +244,15 @@ def display_recipe_ingredients_products_and_equipments(
         product_text = format_recipe_and_craft_items(product_list)
         ingredient_text = format_recipe_and_craft_items(ingredient_list)
         equipment_text = (
-                            f'     {RED}Feu : {fire or "Aucun"}{RESET} - ' 
-                            f'{ORANGE}Creuset : {melting_pot or "Aucun"}{RESET} - '
-                            f'{CYAN}Contenant : {container or "Aucun"}{RESET}'
+                            f'     🔥 {fire or "Aucun"} - ' 
+                            f'⚗️ {melting_pot or "Aucun"} - '
+                            f'🧪 {container or "Aucun"}'
                         )
             
-        print(f'{display_number:>2} - {COLORS[recipe_color]}{recipe_name}{RESET} {YELLOW}[{recipe_type}]{RESET}')
+        print(f'{display_number:>2} - {COLORS[recipe_color]}{recipe_name}{RESET} {YELLOW}{recipe_type}{RESET}')
         print(equipment_text)
-        print()
         print(f'{LIGHT_PINK}     Ingrédients : {RESET}{ingredient_text}')
         print(f'{LIGHT_PINK}     Produits : {RESET}{product_text}')
-        print()
         display_recipe_description(recipe_description)
         print()
 
@@ -443,6 +442,6 @@ def display_recipe_equipments(recipe_equipments):
         
         print(
                 f'{recipe_id} - {COLORS[recipe_color]}{recipe_name}{RESET} - '
-                f'{RED}Feu : {fire or "Aucun"}{RESET} - {LIGHT_PINK}Creuset : {melting_pot or "Aucun"}{RESET} - '
-                f'{CYAN}Contenant : {container or "Aucun"}{RESET}'
+                f'🔥 {fire or "Aucun"} - ⚗️ {melting_pot or "Aucun"} - '
+                f'🧪 {container or "Aucun"}'
         )

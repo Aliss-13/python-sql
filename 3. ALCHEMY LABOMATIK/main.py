@@ -23,9 +23,9 @@ create_tables(cursor)
 
 # ------------------------------------------------ initialisation joueur
 
-initialize_containers(cursor, connection)
-initialize_player_money(cursor, connection)
-initialize_player_equipment(cursor, connection)
+initialize_containers(cursor)
+initialize_player_money(cursor)
+initialize_player_equipment(cursor)
 
 # ------------------------------------------------ commit
 

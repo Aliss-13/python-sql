@@ -1,4 +1,4 @@
-from display.display_utils import COLORS, RESET, YELLOW, RED, CYAN, LIGHT_PINK, ORANGE, display_recipe_description, format_difficulty_stars, info_format_difficulty_stars
+from display.display_utils import COLORS, RESET, YELLOW, LIGHT_PINK, info_price_demand, display_recipe_description, format_difficulty_stars, info_format_difficulty_stars
 
 
 def display_all_recipes(cursor):
@@ -49,6 +49,7 @@ def display_all_recipes(cursor):
     result = cursor.fetchall()
     print()
     info_format_difficulty_stars()
+    info_price_demand()
     display_recipe(result)
     return(result)
 
@@ -58,14 +59,12 @@ def display_recipe(recipes):
                          selling_price, demand) in enumerate (recipes, start=1):
         print(
             f'{display_number:<2} - {COLORS[color]}{name}{RESET} - '
-            f'{YELLOW}{recipe_type}{RESET} - {format_difficulty_stars(discovery_difficulty)} - '
-            f'{effect} ({target})'
-            )
+            f'{YELLOW}{recipe_type}{RESET} - {format_difficulty_stars(discovery_difficulty)} - 💰 {selling_price} pièces - 🛒 {demand}')
+        print(f'     {LIGHT_PINK}{effect} ({target}){RESET}')
         
-        print(f'     {RED}Feu : {fire or "Aucun"}{RESET} - {ORANGE}Creuset : {melting_pot or "Aucun"}{RESET} - '
-              f'{CYAN}Contenant : {container or "Aucun"}{RESET}')
+        print(f'     🔥 {fire or "Aucun"} - ' 
+            f'⚗️ {melting_pot or "Aucun"} - 🧪 {container or "Aucun"}')
         display_recipe_description(description)
-        print(f"     Prix de vente : {selling_price} pièces - Demande : {demand}")
         print()
 
 

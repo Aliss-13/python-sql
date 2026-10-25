@@ -1,5 +1,5 @@
 from display.display_refactor import group_data_under_same_id, format_affinity_items
-from display.display_utils import COLORS, RESET, DIM, YELLOW, CYAN
+from display.display_utils import COLORS, RESET, DIM, YELLOW, CYAN, display_ingredient_description
 
 
 def get_player_money(cursor):
@@ -83,9 +83,10 @@ def display_ingredient_from_inventory(inventory):
         sorted_affinity_list = sorted(affinity_list, key=lambda x: x[1], reverse=True)
         
         affinity_text = format_affinity_items(sorted_affinity_list)
-
         
-        print(f"{display_number:<2} - {COLORS[color]}{name}{RESET} {YELLOW}x{quantity}{RESET} {affinity_text} - {DIM}{description}{RESET}")
+        print(f"{display_number:<2} - {COLORS[color]}{name}{RESET} {YELLOW}x{quantity}{RESET} {affinity_text}")
+        display_ingredient_description(description)
+        print()
 
 #----------------------------------------------- CONTAINER_INVENTORY ----------------------------------------------------
 

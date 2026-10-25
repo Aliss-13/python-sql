@@ -51,6 +51,7 @@ def check_fire(cursor, recipe_id): # vérification feu dans l'équipement du jou
         SELECT
             equipment_id
         FROM player_equipment
+        WHERE crafted = 1
     """)
                                 
     result_equipment_ids = cursor.fetchall()
@@ -91,6 +92,7 @@ def check_melting_pot(cursor, recipe_id):  # vérification creuset dans l'équip
         SELECT
             equipment_id
         FROM player_equipment
+        WHERE crafted = 1
     """)
                                     
     result_equipment_ids = cursor.fetchall()
@@ -347,13 +349,12 @@ def craft_recipe(cursor, connection):
         consume_ingredients(cursor, required_ingredients)
         consume_products(cursor, required_products)
         consume_container(cursor, container_equipment_id)
-        
-        print(f"Vous fabriquez {COLORS[recipe_color]}{recipe_name}{RESET} !")
-        print()
 
         pick_product_destination(cursor, recipe_id)
         
         crafted_recipe_is_true(cursor, recipe_id)
+        
+        check_crafted_recipes_achievements(cursor)
 
         connection.commit()
 
@@ -362,7 +363,9 @@ def craft_recipe(cursor, connection):
         raise
 
     else:
-        check_crafted_recipes_achievements(cursor, connection)
+        print()
+        print(f"Vous fabriquez {COLORS[recipe_color]}{recipe_name}{RESET} !")
+        print()
         advance_game_tick(cursor, connection)
 
 

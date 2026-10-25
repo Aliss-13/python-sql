@@ -70,7 +70,7 @@ def sell_recipe(cursor, connection, recipe_id):
         connection.rollback()
         raise
 
-    check_commercial_achievements(cursor, connection)
+    check_commercial_achievements(cursor)
     return True
 
     

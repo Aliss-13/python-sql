@@ -1,6 +1,5 @@
 import random
 
-from display.display_equipment_and_equipment_craft import display_all_available_mixing_tools
 from display.display_inventories import display_inventory
 from display.display_refactor import group_data_under_same_id
 from display.display_utils import COLORS, RESET
@@ -12,6 +11,63 @@ from player_game.get_achievements import check_discovery_achievements
 
 from data_management.discoveries import get_discovery_affinity_signature
 
+#----------------------------------------------- MIXING TOOLS ----------------------------------------------------
+
+def display_all_available_mixing_tools(cursor):
+
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM player_recipes
+    """)
+
+    discovery_count = cursor.fetchone()[0]
+
+    cursor.execute("""
+        SELECT
+            equipment.id,
+            equipment.name,
+            rarities.color,
+            mixing_tools.capacity,
+            equipment.unlock_discoveries
+        FROM mixing_tools
+        JOIN equipment
+            ON equipment.id = mixing_tools.equipment_id
+        JOIN rarities
+            ON rarities.id = equipment.rarity_id
+        JOIN player_equipment
+            ON player_equipment.equipment_id = equipment.id
+        WHERE equipment.unlock_discoveries <= ?
+            AND player_equipment.crafted = 1
+        ORDER BY equipment.rarity_id ASC
+    """, (discovery_count,))
+
+
+    result = cursor.fetchall()
+
+    display_mixing_tool(result)
+
+    return result
+
+def display_mixing_tool(mixing_tools):
+
+    groups = group_data_under_same_id(mixing_tools)
+
+    display_number = 0
+
+    for group in groups:
+
+        display_number += 1
+
+        mixing_tool = group[0]  # On prend le premier élément du groupe pour obtenir les informations de l'outil de mélange
+
+        mixing_tool_name = mixing_tool[1]
+        mixing_tool_color = mixing_tool[2]
+        mixing_tool_capacity = mixing_tool[3]
+
+        print(f"{display_number} - {COLORS[mixing_tool_color]}{mixing_tool_name}{RESET} - Nombre d'ingrédients : {mixing_tool_capacity}")
+
+
+# ----------------------------------- Choix mélangeur, récupération de sa capacité ------------------------------------------
 
 def pick_mixing_tool(cursor):
 
@@ -60,6 +116,8 @@ def return_mixing_tool_capacity(cursor, mixing_tool_id):
         
         return capacity
 
+
+# ------------------------------------------------ Ingrédients à mélanger -----------------------------------------------------
 
 def pick_ingredients_to_blend(cursor, capacity):
  
@@ -122,7 +180,9 @@ def pick_ingredients_to_blend(cursor, capacity):
     return blending_ingredients
 
 
-def consume_blending_ingredients(cursor, connection, blending_ingredients):
+# ---------------------------------------------- Consommation des ingrédients --------------------------------------------------------
+
+def consume_blending_ingredients(cursor, blending_ingredients):
 
     for ingredient_id in blending_ingredients:
 
@@ -132,12 +192,10 @@ def consume_blending_ingredients(cursor, connection, blending_ingredients):
         WHERE ingredient_id = ? AND quantity > 0
         """, (ingredient_id,))
 
-        if cursor.rowcount != 1:   # Si la quantité est déjà à zéro, SQLite n'effectue aucune modification et ne déclenche pas d'erreur.
-            connection.rollback()
-            return False
+        if cursor.rowcount != 1:
+            raise RuntimeError(f"Impossible de consommer l'ingrédient {ingredient_id}")
 
-    connection.commit()
-    return True # Renvoie True une fois que tout est validé.
+    return True
     
 # ---------------------------------------------------- Affinités du mélange ----------------------------------------------------------
 
@@ -173,9 +231,10 @@ def blend_affinities_result(cursor, capacity, blending_ingredients):
 
     return blending_affinities
 
+
 # -------------------------------------------- Mélanger ------------------------------------------------------------------------------
 
-def blending(cursor, connection):
+def blending(cursor):
 
     mixing_tool_id = pick_mixing_tool(cursor)
 
@@ -201,10 +260,11 @@ def blending(cursor, connection):
     if blending_affinities is None:
         return
 
-    if not consume_blending_ingredients(cursor, connection, blending_ingredients):
+    if not consume_blending_ingredients(cursor, blending_ingredients):
         return
 
     return blending_affinities, capacity, blending_ingredients
+
 
 # ------------------------------------------------ Récupère la signature du mélange ----------------------------------------------------------------
 
@@ -226,17 +286,16 @@ def get_blend_affinity_signature(blending_affinities):
 
     return signature
 
-
-# ---------------------------------------------- Son rôle : chercher quelle recette correspond au mélange effectué --------------------------
+# ---------------------------------------------- Chercher quelle recette correspond au mélange effectué --------------------------
 # Effectue un mélange, récupère sa signature et recherche
 # une recette dont le nombre d'ingrédients et les affinités
 # correspondent aux conditions de découverte.
 # Renvoie (recipe_id, recipe_name, difficulty_id) si trouvée,
 # sinon None.
 
-def join_corresponding_recipe_to_blend(cursor, connection):
+def join_corresponding_recipe_to_blend(cursor):
 
-    result = blending(cursor, connection)
+    result = blending(cursor)
 
     if result is None:
         return
@@ -257,7 +316,7 @@ def join_corresponding_recipe_to_blend(cursor, connection):
         if capacity != number_of_ingredients:
             continue
 
-        save_clues_to_player_recipe_research(unknown_recipe, difficulty_number_of_affinities, signature, blend_affinity_signature, cursor, connection)
+        save_clues_to_player_recipe_research(unknown_recipe, difficulty_number_of_affinities, signature, blend_affinity_signature, cursor)
 
     for recipe_id, (recipe_name, recipe_type, recipe_color, discovery_number_of_ingredients, difficulty_id,
     difficulty_number_of_affinities, signature) in discoveries_affinities_signatures.items():
@@ -274,11 +333,10 @@ def join_corresponding_recipe_to_blend(cursor, connection):
 
     # Aucune recette ne correspond au mélange
     if random.random() < 0.5:
-        trigger_blending_accident(cursor, connection, blending_ingredients)
-        
-# ------------------------------------ Son rôle : déterminer si les affinités d'un mélange satisfont 
-#                                        les conditions de découverte d'une recette précise -------------------------------------------
+        trigger_blending_accident(cursor, blending_ingredients)
 
+        
+# ----- Déterminer si les affinités d'un mélange satisfont les conditions de découverte d'une recette précise -------------------------
 # Compare la signature du mélange à celle d'une recette.
 # Vérifie les affinités exigées par la difficulté :
 # nombre, icônes et ordre strictement décroissant des valeurs.
@@ -318,32 +376,33 @@ def compare_recipe_to_blend(recipe_id, recipe_name, difficulty_id, difficulty_nu
     if corresponding_affinities == len(required_signature):
         print("Correspondance trouvée ✅")
         return recipe_id, recipe_name, difficulty_id       
+
     
-# ------------------------------------------------ Découverte recette ----------------------------------------------------------------
+# --------------------------------------------- Découverte recette et commit -------------------------------------------------------------
 
 def discover_recipe(cursor, connection):
 
-    result = join_corresponding_recipe_to_blend(cursor, connection)
+    try:
+        result = join_corresponding_recipe_to_blend(cursor)
 
-    if result is None:
-        return
+        if result is None:
+            connection.commit()
+            return
 
-    recipe_id, recipe_name, difficulty_id = result
+        recipe_id, recipe_name, difficulty_id = result
 
-    cursor.execute("""
-        SELECT recipe_id
-        FROM player_recipes
-    """)
-
-    player_recipes_ids_packed = cursor.fetchall()
-    player_recipes_ids_unpacked = [recipe[0] for recipe in player_recipes_ids_packed]
-
-    if recipe_id not in player_recipes_ids_unpacked:
-        
         cursor.execute("""
-            SELECT 
-                recipes.name,
-                rarities.color
+            SELECT recipe_id
+            FROM player_recipes
+            WHERE recipe_id = ?
+        """, (recipe_id,))
+
+        if cursor.fetchone() is not None:
+            connection.commit()
+            return
+
+        cursor.execute("""
+            SELECT recipes.name, rarities.color
             FROM recipes
             JOIN rarities
                 ON rarities.id = recipes.rarity_id
@@ -351,22 +410,30 @@ def discover_recipe(cursor, connection):
         """, (recipe_id,))
 
         recipe_name_color = cursor.fetchone()
-        recipe_name = recipe_name_color[0]
-        recipe_color = recipe_name_color[1]
 
-        print(f"Vous découvrez {COLORS[recipe_color]}{recipe_name}{RESET} !")
-        print()
+        if recipe_name_color is None:
+            raise RuntimeError(f"Recette introuvable : {recipe_id}")
+
+        recipe_name, recipe_color = recipe_name_color
 
         cursor.execute("""
             INSERT INTO player_recipes (recipe_id)
             VALUES (?)
         """, (recipe_id,))
 
+        check_discovery_achievements(cursor)
+        initialize_player_equipment(cursor)
+
         connection.commit()
 
-        check_discovery_achievements(cursor, connection)
+    except Exception:
+        connection.rollback()
+        raise
 
-        initialize_player_equipment(cursor, connection)
+    else:
+        print(f"Vous découvrez {COLORS[recipe_color]}{recipe_name}{RESET} !")
+        print()
+
 
 # ----------------------------------------------------- CLUES ----------------------------------------------------------------------
 
@@ -388,7 +455,7 @@ def compare_clues_to_blend(recipe_id, difficulty_number_of_affinities, signature
     return discovered_clues
 
 
-def save_clues_to_player_recipe_research(recipe_id, difficulty_number_of_affinities, signature, blend_affinity_signature, cursor, connection):
+def save_clues_to_player_recipe_research(recipe_id, difficulty_number_of_affinities, signature, blend_affinity_signature, cursor):
 
     discovered_clues = compare_clues_to_blend (recipe_id, difficulty_number_of_affinities, signature, blend_affinity_signature)
 
@@ -401,5 +468,3 @@ def save_clues_to_player_recipe_research(recipe_id, difficulty_number_of_affinit
 
         if cursor.rowcount == 1:
             print("Nouvel indice découvert !")
-
-    connection.commit()

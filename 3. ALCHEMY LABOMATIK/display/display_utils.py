@@ -8,6 +8,7 @@ DIM = "\033[2m"
 LIGHT_YELLOW = "\033[38;2;255;250;205m"
 LIGHT_PINK = "\033[38;5;218m"
 LIGHT_GREEN = "\033[38;5;120m"
+SOBER_RED = "\033[38;2;212;107;96m"
 PURPLE = "\033[95m"
 ORANGE = "\033[38;5;208m"
 RED = "\033[38;5;196m"
@@ -51,6 +52,28 @@ def display_recipe_description(description):
         print(f'     {DIM}{line}{RESET}')
 
 
+def display_container_description(description):
+    
+    if description is None:
+        return
+
+    lines = textwrap.wrap(description, width=100)
+
+    for line in lines:
+        print(f'     {DIM}{line}{RESET}')
+
+
+def display_ingredient_description(description):
+    
+    if description is None:
+        return
+
+    lines = textwrap.wrap(description, width=100)
+
+    for line in lines:
+        print(f'     {DIM}{line}{RESET}')
+
+
 def format_difficulty_stars(difficulty_id):
     return "★" * difficulty_id + DIM + "☆" * (5 - difficulty_id) + RESET # concaténation => "texte" + variable
 
@@ -60,3 +83,13 @@ def info_format_difficulty_stars():
           f'★★ facile {LIGHT_PINK}(3){RESET} - ★★★ moyen {LIGHT_PINK}(4){RESET} - ★★★★ difficile {LIGHT_PINK}(5){RESET} - '
           f'★★★★★ très difficile {LIGHT_PINK}(6){RESET}')
     print()
+
+def info_fire_melting_pot_container():
+    print("          Feu : 🔥 - Creuset : ⚗️ - Contenant : 🧪")
+    print()
+
+def info_price_demand():
+    print("Prix de vente : 💰 - Demande : 🛒")
+    print()
+                          
+    

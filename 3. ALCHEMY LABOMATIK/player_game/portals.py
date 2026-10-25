@@ -85,16 +85,26 @@ def harvest_portal(cursor, connection, portal):
 
         portal_ingredients.remove(result)
 
-    for result, quantity in loots:
-        ingredient_id = result[0]
-        
-        display_harvest_portal(cursor, quantity, ingredient_id)
+    try:
+        for result, quantity in loots:
+            ingredient_id = result[0]
 
-        add_ingredient_to_inventory(cursor, connection, ingredient_id, quantity)
+            add_ingredient_to_inventory(cursor, ingredient_id, quantity)
 
-    advance_game_tick(cursor, connection)
-        
-    print()
+        connection.commit()
+
+    except Exception:
+        connection.rollback()
+        raise
+
+    else:
+        for result, quantity in loots:
+            ingredient_id = result[0]
+            display_harvest_portal(cursor, quantity, ingredient_id)
+
+        advance_game_tick(cursor, connection)
+
+        print()
 
 
 def get_available_ingredients(cursor, discoveries):

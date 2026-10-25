@@ -1,4 +1,4 @@
-from display.display_utils import COLORS, RESET, DIM, YELLOW, CYAN
+from display.display_utils import COLORS, RESET, DIM, YELLOW, CYAN, display_container_description
 from utils import ask_positive_int
 
 from player_game.game_functions.initialization import initialize_containers
@@ -23,9 +23,9 @@ def display_random_banner():
     print(banner)
 
 
-def get_available_containers(cursor, connection):
+def get_available_containers(cursor):
 
-    initialize_containers(cursor, connection)
+    initialize_containers(cursor)
 
     discovery_count = get_number_of_discoveries(cursor)
 
@@ -66,8 +66,8 @@ def get_available_containers(cursor, connection):
     for display_number, (equipment_id, name, description, container_color, price, unlock_discoveries) in enumerate(available_containers, start=1):
         
         color = COLORS[container_color]
-        print(f'{display_number:<2} - {color}{name}{RESET} - {YELLOW}{price} pièces.{RESET}')
-        print(f'     Déblocage : {unlock_discoveries} découvertes - {DIM}{description}{RESET}')
+        print(f'{display_number:<2} - {color}{name}{RESET} - Déblocage : {unlock_discoveries} découvertes - {YELLOW}{price} pièces.{RESET}')
+        display_container_description(description)
         print()
 
     return available_containers
@@ -75,7 +75,7 @@ def get_available_containers(cursor, connection):
 
 def buy_container(cursor, connection):
 
-    available_containers = get_available_containers(cursor, connection)
+    available_containers = get_available_containers(cursor)
 
     while True:
     

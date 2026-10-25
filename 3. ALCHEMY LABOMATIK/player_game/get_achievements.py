@@ -1,10 +1,8 @@
 from player_game.objectives import get_objective_discovered_recipes, get_total_recipes, commercial_achievements, get_objective_specific_sales
 
-
-
 #-----------------------------------------------------------------------------------------------------------------------------------
 
-def unlock_achievement(cursor, connection, achievement_id):
+def unlock_achievement(cursor, achievement_id):
 
     cursor.execute("""
         INSERT OR IGNORE INTO player_achievements (achievement_id)
@@ -14,8 +12,6 @@ def unlock_achievement(cursor, connection, achievement_id):
     unlocked = cursor.rowcount == 1
 
     if unlocked:
-        connection.commit()
-
         cursor.execute("""
             SELECT name
             FROM achievements
@@ -30,7 +26,7 @@ def unlock_achievement(cursor, connection, achievement_id):
     return unlocked
 
 
-def check_parent_achievement(cursor, connection, parent_id):
+def check_parent_achievement(cursor, parent_id):
 
 # Comment ça fonctionne ?
 # Prenons Le Maître des Mélanges, dont l'ID est 1.
@@ -57,24 +53,24 @@ def check_parent_achievement(cursor, connection, parent_id):
     unlocked_children = cursor.fetchone()[0]
 
     if total_children > 0 and unlocked_children == total_children:
-        unlock_achievement(cursor, connection, parent_id)
+        unlock_achievement(cursor, parent_id)
 
 # --------------------------------------------------------- Maître des Mélanges (discoveries) -------------------------------------
 
-def check_discovery_achievements(cursor, connection):
+def check_discovery_achievements(cursor):
 
     results = get_objective_discovered_recipes(cursor)
 
     for number_of_ingredients, total_recipes, discovered_recipes in results:
 
         if total_recipes > 0 and discovered_recipes == total_recipes:
-            unlock_achievement(cursor, connection, number_of_ingredients)
+            unlock_achievement(cursor, number_of_ingredients)
 
-    check_parent_achievement(cursor, connection, 1)
+    check_parent_achievement(cursor, 1)
 
 # --------------------------------------------------------- La Popotte (préparation des recettes) -------------------------------------
 
-def check_crafted_recipes_achievements(cursor, connection):
+def check_crafted_recipes_achievements(cursor):
 
     for type_id in (1, 2, 3):
 
@@ -92,9 +88,9 @@ def check_crafted_recipes_achievements(cursor, connection):
         crafted = cursor.fetchone()[0]
 
         if total > 0 and crafted == total:
-            unlock_achievement(cursor, connection, type_id + 8)
+            unlock_achievement(cursor, type_id + 8)
 
-    check_parent_achievement(cursor, connection, 8)
+    check_parent_achievement(cursor, 8)
 
 # --------------------------------------------------------- Ingrédients -------------------------------------
 
@@ -109,23 +105,23 @@ def get_objective_collected_ingredients(cursor):
     return cursor.fetchone()
 
 
-def check_ingredients_achievement(cursor, connection):
+def check_ingredients_achievement(cursor):
 
     total, collected = get_objective_collected_ingredients(cursor)
 
     if total > 0 and collected == total:
-        unlock_achievement(cursor, connection, 7)
+        unlock_achievement(cursor, 7)
 
 
 #------------------------------------------------------------ Hauts-faits ---------------------------------------
 
-def check_commercial_achievements(cursor, connection):
+def check_commercial_achievements(cursor):
 
     sold_recipes = get_objective_specific_sales(cursor)
 
     for achievement_id, required_recipes in commercial_achievements.items():
 
         if required_recipes.issubset(sold_recipes):
-            unlock_achievement(cursor, connection, achievement_id)
+            unlock_achievement(cursor, achievement_id)
 
 

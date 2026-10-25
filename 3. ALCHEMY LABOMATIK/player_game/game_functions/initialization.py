@@ -1,4 +1,4 @@
-def initialize_player_equipment(cursor, connection):
+def initialize_player_equipment(cursor):
 
     cursor.execute("""
         SELECT COUNT(*)
@@ -17,20 +17,16 @@ def initialize_player_equipment(cursor, connection):
         WHERE unlock_discoveries <= ?
     """, (discovery_count,))
 
-    connection.commit()
 
-
-def initialize_player_money(cursor, connection):
+def initialize_player_money(cursor):
 
     cursor.execute("""
     INSERT OR IGNORE INTO player (id)
     VALUES (1)
     """)
 
-    connection.commit()
 
-
-def initialize_containers(cursor, connection):
+def initialize_containers(cursor):
 
     initial_containers = [
     # Seuil 0
@@ -81,5 +77,3 @@ def initialize_containers(cursor, connection):
             FROM equipment
             WHERE name = ?
         """, (price, name))
-
-    connection.commit()

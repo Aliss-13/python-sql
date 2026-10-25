@@ -3,7 +3,7 @@ from player_game.get_achievements import check_ingredients_achievement
 
 # --------------------------------------- concerne la table inventory
 
-def add_ingredient_to_inventory(cursor, connection, ingredient_id, quantity):
+def add_ingredient_to_inventory(cursor, ingredient_id, quantity):
 
     cursor.execute("""
         SELECT ingredient_id
@@ -21,8 +21,6 @@ def add_ingredient_to_inventory(cursor, connection, ingredient_id, quantity):
             WHERE ingredient_id = ?
         """, (quantity, ingredient_id,))
     
-        connection.commit()
-
     else:
             
         cursor.execute("""
@@ -30,9 +28,7 @@ def add_ingredient_to_inventory(cursor, connection, ingredient_id, quantity):
             VALUES (?, ?)
         """, (ingredient_id, quantity))
             
-        connection.commit()
-
-        check_ingredients_achievement(cursor, connection)
+        check_ingredients_achievement(cursor)
 
 # --------------------------------------- concerne la table container_inventory
 

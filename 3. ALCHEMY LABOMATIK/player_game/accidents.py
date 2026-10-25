@@ -10,14 +10,14 @@ from player_game.dialogues import ADVERTISING_INTERFERENCE, ASTRAL_GOSSIP, DIMEN
 from player_game.dialogues import SANITARY_INSPECTION, TAX_AUDIT, random_dialogue
 
 
-def trigger_blending_accident(cursor, connection, blending_ingredients):
+def trigger_blending_accident(cursor, blending_ingredients):
 
     accidents = [
         advertising_interference,
-        lambda: crackling_explosion(cursor, connection),
-        lambda: transformation_of_matter(cursor, connection, blending_ingredients),
-        lambda: gemino_gemini(cursor, connection, blending_ingredients),
-        lambda: surprise_preparation(cursor, connection),
+        lambda: crackling_explosion(cursor),
+        lambda: transformation_of_matter(cursor, blending_ingredients),
+        lambda: gemino_gemini(cursor, blending_ingredients),
+        lambda: surprise_preparation(cursor),
         hes_alive,
         taxes_and_fuckeries
     ]
@@ -40,7 +40,7 @@ def start_temporary_event(dialogue_function, end_message):
 
     if game_state.active_event is not None:
         return False
-    
+
     game_state.active_event = dialogue_function
     game_state.event_start_tick = game_state.game_tick
     game_state.last_event_tick = game_state.game_tick
@@ -77,7 +77,7 @@ def tick_temporary_event():
 
 def advertising_interference():
 
-    advertising = random_dialogue(ADVERTISING_INTERFERENCE, "advertising")
+    advertising = lambda: random_dialogue(ADVERTISING_INTERFERENCE, "advertising")
 
     print("📡 INTERFÉRENCE PUBLICITAIRE ARCANIQUE DÉTECTÉE !")
     print("Une fréquence commerciale parasite votre laboratoire...")
@@ -100,7 +100,7 @@ def hes_alive():
 
     name, (dialogues, category) = random.choice(list(companions.items()))
 
-    dialogue = random_dialogue(dialogues, category)
+    dialogue = lambda: random_dialogue(dialogues, category)
 
     print(f"✨ Vous avez invoqué {YELLOW}{name}{RESET} !")
     print()
@@ -121,7 +121,7 @@ def taxes_and_fuckeries():
 
     name, (dialogues, category) = random.choice(list(fuckeries.items()))
 
-    dialogue = random_dialogue(dialogues, category)
+    dialogue = lambda: random_dialogue(dialogues, category)
     
     print(f"✨ Vous avez rameuté {CYAN}{name}{RESET} !")
     print()
@@ -129,7 +129,7 @@ def taxes_and_fuckeries():
 
 #------------------------------------------------- Explosion pétaradante --------------------------------------------------------------
 
-def crackling_explosion(cursor, connection):
+def crackling_explosion(cursor):
 
     print("💥 Explosion pétaradante !")
 
@@ -169,19 +169,16 @@ def crackling_explosion(cursor, connection):
         """, (lost_quantity, ingredient_id, lost_quantity))
       
         if cursor.rowcount != 1:   # Aucune ligne modifiée ou modification inattendue.
-            connection.rollback()
-            return
+            raise RuntimeError("Impossible de retirer les ingrédients pendant l'explosion.")
         
         messages.append(f"Vous perdez {COLORS[ingredient_color]}{ingredient_name}{RESET} x{lost_quantity} !")
-        
-    connection.commit()
 
     for message in messages:
         print(message)
 
 #------------------------------------------------- Transformation de matière --------------------------------------------------------------
 
-def transformation_of_matter(cursor, connection, blending_ingredients):
+def transformation_of_matter(cursor, blending_ingredients):
 
     print("🦠 Transformation de matière...")
 
@@ -209,13 +206,13 @@ def transformation_of_matter(cursor, connection, blending_ingredients):
 
         quantity = random.randint(1, 3)
 
-        add_ingredient_to_inventory(cursor, connection, ingredient_id, quantity)
+        add_ingredient_to_inventory(cursor, ingredient_id, quantity)
 
         print(f"Vous récoltez {COLORS[ingredient_color]}{ingredient_name}{RESET} x{quantity} !")
 
 #------------------------------------------------------ Réaction instable ------------------------------------------------------------------
 
-def surprise_preparation(cursor, connection):
+def surprise_preparation(cursor):
 
     print("🧪 Vous obtenez une préparation impeccable ! Comment ça se fait ? Ca ne vous ressemble pas... ")
 
@@ -283,12 +280,11 @@ def surprise_preparation(cursor, connection):
             WHERE recipe_id = ?
         """, (1, picked_recipe_id))
 
-    connection.commit()
     print(f"Vous fabriquez {COLORS[picked_recipe_color]}{picked_recipe_name}{RESET} !")
 
 #------------------------------------------------------- Gemino Gemini ---------------------------------------------------------------------
 
-def gemino_gemini(cursor, connection, blending_ingredients):
+def gemino_gemini(cursor, blending_ingredients):
 
     print("🧑‍🤝‍🧑 Gemino-Gemini 🎶 Un nous étions, plusieurs nous devenons 🎶 ")
 
@@ -315,5 +311,5 @@ def gemino_gemini(cursor, connection, blending_ingredients):
         ingredient_color = ingredient[2]
 
         quantity = random.randint(1, 3)
-        add_ingredient_to_inventory(cursor, connection, ingredient_id, quantity)
+        add_ingredient_to_inventory(cursor, ingredient_id, quantity)
         print(f"Vous récoltez {COLORS[ingredient_color]}{ingredient_name}{RESET} x{quantity} !")
