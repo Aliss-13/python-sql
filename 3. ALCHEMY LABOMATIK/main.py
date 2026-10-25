@@ -1,4 +1,5 @@
 import sys
+import shutil
 from pathlib import Path
 import sqlite3
 
@@ -11,13 +12,19 @@ from player_game.game_functions.initialization import (
     initialize_player_money
 )
 
-
 if getattr(sys, "frozen", False):
     BASE_DIR = Path(sys.executable).resolve().parent
 else:
     BASE_DIR = Path(__file__).resolve().parent
 
 DATABASE_PATH = BASE_DIR / "database.db"
+TEMPLATE_PATH = BASE_DIR / "database_template.db"
+
+if not DATABASE_PATH.exists():
+    shutil.copy2(TEMPLATE_PATH, DATABASE_PATH)
+    print("Base copiée depuis :", TEMPLATE_PATH)
+    print("Vers :", DATABASE_PATH)
+
 
 connection = sqlite3.connect(DATABASE_PATH)
 
