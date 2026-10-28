@@ -1,5 +1,5 @@
 from display.display_player_recipes import display_all_player_recipes_ingredients_products_and_equipments
-from display.display_utils import COLORS, RESET
+from display.display_utils import COLORS, RESET, DIM
 
 from player_game.game_functions.advance_game_tick import advance_game_tick
 
@@ -21,9 +21,9 @@ def pick_recipe(cursor):
 
     while True:
                  
-        choice = input("Recette choisie (q pour revenir) : ") 
+        choice = input(f"Recette choisie {DIM}(Entrée pour revenir){RESET} : ") 
 
-        if choice.lower() == "q":
+        if not choice:
             return None
 
         # récupération de l'identifiant de la recette
@@ -32,7 +32,7 @@ def pick_recipe(cursor):
             recipe_id = recipe_infos[int(choice) - 1][0]
             return recipe_id
     
-        print("Choix invalide.")
+        print("Choix invalide. Recommencer ou Entrée pour revenir.")
 
 
 def check_fire(cursor, recipe_id): # vérification feu dans l'équipement du joueur (player_equipment)

@@ -4,7 +4,7 @@ from player_game.craft_recipe import (
 )
 from player_game.game_functions.advance_game_tick import advance_game_tick
 
-from display.display_utils import COLORS, RESET
+from display.display_utils import COLORS, RESET, DIM
 from display.display_equipment_and_equipment_craft import display_equipment_craft
 
 
@@ -76,9 +76,9 @@ def pick_equipment(cursor):
 
     while True:
 
-        choice = input("Matériel à fabriquer (q pour revenir) : ") 
+        choice = input(f"Matériel à fabriquer {DIM}(Entrée pour revenir){RESET} : ") 
 
-        if choice.lower() == "q":
+        if not choice:
             return None, None
 
         # récupération de l'identifiant de l'équipement
@@ -87,7 +87,7 @@ def pick_equipment(cursor):
             equipment_id = available_equipment[int(choice) - 1]
             return equipment_id, equipment_to_craft
 
-        print("Choix invalide.")
+        print("Choix invalide. Recommencer ou Entrée pour revenir.")
 
 
 

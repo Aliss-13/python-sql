@@ -40,24 +40,26 @@ def auto_sell(cursor, connection, game_tick):
 
     products = cursor.fetchall()
 
-    for recipe_id, recipe_name, quantity, selling_price, demand in products:
+    sold_recipes = []
+    pending_last_sales = {}
 
-        interval = round(BASE_SELL_TICKS / demand)
+    try:
+        
+        for recipe_id, recipe_name, quantity, selling_price, demand in products:
+            interval = max(1, round(BASE_SELL_TICKS / demand))
 
-        if recipe_id not in last_sales:
-            last_sales[recipe_id] = game_tick
-            continue
-
-        if game_tick - last_sales[recipe_id] >= interval:
-
-            if quantity == 0:
-                last_sales[recipe_id] = game_tick
+            if recipe_id not in last_sales:
+                pending_last_sales[recipe_id] = game_tick
                 continue
 
-            if quantity >= 1:
+            if game_tick - last_sales[recipe_id] >= interval:
 
-                try:
-             
+                if quantity == 0:
+                    pending_last_sales[recipe_id] = game_tick
+                    continue
+
+                if quantity >= 1:
+
                     cursor.execute("""
                         UPDATE shop_inventory
                         SET quantity = quantity - 1
@@ -96,19 +98,39 @@ def auto_sell(cursor, connection, game_tick):
                             SET quantity = quantity + ?
                             WHERE recipe_id = ?
                         """, (1, recipe_id))
-                    
-                except Exception:
-                    connection.rollback()
-                    raise
 
-                connection.commit()
+                    sold_recipes.append((recipe_id, recipe_name, selling_price))
+                    pending_last_sales[recipe_id] = game_tick
 
-                last_sales[recipe_id] = game_tick
+        unlocked_achievements = check_commercial_achievements(cursor)
 
-                print(f"\nVous avez vendu {recipe_name} !")
-                print(random_sale_dialogue(recipe_name))
-                print(f"💰 +{selling_price} pièces !")
-                print()      
+        connection.commit()
+          
+    except Exception:
+        connection.rollback()
+        raise
+
+    last_sales.update(pending_last_sales)
+
+    for recipe_id, recipe_name, selling_price in sold_recipes:
+        print(f"\nVous avez vendu {recipe_name} !")
+        print(random_sale_dialogue(recipe_name))
+        print(f"💰 +{selling_price} pièces !")
+        print()
+
+    # Affichage des hauts faits commerciaux
+    for achievement_id in unlocked_achievements:
+        cursor.execute("""
+            SELECT name
+            FROM achievements
+            WHERE id = ?
+        """, (achievement_id,))
+
+        achievement = cursor.fetchone()
+
+        if achievement:
+            print(f"🏆 Objectif validé : {achievement[0]} !")
+
 
 #-------------------------------------- Transferts Inventaire → Youtique© et vice-versa ----------------------------------------------
 
@@ -152,7 +174,10 @@ def check_transfert(cursor, connection, source, destination, products):
     # Choix du produit à transférer
 
     try:
-        product_choice = int(input("Numéro du produit à transférer : "))
+        product_choice = int(input(f"Numéro du produit à transférer {DIM}(Entrée pour revenir){RESET} : "))
+
+        if not product_choice:
+            return
 
         if not 1 <= product_choice <= len(products):
             print("Produit invalide.")
@@ -170,7 +195,10 @@ def check_transfert(cursor, connection, source, destination, products):
     # Quantité
 
     try:
-        quantity = int(input(f"Quantité à transférer (max {available_quantity}) : "))
+        quantity = int(input(f"Quantité à transférer (max {available_quantity}) {DIM}(Entrée pour revenir){RESET} : "))
+
+        if not quantity:
+            return
 
         if not 1 <= quantity <= available_quantity:
             print("Quantité invalide.")

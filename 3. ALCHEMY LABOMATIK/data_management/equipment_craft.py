@@ -1,13 +1,17 @@
 from utils import ask_positive_int, id_exists, ask_int
 from display.display_equipment_and_equipment_craft import display_all_equipment, display_all_equipment_crafts
 from display.display_ingredients import display_all_ingredients
+from display.display_utils import DIM, RESET
 
 
 def add_equipment_craft(cursor, connection):
 
     display_all_equipment(cursor)
 
-    equipment_id = ask_positive_int("Matériel (666 pour quitter) : ")
+    equipment_id = ask_positive_int(f"Recette choisie {DIM}(Entrée pour revenir){RESET} : ")
+
+    if not equipment_id:
+        return
 
     if not id_exists(cursor, "equipment", equipment_id):
         print("Matériel introuvable.")
@@ -33,9 +37,9 @@ def add_equipment_craft(cursor, connection):
             connection.rollback()
             return
 
-        quantity = ask_positive_int("Quantité (666 pour quitter) : ")
+        quantity = ask_positive_int(f"Recette choisie {DIM}(Entrée pour revenir){RESET} : ")
 
-        if quantity == "666":
+        if not quantity:
             return
 
         cursor.execute("""
@@ -63,9 +67,9 @@ def reset_equipment_craft(cursor, connection):
     # choix du joueur  
     while True:
     
-        choice = input("Craft équipement à réinitialiser (q pour revenir) : ") 
+        choice = input(f"Craft équipement à réinitialiser {DIM}(Entrée pour revenir){RESET} : ") 
     
-        if choice.lower() == "q":
+        if not choice:
             return
     
         # récupération de l'identifiant de l'équipement

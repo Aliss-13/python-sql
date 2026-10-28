@@ -2,6 +2,7 @@ from display.display_affinities_and_portals import display_all_affinities
 from display.display_recipes import display_all_recipes
 from display.display_discoveries import display_all_discoveries, display_discoveries_to_modify
 from display.display_refactor import group_data_under_same_id
+from display.display_utils import DIM, RESET
 
 from utils import id_exists, ask_positive_int, ask_positive_float_0_1
 
@@ -38,7 +39,8 @@ def menu_update_discovery(cursor, connection):
 def update_number_of_ingredients(cursor, connection):
 
     display_all_recipes(cursor)
-    recipe_id = ask_positive_int("Recette choisie : ")
+
+    recipe_id = ask_positive_int(f"Recette choisie {DIM}(Entrée pour revenir){RESET} : ")
 
     if not id_exists(cursor, "recipes", recipe_id):
         print("Recette introuvable.")
@@ -46,7 +48,10 @@ def update_number_of_ingredients(cursor, connection):
     
     allowed_number_of_ingredients = [2, 3, 4, 5, 6]
     
-    number_of_ingredients = ask_positive_int("Nombre d'ingrédients (2, 3, 4, 5, 6) : ")
+    number_of_ingredients = ask_positive_int(f"Nombre d'ingrédients [2, 3, 4, 5 ou 6] {DIM}(Entrée pour revenir){RESET} : ")
+
+    if not number_of_ingredients:
+        return
     
     if number_of_ingredients not in allowed_number_of_ingredients:
         print("Nombre d'ingrédients invalide.")
@@ -62,12 +67,14 @@ def update_number_of_ingredients(cursor, connection):
     print("Nombre d'ingrédients mis à jour.")
 
 
-
-
 def add_recipe_discovery(cursor, connection):
 
     recipes = display_discoveries_to_modify(cursor)
-    choice = ask_positive_int("Recette choisie (666 pour quitter) : ")
+
+    choice = ask_positive_int(f"Recette choisie {DIM}(Entrée pour revenir){RESET} : ")
+
+    if not choice:
+        return
 
     if 1 <= choice <= len(recipes):
         recipe_id = choice
@@ -79,7 +86,10 @@ def add_recipe_discovery(cursor, connection):
     
     allowed_number_of_ingredients = [2, 3, 4, 5, 6]
 
-    number_of_ingredients = ask_positive_int("Nombre d'ingrédients (2, 3, 4, 5, 6) : ")
+    number_of_ingredients = ask_positive_int(f"Nombre d'ingrédients [2, 3, 4, 5 ou 6] {DIM}(Entrée pour revenir){RESET} : ")
+    
+    if not number_of_ingredients:
+        return
 
     if number_of_ingredients not in allowed_number_of_ingredients:
         print("Nombre d'ingrédients invalide.")
@@ -109,7 +119,10 @@ def add_recipe_discovery(cursor, connection):
 
         while True:
 
-            affinity_id = input("Affinité à associer : ")
+            affinity_id = input(f"Affinité à associer {DIM}(Entrée pour revenir){RESET} : ")
+
+            if not affinity_id:
+                return
 
             if affinity_id.isdigit() and 1 <= int(affinity_id) <= len(affinities):
                 affinity_id = int(affinity_id)
@@ -190,7 +203,10 @@ def reset_discovery_affinities(cursor, connection):
 
     while True:
             
-        recipe_id = ask_positive_int("Découverte choisie : ")
+        recipe_id = ask_positive_int(f"Découverte choisie {DIM}(Entrée pour revenir){RESET} : ")
+
+        if not recipe_id:
+            return
         
         cursor.execute("""
             SELECT affinity_id, value

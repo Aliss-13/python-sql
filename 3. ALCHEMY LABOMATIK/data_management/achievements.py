@@ -8,6 +8,7 @@
 
 
 from display.display_achievements import display_all_achievements
+from display.display_utils import DIM, RESET
 from utils import id_exists
 
 
@@ -51,22 +52,21 @@ def update_achievement_name(cursor, connection):
     
     while True:
     
-        choix = input("Objectif choisi : ")
+        choice = input(f"Objectif choisi {DIM}(Entrée pour revenir){RESET} : ")
+
+        if not choice:
+            return
     
-        if choix.isdigit() and id_exists(cursor, "achievements", int(choix)):
-            achievement_id = int(choix)
+        if choice.isdigit() and id_exists(cursor, "achievements", int(choice)):
+            achievement_id = int(choice)
             break
     
-        print("Choix invalide.")
+        print("Choix invalide. Recommencer ou Entrée pour revenir.")
         return
 
-    new_name = input("Nouveau nom (q pour quitter) : ")
+    new_name = input(f"Nouveau nom {DIM}(Entrée pour revenir){RESET} : ")
 
     if not new_name.strip():
-        print("Le nom ne peut pas être vide.")
-        return
-
-    if new_name == "q": 
         return
 
     cursor.execute("""
@@ -85,16 +85,19 @@ def update_achievement_description(cursor, connection):
     
     while True:
     
-        choix = input("Objectif choisi : ")
+        choice = input(f"Objectif choisi {DIM}(Entrée pour revenir){RESET} : ")
+
+        if not choice:
+            return
     
-        if choix.isdigit() and id_exists(cursor, "achievements", int(choix)):
-            achievement_id = int(choix)
+        if choice.isdigit() and id_exists(cursor, "achievements", int(choice)):
+            achievement_id = int(choice)
             break
     
-        print("Choix invalide.")
+        print("Choix invalide. Recommencer ou Entrée pour revenir.")
         return
 
-    new_description = input("Nouvelle description (Entrée pour vide, q pour quitter) : ")
+    new_description = input(f"Nouvelle description (Entrée pour vide) {DIM}(q pour revenir){RESET} : ")
     
     if new_description == "q": 
         return
@@ -115,13 +118,9 @@ def update_achievement_description(cursor, connection):
 
 def add_achievement(cursor, connection):
 
-    name = input("Nom du haut fait (q pour quitter) : ").strip()
-
-    if name == "q":
-        return
+    name = input(f"Nom du haut fait {DIM}(Entrée pour revenir){RESET} : ")
 
     if not name:
-        print("Le nom ne peut pas être vide.")
         return
 
     category = input("Catégorie (victory/fun) : ").strip().lower()
@@ -132,9 +131,12 @@ def add_achievement(cursor, connection):
 
     display_all_achievements(cursor)
 
-    parent = input("ID du parent (Entrée si aucun) : ").strip()
+    parent = input(f"ID du parent (Entrée si aucun) {DIM}(q pour revenir){RESET} : ").strip()
 
     if parent:
+
+        if parent == "q":
+            return
 
         if not parent.isdigit() or not id_exists(cursor, "achievements", int(parent)):
             print("Parent invalide.")
@@ -145,7 +147,7 @@ def add_achievement(cursor, connection):
     else:
         parent_id = None
 
-    description = input("Description (Entrée si aucune, q pour quitter) : ").strip() or None
+    description = input(f"Description (Entrée pour vide) {DIM}(q pour revenir){RESET} : ").strip() or None
 
     if description == "q":
         return

@@ -3,23 +3,24 @@ import sqlite3
 from utils import id_exists
 
 from display.display_equipment_and_equipment_craft import display_all_equipment
+from display.display_utils import DIM, RESET
 
 
 def add_equipment(cursor, connection):
 
     print()
-    print("À chaque étape : q pour quitter.")
+    print("À chaque étape : Entrée pour quitter.")
 
     # =============================== NAME, DESCRIPTION
 
-    name = input("Nom : ")
+    name = input("Nom : ").strip().capitalize()
 
-    if name == "q":
+    if not name:
         return
 
-    description = input("Description : ")
+    description = input("Description : ").strip()
 
-    if description == "q":
+    if not description:
         return
 
     # =============================== CATEGORIES
@@ -38,7 +39,10 @@ def add_equipment(cursor, connection):
         for category in categories:
             print(f"[{category[0]}] {category[1]}")
     
-        choice = input("> ")
+        choice = input(f"Catégorie {DIM}(Entrée pour revenir){RESET} : ")
+
+        if not choice:
+            return
     
         if choice.isdigit() and 1 <= int(choice) <= len(categories):
             new_category_id = int(choice)
@@ -62,7 +66,10 @@ def add_equipment(cursor, connection):
         for rarity in rarities:
             print(f"[{rarity[0]}] {rarity[1]}")
 
-        choice = input("> ")
+        choice = input(f"Rareté {DIM}(Entrée pour revenir){RESET} : ")
+
+        if not choice:
+            return
 
         if choice.isdigit() and 1 <= int(choice) <= len(rarities):
             rarity_id = int(choice)
@@ -76,7 +83,10 @@ def add_equipment(cursor, connection):
     while True:
     
         try:
-            unlock_discoveries_threshold = int(input("Seuil de déblocage - nombre de découvertes : "))
+            unlock_discoveries_threshold = int(input(f"Seuil de déblocage - nombre de découvertes {DIM}(Entrée pour revenir){RESET} : "))
+
+            if not unlock_discoveries_threshold:
+                return
     
             if unlock_discoveries_threshold >= 0 :
                 break
@@ -142,7 +152,10 @@ def update_equipment_name(cursor, connection):
     
     while True:
     
-        choice = input("Matériel choisi : ")
+        choice = input(f"Matériel choisi {DIM}(Entrée pour revenir){RESET} : ")
+
+        if not choice:
+            return
     
         if choice.isdigit() and id_exists(cursor, "equipment", int(choice)):
             equipment_id = int(choice)
@@ -151,9 +164,9 @@ def update_equipment_name(cursor, connection):
         print("Choix invalide.")
         return
 
-    new_name = input("Nouveau nom (q pour quitter) : ")
+    new_name = input(f"Nouveau nom {DIM}(Entrée pour revenir){RESET} : ")
 
-    if new_name == "q":
+    if not new_name:
         return
 
     try:
@@ -176,7 +189,10 @@ def update_equipment_description(cursor, connection):
     
     while True:
     
-        choice = input("Matériel choisi : ")
+        choice = input(f"Matériel choisi {DIM}(Entrée pour revenir){RESET} : ")
+        
+        if not choice:
+            return
     
         if choice.isdigit() and id_exists(cursor, "equipment", int(choice)):
             equipment_id = int(choice)
@@ -185,9 +201,9 @@ def update_equipment_description(cursor, connection):
         print("Choix invalide.")
         return
 
-    new_description = input("Nouveau descriptif (q pour quitter) : ")
+    new_description = input(f"Nouveau descriptif {DIM}(Entrée pour revenir){RESET} : ")
 
-    if new_description == "q":
+    if not new_description:
         return
 
     cursor.execute("""
@@ -206,7 +222,10 @@ def update_equipment_rarity(cursor, connection):
     
     while True:
     
-        choice = input("Matériel choisi : ")
+        choice = input(f"Matériel choisi {DIM}(Entrée pour revenir){RESET} : ")
+        
+        if not choice:
+            return
     
         if choice.isdigit() and id_exists(cursor, "equipment", int(choice)):
             equipment_id = int(choice)
@@ -228,7 +247,7 @@ def update_equipment_rarity(cursor, connection):
         for rarity in rarities:
             print(f"[{rarity[0]}] {rarity[1]}")
     
-        choix = input("> ")
+        choix = input(f"Rareté {DIM}(Entrée pour revenir){RESET} : ")
     
         if choix.isdigit() and 1 <= int(choix) <= len(rarities):
             new_rarity_id = int(choix)
@@ -275,7 +294,10 @@ def update_equipment_category(cursor, connection):
         for category in categories:
             print(f"[{category[0]}] {category[1]}")
     
-        choix = input("> ")
+        choix = input(f"Catégorie {DIM}(Entrée pour revenir){RESET} : ")
+
+        if not choice:
+            return
     
         if choix.isdigit() and 1 <= int(choix) <= len(categories):
             new_category_id = int(choix)
@@ -300,7 +322,10 @@ def update_equipment_unlock_discoveries(cursor, connection):
     
     while True:
     
-        choice = input("Matériel choisi : ")
+        choice = input(f"Matériel choisi {DIM}(Entrée pour revenir){RESET} : ")
+
+        if not choice:
+            return
     
         if choice.isdigit() and id_exists(cursor, "equipment", int(choice)):
             equipment_id = int(choice)
@@ -312,7 +337,10 @@ def update_equipment_unlock_discoveries(cursor, connection):
     while True:
 
         try:
-            unlock_discoveries_threshold = int(input("Seuil de déblocage - nombre de découvertes : "))
+            unlock_discoveries_threshold = int(input(f"Seuil de déblocage - nombre de découvertes {DIM}(Entrée pour revenir){RESET} : "))
+
+            if not unlock_discoveries_threshold:
+                return
 
             if unlock_discoveries_threshold >= 0 :
                 break

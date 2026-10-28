@@ -2,7 +2,7 @@ from player_game.objectives import get_objective_discovered_recipes, get_total_r
 
 #-----------------------------------------------------------------------------------------------------------------------------------
 
-def unlock_achievement(cursor, achievement_id):
+def unlock_achievement(cursor, achievement_id, display=True):
 
     cursor.execute("""
         INSERT OR IGNORE INTO player_achievements (achievement_id)
@@ -20,7 +20,7 @@ def unlock_achievement(cursor, achievement_id):
 
         achievement = cursor.fetchone()
 
-        if achievement:
+        if achievement and display:
             print(f"🏆 Objectif validé : {achievement[0]} !")
 
     return unlocked
@@ -118,10 +118,18 @@ def check_ingredients_achievement(cursor):
 def check_commercial_achievements(cursor):
 
     sold_recipes = get_objective_specific_sales(cursor)
+    unlocked_achievements = []
 
     for achievement_id, required_recipes in commercial_achievements.items():
 
         if required_recipes.issubset(sold_recipes):
-            unlock_achievement(cursor, achievement_id)
+            unlocked = unlock_achievement(
+                cursor, achievement_id, display=False
+            )
+
+            if unlocked:
+                unlocked_achievements.append(achievement_id)
+
+    return unlocked_achievements
 
 

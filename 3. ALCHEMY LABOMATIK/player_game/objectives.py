@@ -157,7 +157,7 @@ def display_objective_discovered_recipes(cursor):
         discovered = discovered + discovered_recipes
 
     print()
-    print(f"{YELLOW}Total recettes découvertes : {discovered} / {total} - {round(discovered_recipes * 100 / total_recipes) if total_recipes else 0} %{RESET}")
+    print(f"{YELLOW}Total recettes découvertes : {discovered} / {total} - {round(discovered * 100 / total) if total else 0} %{RESET}")
 
 #--------------------------------------------- CUISINE --------------------------------------------------------------
 

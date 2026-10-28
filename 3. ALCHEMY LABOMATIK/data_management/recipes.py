@@ -1,6 +1,6 @@
 import sqlite3
 
-from display.display_utils import COLORS, RESET, dans_ton_q
+from display.display_utils import COLORS, RESET, DIM
 from display.display_ingredients import display_all_ingredients
 from display.display_recipes import display_all_recipes
 from display.display_recipe_ingredients_products_and_equipment import display_all_recipes_ingredients, display_all_recipes_products
@@ -78,15 +78,15 @@ def choose_recipe_to_update(cursor):
     
     while True:
     
-        choice = input("Recette choisie (666 pour quitter) : ")
+        choice = input(f"Recette choisie {DIM}(Entrée pour revenir){RESET} : ")
+
+        if not choice:
+            return
 
         # Tu récupères le tuple correspondant à son choix
         if choice.isdigit() and 1 <= int(choice) <= len(recipes):
             selected_recipe = recipes[int(choice) - 1]
             break
-
-        elif choice == "666":
-            return
         
         print("Choix invalide.")
         
@@ -101,7 +101,10 @@ def update_recipe_name(cursor, connection):
     if not recipe_id:
         return
 
-    new_name = input("Nouveau nom : ")
+    new_name = input(f"Nouveau nom {DIM}(Entrée pour revenir){RESET} : ")
+
+    if not new_name:
+        return
 
     try:
         cursor.execute("""
@@ -126,7 +129,7 @@ def update_recipe_description(cursor, connection):
     if not recipe_id:
         return
 
-    new_description = input("Nouveau descriptif : ")
+    new_description = input(f"Nouveau descriptif {DIM}(Entrée pour revenir){RESET} : ")
 
     cursor.execute("""
         UPDATE recipes
@@ -145,7 +148,10 @@ def update_recipe_effect(cursor, connection):
     if not recipe_id:
         return
 
-    new_effect = input("Nouvel effet : ")
+    new_effect = input(f"Nouveau descriptif {DIM}(Entrée pour revenir){RESET} : ")
+
+    if not new_effect:
+        return
 
     cursor.execute("""
         UPDATE recipes
@@ -335,27 +341,22 @@ def add_recipe_name_description_and_effect():
 
     while True:
 
-        name = input("Nom : ").strip()
+        name = input(f"Nom {DIM}(Entrée pour revenir){RESET} : ").strip()
 
-        if name == "q":
+        if not name:
             return
 
-        if name:
-            break
+        description = input(f"Description {DIM}(Entrée pour revenir){RESET} : ").strip()
+    
+        if not description:
+            return
+    
+        effect = input(f"Effet {DIM}(Entrée pour revenir){RESET} : ").strip()
+    
+        if not effect:
+            return
 
-        print("Le nom ne peut pas être vide.")
-    
-    description = input("Description : ").strip()
-    
-    if description == "q":
-        return
-    
-    effect = input("Effet : ").strip()
-    
-    if effect == "q":
-        return
-
-    return name, description, effect
+        return name, description, effect
 
 
 def add_recipe_target(cursor):
@@ -374,7 +375,10 @@ def add_recipe_target(cursor):
         for target in targets:
             print(f"{target[0]} - {target[1]}")
 
-        choice = input("> ")
+        choice = input(f"Cible {DIM}(Entrée pour revenir){RESET} : ").strip()
+
+        if not choice:
+            return
 
         if choice.isdigit() and 1 <= int(choice) <= len(targets):
             target_id = int(choice)
@@ -402,7 +406,10 @@ def add_recipe_type(cursor):
         for recipe_type in recipe_types:
             print(f"{recipe_type[0]} - {recipe_type[1]}")
 
-        choice = input("> ")
+        choice = input(f"Type {DIM}(Entrée pour revenir){RESET} : ").strip()
+        
+        if not choice:
+            return
 
         if choice.isdigit() and 1 <= int(choice) <= len(recipe_types):
             recipe_type_id = int(choice)
@@ -430,7 +437,10 @@ def add_recipe_rarity(cursor):
         for rarity in rarities:
             print(f"{rarity[0]} - {rarity[1]}")
 
-        choice = input("> ")
+        choice = input(f"Rareté {DIM}(Entrée pour revenir){RESET} : ").strip()
+        
+        if not choice:
+            return
 
         if choice.isdigit() and 1 <= int(choice) <= len(rarities):
             rarity_id = int(choice)
@@ -466,7 +476,10 @@ def add_recipe_fire(cursor):
             print(f"{fire[0]} - {COLORS[fire[2]]}{fire[1]}{RESET}")
         print("[0] Aucun")
 
-        choice = input("> ")
+        choice = input(f"Feu {DIM}(Entrée pour revenir){RESET} : ").strip()
+        
+        if not choice:
+            return
 
         if choice == "0":
             fire_id = None
@@ -505,7 +518,10 @@ def add_recipe_melting_pot(cursor):
             print(f"{melting_pot[0]} - {COLORS[melting_pot[2]]}{melting_pot[1]}{RESET}")
         print("[0] Aucun")
 
-        choice = input("> ")
+        choice = input(f"Creuset {DIM}(Entrée pour revenir){RESET} : ").strip()
+        
+        if not choice:
+            return
 
         if choice == "0":
             melting_pot_id = None
@@ -544,7 +560,10 @@ def add_recipe_container(cursor):
             print(f"{container[0]} - {COLORS[container[2]]}{container[1]}{RESET}")
         print("[0] Aucun")
 
-        choice = input("> ")
+        choice = input(f"Contenant {DIM}(Entrée pour revenir){RESET} : ").strip()
+        
+        if not choice:
+            return
 
         if choice == "0":
             container_id = None
@@ -575,7 +594,10 @@ def add_recipe_discovery_difficulty(cursor):
         for difficulty in difficulties:
             print(f"{difficulty[0]} - {difficulty[1]} - Nombre d'affinités à classer : {difficulty[2]}")
     
-        choice = input("> ")
+        choice = input(f"Difficulté de découverte {DIM}(Entrée pour revenir){RESET} : ").strip()
+        
+        if not choice:
+            return
     
         if choice.isdigit() and 1 <= int(choice) <= len(difficulties):
             discovery_difficulty_id = int(choice)
@@ -589,20 +611,25 @@ def add_recipe_discovery_difficulty(cursor):
 
 def add_recipe_selling_price():
 
-    selling_price = ask_positive_int("Prix de vente : ")
+    selling_price = ask_positive_int(f"Prix de vente {DIM}(Entrée pour revenir){RESET} : ")
+
+    if not selling_price:
+        return
+    
     return selling_price
 
 
 def add_recipe_demand():
 
-    demand = ask_positive_float("Demande : ")
+    demand = ask_positive_float(f"Demande {DIM}(Entrée pour revenir){RESET} : ")
+
+    if not demand:
+        return
+    
     return demand
 
 
-
 def add_recipe(cursor, connection):
-
-    dans_ton_q() # Q FOR QUITTING
 
     name_description_effect = add_recipe_name_description_and_effect() # NAME, DESCRIPTION, EFFECT
 
@@ -725,9 +752,9 @@ def add_recipe_ingredients(cursor, connection):
             print("Choix invalide.")
             continue
 
-        quantity = ask_positive_int("Quantité (666 pour quitter) : ")
+        quantity = ask_positive_int(f"Quantité {DIM}(Entrée pour revenir){RESET} : ")
 
-        if quantity == "666": 
+        if not quantity: 
             return
 
         try:
@@ -761,9 +788,9 @@ def add_recipe_products(cursor, connection):
         if product_id is None:
             return
 
-        quantity = ask_positive_int("Quantité (666 pour quitter) : ")
+        quantity = ask_positive_int(f"Quantité {DIM}(Entrée pour revenir){RESET} : ")
 
-        if quantity == 666:
+        if not quantity:
             return
 
         try:
@@ -788,7 +815,10 @@ def reset_recipe_ingredients(cursor, connection):
 
     display_all_recipes_ingredients(cursor)
 
-    recipe_id = input("Recette choisie : ")
+    recipe_id = input(f"Recette choisie {DIM}(Entrée pour revenir){RESET} : ")
+
+    if not recipe_id:
+        return
     
     if not recipe_id.isdigit():
         print("Choix invalide.")
@@ -809,7 +839,10 @@ def reset_recipe_products(cursor, connection):
 
     display_all_recipes_products(cursor)
 
-    recipe_id = input("Recette choisie : ")
+    recipe_id = input(f"Recette choisie {DIM}(Entrée pour revenir){RESET} : ")
+
+    if not recipe_id:
+        return
 
     if not recipe_id.isdigit():
         print("Choix invalide.")

@@ -24,11 +24,6 @@ COLORS = {
 }
 
 
-def dans_ton_q():
-    print()
-    print("À chaque étape : q pour quitter.")
-
-
 def display_main_menu():
     print()
     print("   ┌──────────────────────┐   ")

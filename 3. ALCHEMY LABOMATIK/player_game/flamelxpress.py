@@ -79,15 +79,17 @@ def buy_container(cursor, connection):
 
     while True:
     
-        choice = input("Contenant à acheter : ") 
+        choice = input(f"Contenant à acheter {DIM}(Entrée pour revenir){RESET} : ")
+
+        if not choice:
+            return
     
         # Tu récupères le tuple correspondant à son choix
         if choice.isdigit() and 1 <= int(choice) <= len(available_containers):
             selected_container = available_containers[int(choice) - 1]
             break
         
-        print("Choix invalide.")
-        return
+        print("Choix invalide. Recommencer ou Entrée pour revenir.")
         
 
     # Tu extrais les deux informations nécessaires

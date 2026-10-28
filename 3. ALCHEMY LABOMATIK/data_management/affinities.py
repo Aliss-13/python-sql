@@ -1,6 +1,7 @@
 import sqlite3
 from display.display_ingredients import display_all_ingredients
 from display.display_affinities_and_portals import display_all_affinities
+from display.display_utils import DIM, RESET
 from utils import id_exists, ask_positive_float_0_1
 
 
@@ -38,20 +39,25 @@ def get_affinity_recipe_discovery_total_points(cursor, recipe_id):
 
 def add_affinity(cursor, connection):
 
-    name = input("Nom : ")
+    while True:
 
-    try:
-        cursor.execute("""
-            INSERT INTO affinities (name)
-            VALUES (?)
-        """, (name,))
+        name = input(f"Nom {DIM}(Entrée pour revenir){RESET} : ").strip().capitalize()
+
+        if not name:
+            return
+
+        try:
+            cursor.execute("""
+                INSERT INTO affinities (name)
+                VALUES (?)
+            """, (name,))
+            connection.commit()
+            print("Affinité ajoutée !")
+
+        except sqlite3.IntegrityError:
+            print("Cette affinité existe déjà.")
+
         connection.commit()
-        print("Affinité ajoutée !")
-
-    except sqlite3.IntegrityError:
-        print("Cette affinité existe déjà.")
-
-    connection.commit()
 
 
 def add_affinity_to_ingredient(cursor, connection):
@@ -62,13 +68,16 @@ def add_affinity_to_ingredient(cursor, connection):
 
     while True:
             
-        choix = input("Ingrédient choisi : ")
+        choice = input(f"Ingrédient choisi {DIM}(Entrée pour revenir){RESET} : ").strip()
 
-        if choix.isdigit() and id_exists(cursor, "ingredients", int(choix)):
-            ingredient_id = int(choix)
+        if not choice:
+            return
+
+        if choice.isdigit() and id_exists(cursor, "ingredients", int(choice)):
+            ingredient_id = int(choice)
             break
 
-        print("Choix invalide.")
+        print("Choix invalide. Recommencer ou Entrée pour revenir.")
         return
 
 # pas plus de 2 affinités différentes 
@@ -93,10 +102,13 @@ def add_affinity_to_ingredient(cursor, connection):
 
         while True:
 
-            choix = input("Affinité à associer : ")
+            choice = input(f"Affinité à associer {DIM}(Entrée pour revenir){RESET} : ").strip()
 
-            if choix.isdigit() and 1 <= int(choix) <= len(affinities):
-                affinity_id = int(choix)
+            if not choice:
+                return
+
+            if choice.isdigit() and 1 <= int(choice) <= len(affinities):
+                affinity_id = int(choice)
 
                 cursor.execute("""
                     SELECT 1
@@ -113,7 +125,7 @@ def add_affinity_to_ingredient(cursor, connection):
 
                 break
 
-            print("Choix invalide.")
+            print("Choix invalide. Recommencer ou Entrée pour revenir.")
 
 # points à attribuer entre 0 et 1
 

@@ -2,7 +2,7 @@ import random
 
 from display.display_inventories import display_inventory
 from display.display_refactor import group_data_under_same_id
-from display.display_utils import COLORS, RESET
+from display.display_utils import COLORS, RESET, DIM
 
 from player_game.game_functions.initialization import initialize_player_equipment
 from player_game.recipe_research import get_unknown_recipes
@@ -72,6 +72,7 @@ def display_mixing_tool(mixing_tools):
 def pick_mixing_tool(cursor):
 
     mixing_tools = display_all_available_mixing_tools(cursor)
+    print()
 
     if not mixing_tools:
         print("Vous ne possédez pas d'outil de mélange, rendez-vous à la Fonderie pour en fabriquer un !")
@@ -79,18 +80,18 @@ def pick_mixing_tool(cursor):
     
     while True:
             
-        choix = input("Instrument de mélange choisi (Entrée pour revenir) : ")
+        choice = input(f"Instrument de mélange choisi {DIM}(Entrée pour revenir){RESET} : ").strip()
         print()
 
-        if not choix:
+        if not choice:
             return
     
         # récupération de l'equipment_id
-        if choix.isdigit() and 1 <= int(choix) <= len(mixing_tools):
-            mixing_tool_id = mixing_tools[int(choix) - 1][0]
+        if choice.isdigit() and 1 <= int(choice) <= len(mixing_tools):
+            mixing_tool_id = mixing_tools[int(choice) - 1][0]
             break
     
-        print("Choix invalide")
+        print("Choix invalide. Recommencer ou Entrée pour revenir.")
 
     return mixing_tool_id
 
@@ -128,7 +129,6 @@ def pick_ingredients_to_blend(cursor, capacity):
         return
 
     ingredient_groups = group_data_under_same_id(ingredients)
-    print()
 
     blending_ingredients = []
 
@@ -136,9 +136,9 @@ def pick_ingredients_to_blend(cursor, capacity):
 
         while True:
 
-            choice = input("Ingrédient choisi (q pour quitter): ")
+            choice = input(f"Ingrédient choisi {DIM}(Entrée pour revenir){RESET} : ").strip()
 
-            if choice == "q":
+            if not choice:
                 return
 
             if choice.isdigit() and 1 <= int(choice) <= len(ingredient_groups):
@@ -175,7 +175,7 @@ def pick_ingredients_to_blend(cursor, capacity):
 
                 break
 
-            print("choix invalide")
+            print("Choix invalide. Recommencer ou Entrée pour revenir.")
     
     return blending_ingredients
 

@@ -1,25 +1,26 @@
 import sqlite3
 from display.display_ingredients import display_all_ingredients
+from display.display_utils import DIM, RESET
 from utils import ask_positive_int, id_exists
 
 
 def add_ingredient(cursor, connection):
     print()
-    print("À chaque étape : q pour quitter.")
+    print("À chaque étape : Entrée pour quitter.")
 
-    name = input("Nom : ") 
+    name = input(f"Nom {DIM}(Entrée pour revenir){RESET} : ") 
 
-    if name == "q":
+    if not name:
         return
 
-    description = input("Description : ")
+    description = input(f"Description {DIM}(Entrée pour revenir){RESET} : ")
 
-    if description == "q":
+    if not description:
         return
 
-    level = ask_positive_int("Niveau : ")
+    level = ask_positive_int(f"Niveau {DIM}(Entrée pour revenir){RESET} : ")
 
-    if level == "q":
+    if not level:
         return
 
     cursor.execute("""
@@ -35,7 +36,10 @@ def add_ingredient(cursor, connection):
         for rarity in rarities:
             print(f"[{rarity[0]}] {rarity[1]}")
 
-        choice = input("> ")
+        choice = input(f"Rareté {DIM}(Entrée pour revenir){RESET} : ")
+
+        if not choice:
+            return
 
         if choice.isdigit() and 1 <= int(choice) <= len(rarities):
             rarity_id = int(choice)
@@ -49,7 +53,10 @@ def add_ingredient(cursor, connection):
     while True:
     
         try:
-            unlock_discoveries_threshold = int(input("Seuil de déblocage - nombre de découvertes : "))
+            unlock_discoveries_threshold = int(input(f"Seuil de déblocage - nombre de découvertes {DIM}(Entrée pour revenir){RESET} : "))
+
+            if not unlock_discoveries_threshold:
+                return
     
             if unlock_discoveries_threshold >= 0 :
                 break
@@ -114,18 +121,21 @@ def update_ingredient_name(cursor, connection):
     
     while True:
     
-        choix = input("Ingrédient choisi : ")
+        choice = input(f"Ingrédient choisi {DIM}(Entrée pour revenir){RESET} : ")
+
+        if not choice:
+            return
     
-        if choix.isdigit() and id_exists(cursor, "ingredients", int(choix)):
-            ingredient_id = int(choix)
+        if choice.isdigit() and id_exists(cursor, "ingredients", int(choice)):
+            ingredient_id = int(choice)
             break
     
         print("Choix invalide.")
         return
 
-    new_name = input("Nouveau nom (q pour quitter) : ")
+    new_name = input(f"Nouveau nom {DIM}(Entrée pour revenir){RESET} : ")
 
-    if new_name == "q": 
+    if not new_name: 
         return
 
     try:
@@ -148,18 +158,21 @@ def update_ingredient_description(cursor, connection):
     
     while True:
     
-        choix = input("Ingrédient choisi : ")
+        choice = input(f"Ingrédient choisi {DIM}(Entrée pour revenir){RESET} : ")
+
+        if not choice:
+            return
     
-        if choix.isdigit() and id_exists(cursor, "ingredients", int(choix)):
-            ingredient_id = int(choix)
+        if choice.isdigit() and id_exists(cursor, "ingredients", int(choice)):
+            ingredient_id = int(choice)
             break
     
         print("Choix invalide.")
         return
 
-    new_description = input("Nouveau descriptif (q pour quitter) : ")
+    new_description = input(f"Nouveau descriptif {DIM}(Entrée pour revenir){RESET} : ")
 
-    if new_description == "q": 
+    if not new_description: 
         return
 
     cursor.execute("""
@@ -178,18 +191,21 @@ def update_ingredient_level(cursor, connection):
     
     while True:
     
-        choix = input("Ingrédient choisi : ")
+        choice = input(f"Ingrédient choisi {DIM}(Entrée pour revenir){RESET} : ")
+
+        if not choice:
+            return
     
-        if choix.isdigit() and id_exists(cursor, "ingredients", int(choix)):
-            ingredient_id = int(choix)
+        if choice.isdigit() and id_exists(cursor, "ingredients", int(choice)):
+            ingredient_id = int(choice)
             break
     
         print("Choix invalide.")
         return
 
-    new_level = ask_positive_int("Nouveau niveau (q pour quitter) : ")
+    new_level = ask_positive_int(f"Nouveau niveau {DIM}(Entrée pour revenir){RESET} : ")
 
-    if new_level == "q": 
+    if not new_level: 
         return
 
     cursor.execute("""
@@ -208,10 +224,13 @@ def update_ingredient_rarity(cursor, connection):
     
     while True:
     
-        choix = input("Ingrédient choisi : ")
+        choice = input(f"Ingrédient choisi {DIM}(Entrée pour revenir){RESET} : ")
+
+        if not choice:
+            return
     
-        if choix.isdigit() and id_exists(cursor, "ingredients", int(choix)):
-            ingredient_id = int(choix)
+        if choice.isdigit() and id_exists(cursor, "ingredients", int(choice)):
+            ingredient_id = int(choice)
             break
     
         print("Choix invalide.")
@@ -230,10 +249,13 @@ def update_ingredient_rarity(cursor, connection):
         for rarity in rarities:
             print(f"[{rarity[0]}] {rarity[1]}")
     
-        choix = input("> ")
+        choice = input(f"Rareté {DIM}(Entrée pour revenir){RESET} : ")
+
+        if not choice:
+            return
     
-        if choix.isdigit() and 1 <= int(choix) <= len(rarities):
-            new_rarity_id = int(choix)
+        if choice.isdigit() and 1 <= int(choice) <= len(rarities):
+            new_rarity_id = int(choice)
             break
     
         print("Choix invalide.")
@@ -255,7 +277,10 @@ def update_ingredient_unlock_discoveries(cursor, connection):
     
     while True:
     
-        choice = input("Ingrédient choisi : ")
+        choice = input(f"Ingrédient choisi {DIM}(Entrée pour revenir){RESET} : ")
+
+        if not choice:
+            return
     
         if choice.isdigit() and id_exists(cursor, "ingredients", int(choice)):
             ingredient_id = int(choice)
@@ -267,7 +292,10 @@ def update_ingredient_unlock_discoveries(cursor, connection):
     while True:
 
         try:
-            unlock_discoveries_threshold = int(input("Seuil de déblocage - nombre de découvertes : "))
+            unlock_discoveries_threshold = int(input(f"Seuil de déblocage - nombre de découvertes {DIM}(Entrée pour revenir){RESET} : "))
+
+            if not unlock_discoveries_threshold:
+                return
 
             if unlock_discoveries_threshold >= 0 :
                 break
@@ -298,10 +326,13 @@ def reset_ingredient_affinities(cursor, connection):
 
     while True:
             
-        choix = input("Ingrédient choisi : ")
+        choice = input(f"Ingrédient choisi {DIM}(Entrée pour revenir){RESET} : ")
 
-        if choix.isdigit() and id_exists(cursor, "ingredients", int(choix)):
-            ingredient_id = int(choix)
+        if not choice:
+            return
+
+        if choice.isdigit() and id_exists(cursor, "ingredients", int(choice)):
+            ingredient_id = int(choice)
             break
 
         print("Choix invalide.")
