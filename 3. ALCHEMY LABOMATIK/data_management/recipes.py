@@ -385,7 +385,6 @@ def add_recipe_target(cursor):
             break
 
         print("Choix invalide.")
-        return
 
     return target_id
 
@@ -416,7 +415,6 @@ def add_recipe_type(cursor):
             break
 
         print("Choix invalide.")
-        return
 
     return recipe_type_id
 
@@ -447,7 +445,6 @@ def add_recipe_rarity(cursor):
             break
 
         print("Choix invalide.")
-        return
 
     return rarity_id
 
@@ -479,7 +476,7 @@ def add_recipe_fire(cursor):
         choice = input(f"Feu {DIM}(Entrée pour revenir){RESET} : ").strip()
         
         if not choice:
-            return
+            return False
 
         if choice == "0":
             fire_id = None
@@ -521,7 +518,7 @@ def add_recipe_melting_pot(cursor):
         choice = input(f"Creuset {DIM}(Entrée pour revenir){RESET} : ").strip()
         
         if not choice:
-            return
+            return False
 
         if choice == "0":
             melting_pot_id = None
@@ -563,7 +560,7 @@ def add_recipe_container(cursor):
         choice = input(f"Contenant {DIM}(Entrée pour revenir){RESET} : ").strip()
         
         if not choice:
-            return
+            return False
 
         if choice == "0":
             container_id = None
@@ -604,7 +601,6 @@ def add_recipe_discovery_difficulty(cursor):
             break
     
         print("Choix invalide.")
-        return
 
     return discovery_difficulty_id
 
@@ -632,30 +628,47 @@ def add_recipe_demand():
 def add_recipe(cursor, connection):
 
     name_description_effect = add_recipe_name_description_and_effect() # NAME, DESCRIPTION, EFFECT
-
-    if name_description_effect is None: # c'est pour le q qui fait None, banane
+    if name_description_effect is None:
         return
 
     name, description, effect = name_description_effect
 
 
     target_id = add_recipe_target(cursor) # TARGET
+    if target_id is None:
+        return
 
     recipe_type_id = add_recipe_type(cursor) # TYPE : POTION, ELIXIR, PENTAGRAMME
+    if recipe_type_id is None:
+        return
 
     rarity_id = add_recipe_rarity(cursor) # RARITY
+    if rarity_id is None:
+        return
 
     discovery_difficulty_id = add_recipe_discovery_difficulty(cursor)
+    if discovery_difficulty_id is None:
+        return
 
     fire_id = add_recipe_fire(cursor) # FIRE
+    if fire_id is False:
+        return
 
     melting_pot_id = add_recipe_melting_pot(cursor) # MELTING POT
+    if melting_pot_id is False:
+        return
 
     container_id = add_recipe_container(cursor) # CONTAINER
+    if container_id is False:
+        return
 
     selling_price = add_recipe_selling_price() # PRIX DE VENTE
+    if selling_price is None:
+        return
 
     demand = add_recipe_demand() # DEMANDE
+    if demand is None:
+        return
     
 
     try:
@@ -775,7 +788,6 @@ def add_recipe_ingredients(cursor, connection):
 def add_recipe_products(cursor, connection):
 
     recipe_id = choose_recipe_to_add_to(cursor) # choix recette
-
     if recipe_id is None:
         return
 
@@ -784,7 +796,6 @@ def add_recipe_products(cursor, connection):
     while True:
 
         product_id = choose_recipe_to_add_to(cursor)
-
         if product_id is None:
             return
 
@@ -814,15 +825,14 @@ def add_recipe_products(cursor, connection):
 def reset_recipe_ingredients(cursor, connection):
 
     display_all_recipes_ingredients(cursor)
+    print()
 
     recipe_id = input(f"Recette choisie {DIM}(Entrée pour revenir){RESET} : ")
-
     if not recipe_id:
         return
     
     if not recipe_id.isdigit():
         print("Choix invalide.")
-        return
     
     recipe_id = int(recipe_id)
     
@@ -838,15 +848,14 @@ def reset_recipe_ingredients(cursor, connection):
 def reset_recipe_products(cursor, connection):
 
     display_all_recipes_products(cursor)
+    print()
 
     recipe_id = input(f"Recette choisie {DIM}(Entrée pour revenir){RESET} : ")
-
     if not recipe_id:
         return
 
     if not recipe_id.isdigit():
         print("Choix invalide.")
-        return
 
     recipe_id = int(recipe_id)
         

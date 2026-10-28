@@ -1,4 +1,4 @@
-from display.display_utils import COLORS, RESET, YELLOW, display_recipe_description
+from display.display_utils import COLORS, RESET, YELLOW, display_description
 
 
 def display_shop_inventory(cursor):
@@ -33,7 +33,7 @@ def display_shop_inventory(cursor):
 
     for display_number, (recipe_id, name, color, description, quantity, recipe_type, selling_price) in enumerate (result, start=1):
         print(f'{display_number:<2} - {COLORS[color]}{name}{RESET} - {YELLOW}{recipe_type}{RESET} - x{quantity}')
-        display_recipe_description(description)
+        display_description(description)
         print(f"     Prix de vente : {selling_price} pièces")
         print()
 

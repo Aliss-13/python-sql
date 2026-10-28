@@ -28,7 +28,7 @@ def display_all_equipment(cursor):
     print("--- Matériel ---")
     for equipment_id, equipment_name, equipment_category, equipment_description, equipment_color, equipment_unlock_discoveries in equipment:
         color = COLORS[equipment_color]
-        print(f'{equipment_id:<2} - {color}{equipment_name}{RESET} - {YELLOW}{equipment_category}{RESET} - Déblocage : {equipment_unlock_discoveries} découvertes')
+        print(f'{equipment_id:<2} - {color}{equipment_name}{RESET} - {YELLOW}{equipment_category}{RESET} - 🔒 : {equipment_unlock_discoveries} découvertes')
         print(f'     {DIM}{equipment_description}{RESET}')
         print()
 

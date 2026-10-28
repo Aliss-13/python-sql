@@ -1,4 +1,4 @@
-from display.display_utils import YELLOW, LIGHT_PINK, RESET, COLORS, DIM, display_recipe_description
+from display.display_utils import YELLOW, LIGHT_PINK, RESET, COLORS, DIM, display_description
 from display.display_refactor import group_data_under_same_id, format_affinity_items
 
 from data_management.discoveries import get_number_of_discoveries
@@ -209,7 +209,7 @@ def display_objective_crafted_recipes(cursor, crafted):
     for display_number, (recipe_id, recipe_name, recipe_type, recipe_description, recipe_rarity) in enumerate (result, start = 1):
 
         print(f"{display_number:<2} - {COLORS[recipe_rarity]}{recipe_name}{RESET} - {YELLOW}{recipe_type}{RESET}")
-        display_recipe_description(recipe_description)
+        display_description(recipe_description)
         print()
 
 

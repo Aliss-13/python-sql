@@ -62,7 +62,6 @@ def update_achievement_name(cursor, connection):
             break
     
         print("Choix invalide. Recommencer ou Entrée pour revenir.")
-        return
 
     new_name = input(f"Nouveau nom {DIM}(Entrée pour revenir){RESET} : ")
 
@@ -95,15 +94,11 @@ def update_achievement_description(cursor, connection):
             break
     
         print("Choix invalide. Recommencer ou Entrée pour revenir.")
-        return
 
     new_description = input(f"Nouvelle description (Entrée pour vide) {DIM}(q pour revenir){RESET} : ")
     
     if new_description == "q": 
         return
-
-    if new_description == "": 
-        new_description = None
 
     cursor.execute("""
         UPDATE achievements

@@ -15,7 +15,6 @@ def add_equipment_craft(cursor, connection):
 
     if not id_exists(cursor, "equipment", equipment_id):
         print("Matériel introuvable.")
-        return
 
     equipment_has_craft = False
 

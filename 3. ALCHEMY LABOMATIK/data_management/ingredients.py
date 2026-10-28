@@ -46,7 +46,6 @@ def add_ingredient(cursor, connection):
             break
 
         print("Choix invalide.")
-        return
 
     # ============================== SEUIL DE DEBLOCAGE NB DE DECOUVERTES
     
@@ -131,7 +130,6 @@ def update_ingredient_name(cursor, connection):
             break
     
         print("Choix invalide.")
-        return
 
     new_name = input(f"Nouveau nom {DIM}(Entrée pour revenir){RESET} : ")
 
@@ -168,7 +166,6 @@ def update_ingredient_description(cursor, connection):
             break
     
         print("Choix invalide.")
-        return
 
     new_description = input(f"Nouveau descriptif {DIM}(Entrée pour revenir){RESET} : ")
 
@@ -201,7 +198,6 @@ def update_ingredient_level(cursor, connection):
             break
     
         print("Choix invalide.")
-        return
 
     new_level = ask_positive_int(f"Nouveau niveau {DIM}(Entrée pour revenir){RESET} : ")
 
@@ -234,7 +230,6 @@ def update_ingredient_rarity(cursor, connection):
             break
     
         print("Choix invalide.")
-        return
 
     cursor.execute("""
             SELECT id, name
@@ -259,7 +254,6 @@ def update_ingredient_rarity(cursor, connection):
             break
     
         print("Choix invalide.")
-        return
 
     cursor.execute("""
         UPDATE ingredients
@@ -287,17 +281,20 @@ def update_ingredient_unlock_discoveries(cursor, connection):
             break
     
         print("Choix invalide.")
-        return
 
     while True:
 
         try:
-            unlock_discoveries_threshold = int(input(f"Seuil de déblocage - nombre de découvertes {DIM}(Entrée pour revenir){RESET} : "))
+            choice = input(
+                f"Seuil de déblocage - nombre de découvertes "
+                f"{DIM}(Entrée pour revenir){RESET} : "
+            ).strip()
 
-            if not unlock_discoveries_threshold:
+            if not choice:
                 return
 
-            if unlock_discoveries_threshold >= 0 :
+            if choice.isdigit():
+                unlock_discoveries_threshold = int(choice)
                 break
 
             print("La valeur doit être 0 ou un entier positif.")
@@ -315,8 +312,9 @@ def update_ingredient_unlock_discoveries(cursor, connection):
         connection.commit()
         print ("Seuil de déblocage - nombre de découvertes mis à jour.")
 
-    except sqlite3.IntegrityError:
-        print("Ce nom existe déjà.")
+    except sqlite3.IntegrityError as error:
+        connection.rollback()
+        print(f"Erreur d'intégrité : {error}")
 
 
 

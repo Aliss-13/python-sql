@@ -49,7 +49,6 @@ def add_equipment(cursor, connection):
             break
     
         print("Choix invalide.")
-        return
 
     # =============================== RARITIES
 
@@ -76,7 +75,6 @@ def add_equipment(cursor, connection):
             break
 
         print("Choix invalide.")
-        return
 
     # ============================== SEUIL DE DEBLOCAGE NB DE DECOUVERTES
 
@@ -162,7 +160,6 @@ def update_equipment_name(cursor, connection):
             break
     
         print("Choix invalide.")
-        return
 
     new_name = input(f"Nouveau nom {DIM}(Entrée pour revenir){RESET} : ")
 
@@ -199,7 +196,6 @@ def update_equipment_description(cursor, connection):
             break
     
         print("Choix invalide.")
-        return
 
     new_description = input(f"Nouveau descriptif {DIM}(Entrée pour revenir){RESET} : ")
 
@@ -232,7 +228,6 @@ def update_equipment_rarity(cursor, connection):
             break
     
         print("Choix invalide.")
-        return
 
     cursor.execute("""
             SELECT id, name
@@ -254,7 +249,6 @@ def update_equipment_rarity(cursor, connection):
             break
     
         print("Choix invalide.")
-        return
 
     cursor.execute("""
         UPDATE equipment
@@ -279,7 +273,6 @@ def update_equipment_category(cursor, connection):
             break
     
         print("Choix invalide.")
-        return
 
     cursor.execute("""
             SELECT id, name
@@ -304,7 +297,6 @@ def update_equipment_category(cursor, connection):
             break
     
         print("Choix invalide.")
-        return
 
     cursor.execute("""
         UPDATE equipment
@@ -332,7 +324,6 @@ def update_equipment_unlock_discoveries(cursor, connection):
             break
     
         print("Choix invalide.")
-        return
 
     while True:
 

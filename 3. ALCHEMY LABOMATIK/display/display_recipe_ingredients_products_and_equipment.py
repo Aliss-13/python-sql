@@ -1,5 +1,5 @@
 from display.display_refactor import group_data_under_same_id, format_recipe_and_craft_items
-from display.display_utils import COLORS, RESET, YELLOW, LIGHT_PINK, display_recipe_description, info_fire_melting_pot_container
+from display.display_utils import COLORS, RESET, YELLOW, LIGHT_PINK, DIM, display_description, info_fire_melting_pot_container
 
 
 
@@ -253,7 +253,7 @@ def display_recipe_ingredients_products_and_equipments(
         print(equipment_text)
         print(f'{LIGHT_PINK}     Ingrédients : {RESET}{ingredient_text}')
         print(f'{LIGHT_PINK}     Produits : {RESET}{product_text}')
-        display_recipe_description(recipe_description)
+        display_description(recipe_description)
         print()
 
     return recipes_datas
@@ -314,8 +314,8 @@ def display_recipe_product(recipe_products):
         print(
                 f'{recipe_id:<2} - '
                 f'{COLORS[recipe_color]}{recipe_name}{RESET} - '
-                f'{product_text}'
-            )
+                f'{product_text}')
+        
 
 #----------------------------------------------- RECIPE_INGREDIENTS ----------------------------------------------------
 
@@ -369,13 +369,18 @@ def display_recipe_ingredients(recipe_ingredients):
         
             if ingredient_name is not None:
                 ingredient_list.append((ingredient_name, ingredient_quantity, ingredient_color))
-        
-        ingredient_text = format_recipe_and_craft_items(ingredient_list)
 
-        print(
-                f'{recipe_id:<3} - {COLORS[recipe_color]}{recipe_name}{RESET} - '
-                f'{ingredient_text}'
-            )
+        print(f'{recipe_id:<3} - {COLORS[recipe_color]}{recipe_name}{RESET}')
+        print(f"      {DIM}┌──────────────────────────────────────────────────────────────────────────────┐{RESET}")
+
+        for i in range(0, len(ingredient_list), 3):
+            ingredients_line = ingredient_list[i:i + 3]
+            ingredient_text = format_recipe_and_craft_items(ingredients_line)
+            print(f'        {ingredient_text}')
+        
+        print(f"      {DIM}└──────────────────────────────────────────────────────────────────────────────┘{RESET}")
+        print()
+             
 
 
 #----------------------------------------------- RECIPE_EQUIPMENTS ----------------------------------------------------

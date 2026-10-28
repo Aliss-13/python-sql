@@ -11,6 +11,11 @@ def id_exists(cursor, table, object_id):
 def ask_int(prompt):
 
     while True:
+        
+        choice = input(prompt).strip()
+        
+        if not choice:
+            return None
 
         try:
             value = int(input(prompt))
@@ -23,6 +28,11 @@ def ask_int(prompt):
 def ask_positive_int(prompt):
 
     while True:
+
+        choice = input(prompt).strip()
+        
+        if not choice:
+            return None
 
         try:
             value = int(input(prompt))
@@ -40,6 +50,11 @@ def ask_positive_float_0_1(prompt):
 
     while True:
 
+        choice = input(prompt).strip()
+        
+        if not choice:
+            return None
+
         try:
             value = float(input(prompt))
 
@@ -56,13 +71,18 @@ def ask_positive_float(prompt):
 
     while True:
 
-        try:
-            value = float(input(prompt))
+        choice = input(prompt).strip()
 
-            if value > 0 :
+        if not choice:
+            return None
+
+        try:
+            value = float(choice)
+
+            if value > 0:
                 return value
-            else:
-                print("La valeur doit être positive.")
+
+            print("La valeur doit être positive.")
 
         except ValueError:
             print("Saisie invalide.")

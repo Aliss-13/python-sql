@@ -1,4 +1,4 @@
-from display.display_utils import COLORS, RESET, YELLOW, LIGHT_PINK, info_price_demand, display_recipe_description, format_difficulty_stars, info_format_difficulty_stars
+from display.display_utils import COLORS, RESET, YELLOW, LIGHT_PINK, info_price_demand, display_description, format_difficulty_stars, info_format_difficulty_stars
 
 
 def display_all_recipes(cursor):
@@ -64,7 +64,7 @@ def display_recipe(recipes):
         
         print(f'     🔥 {fire or "Aucun"} - ' 
             f'⚗️ {melting_pot or "Aucun"} - 🧪 {container or "Aucun"}')
-        display_recipe_description(description)
+        display_description(description)
         print()
 
 

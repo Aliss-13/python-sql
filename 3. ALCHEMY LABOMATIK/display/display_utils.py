@@ -34,7 +34,7 @@ def display_main_menu():
     print()
 
 
-def display_recipe_description(description):
+def display_description(description):
     
     if description is None:
         return
@@ -44,29 +44,7 @@ def display_recipe_description(description):
     for line in lines:
         print(f'     {DIM}{line}{RESET}')
 
-
-def display_container_description(description):
-    
-    if description is None:
-        return
-
-    lines = textwrap.wrap(description, width=100)
-
-    for line in lines:
-        print(f'     {DIM}{line}{RESET}')
-
-
-def display_ingredient_description(description):
-    
-    if description is None:
-        return
-
-    lines = textwrap.wrap(description, width=100)
-
-    for line in lines:
-        print(f'     {DIM}{line}{RESET}')
-
-
+        
 def format_difficulty_stars(difficulty_id):
     return "★" * difficulty_id + DIM + "☆" * (5 - difficulty_id) + RESET # concaténation => "texte" + variable
 

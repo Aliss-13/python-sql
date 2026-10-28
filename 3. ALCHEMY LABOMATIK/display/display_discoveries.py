@@ -55,9 +55,9 @@ def display_discovery(recipe_discovery):
 
         print(
                 f'{discovery_id:<2} - {COLORS[color]}{name}{RESET} - '
-                f'{YELLOW}Ingrédients : {number_of_ingredients}{RESET} - {affinity_text}')
-
-
+                f'{YELLOW}Ingrédients : {number_of_ingredients}{RESET}')
+        print(f'     {affinity_text}')
+        print()
 
 
 

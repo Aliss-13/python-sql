@@ -78,7 +78,6 @@ def add_affinity_to_ingredient(cursor, connection):
             break
 
         print("Choix invalide. Recommencer ou Entrée pour revenir.")
-        return
 
 # pas plus de 2 affinités différentes 
 
@@ -137,7 +136,10 @@ def add_affinity_to_ingredient(cursor, connection):
             print(f"Dernière affinité : {remaining}")
 
         else:
-            value = ask_positive_float_0_1("Valeur de l'affinité : ")
+            value = ask_positive_float_0_1(f"Valeur de l'affinité {DIM}(Entrée pour revenir){RESET} : ")
+
+            if value is None:
+                return
 
         new_total_value = round(total_value + value, 2)
 

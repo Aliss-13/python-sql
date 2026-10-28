@@ -1,4 +1,4 @@
-from display.display_utils import COLORS, RESET, DIM
+from display.display_utils import COLORS, RESET, display_description
 from display.display_refactor import group_data_under_same_id, format_affinity_items
 
 def display_all_ingredients(cursor):
@@ -54,6 +54,6 @@ def display_ingredient(ingredients):
         
         affinity_text = format_affinity_items(sorted_affinity_list)
                     
-        print(f"{ingredient_id:<2} - {COLORS[color]}{name}{RESET}  {affinity_text}  - Déblocage : {unlock_discoveries} découvertes")
-        print(f"{DIM}{description}{RESET}") #- {DIM}Niv. {level}{RESET} à rajouter si besoin
+        print(f"{ingredient_id:<2} - {COLORS[color]}{name}{RESET}  {affinity_text}  - 🔒 : {unlock_discoveries} découvertes")
+        display_description(description)
         print()

@@ -42,9 +42,11 @@ def update_number_of_ingredients(cursor, connection):
 
     recipe_id = ask_positive_int(f"Recette choisie {DIM}(Entrée pour revenir){RESET} : ")
 
+    if not recipe_id:
+        return
+
     if not id_exists(cursor, "recipes", recipe_id):
         print("Recette introuvable.")
-        return
     
     allowed_number_of_ingredients = [2, 3, 4, 5, 6]
     
@@ -55,7 +57,6 @@ def update_number_of_ingredients(cursor, connection):
     
     if number_of_ingredients not in allowed_number_of_ingredients:
         print("Nombre d'ingrédients invalide.")
-        return
 
     cursor.execute("""
         UPDATE recipe_discovery
@@ -82,7 +83,6 @@ def add_recipe_discovery(cursor, connection):
 
     else:
         print("Choix invalide.")
-        return
     
     allowed_number_of_ingredients = [2, 3, 4, 5, 6]
 
@@ -93,7 +93,6 @@ def add_recipe_discovery(cursor, connection):
 
     if number_of_ingredients not in allowed_number_of_ingredients:
         print("Nombre d'ingrédients invalide.")
-        return
 
 
     # entre 1 et 6 affinités différentes 
@@ -143,7 +142,6 @@ def add_recipe_discovery(cursor, connection):
                 break
 
             print("Choix invalide.")
-            return
 
     # points à attribuer entre 0 et 1
 
@@ -220,7 +218,6 @@ def reset_discovery_affinities(cursor, connection):
             break
         
         print("Choix invalide.")
-        return
 
     cursor.execute("""  
         DELETE FROM recipe_discovery
