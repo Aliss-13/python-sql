@@ -1,4 +1,4 @@
-from display.display_utils import COLORS, RESET, DIM, YELLOW
+from display.display_utils import COLORS, RESET, DIM, YELLOW, display_description
 from display.display_refactor import group_data_under_same_id, format_recipe_and_craft_items
     
 # ----------------------------------------------- EQUIPMENT ----------------------------------------------------
@@ -25,11 +25,10 @@ def display_all_equipment(cursor):
     equipment = cursor.fetchall()
 
     print()
-    print("--- Matériel ---")
     for equipment_id, equipment_name, equipment_category, equipment_description, equipment_color, equipment_unlock_discoveries in equipment:
         color = COLORS[equipment_color]
         print(f'{equipment_id:<2} - {color}{equipment_name}{RESET} - {YELLOW}{equipment_category}{RESET} - 🔒 : {equipment_unlock_discoveries} découvertes')
-        print(f'     {DIM}{equipment_description}{RESET}')
+        display_description(equipment_description)
         print()
 
 # ----------------------------------------------- EQUIPMENT CRAFT ----------------------------------------------------
@@ -104,6 +103,7 @@ def display_equipment_craft(equipment_craft):
 
         craft_text = format_recipe_and_craft_items(craft_list)
                         
-        print(f"{display_number:<2} - {COLORS[equipment_color]}{equipment_name}{RESET} - {YELLOW}{equipment_category_name}{RESET} - {DIM}{equipment_description}{RESET}")
+        print(f"{display_number:<2} - {COLORS[equipment_color]}{equipment_name}{RESET} - {YELLOW}{equipment_category_name}{RESET}")
+        display_description(equipment_description)
         print(f"     {craft_text}")
         print()

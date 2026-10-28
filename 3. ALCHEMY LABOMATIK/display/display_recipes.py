@@ -60,10 +60,23 @@ def display_recipe(recipes):
         print(
             f'{display_number:<2} - {COLORS[color]}{name}{RESET} - '
             f'{YELLOW}{recipe_type}{RESET} - {format_difficulty_stars(discovery_difficulty)} - 💰 {selling_price} pièces - 🛒 {demand}')
-        print(f'     {LIGHT_PINK}{effect} ({target}){RESET}')
         
-        print(f'     🔥 {fire or "Aucun"} - ' 
-            f'⚗️ {melting_pot or "Aucun"} - 🧪 {container or "Aucun"}')
+        print(f'     {LIGHT_PINK}{effect} ({target}){RESET}')
+
+        equipment_list = []
+        
+        if fire:
+            equipment_list.append(f'🔥 {fire}')
+        
+        if melting_pot:
+            equipment_list.append(f'⚗️ {melting_pot}')
+        
+        if container:
+            equipment_list.append(f'🧪 {container}')
+        
+        if equipment_list:
+            print('     ' + ' - '.join(equipment_list))
+
         display_description(description)
         print()
 

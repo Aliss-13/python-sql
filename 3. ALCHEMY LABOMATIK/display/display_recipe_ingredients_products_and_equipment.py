@@ -230,6 +230,13 @@ def display_recipe_ingredients_products_and_equipments(
         # récupération des ingrédients
         ingredient_list = ingredients_by_recipe.get(recipe_id, [])
 
+        ingredient_lines = []
+
+        for i in range(0, len(ingredient_list), 3):
+            ingredients_line = ingredient_list[i:i + 3]
+            ingredient_text = format_recipe_and_craft_items(ingredients_line)
+            ingredient_lines.append(ingredient_text)
+
         # récupération des produits
         product_list = products_by_recipe.get(recipe_id, [])
 
@@ -240,20 +247,35 @@ def display_recipe_ingredients_products_and_equipments(
         melting_pot = equipment["melting_pot"]
         container = equipment["container"]
 
-        # formatage pour l'affichage
-        product_text = format_recipe_and_craft_items(product_list)
-        ingredient_text = format_recipe_and_craft_items(ingredient_list)
-        equipment_text = (
-                            f'     🔥 {fire or "Aucun"} - ' 
-                            f'⚗️ {melting_pot or "Aucun"} - '
-                            f'🧪 {container or "Aucun"}'
-                        )
-            
+        
+
         print(f'{display_number:>2} - {COLORS[recipe_color]}{recipe_name}{RESET} {YELLOW}{recipe_type}{RESET}')
-        print(equipment_text)
-        print(f'{LIGHT_PINK}     Ingrédients : {RESET}{ingredient_text}')
-        print(f'{LIGHT_PINK}     Produits : {RESET}{product_text}')
+
         display_description(recipe_description)
+        
+        equipment_list = []
+
+        if fire:
+            equipment_list.append(f'🔥 {fire}')
+
+        if melting_pot:
+            equipment_list.append(f'⚗️ {melting_pot}')
+
+        if container:
+            equipment_list.append(f'🧪 {container}')
+
+        if equipment_list:
+            print('     ' + ' - '.join(equipment_list))
+
+        print(f'{LIGHT_PINK}     Ingrédients :{RESET}')
+
+        for line in ingredient_lines:
+            print(f'         {line}')
+
+        if product_list:
+            product_text = format_recipe_and_craft_items(product_list)
+            print(f'{LIGHT_PINK}     Produits : {RESET}{product_text}')
+
         print()
 
     return recipes_datas
@@ -326,6 +348,7 @@ def display_all_recipes_ingredients(cursor):
         recipe_ingredients.recipe_id,
         recipes.name,
         recipes.type_id,
+        recipes.description,
         ingredients.name,
         recipe_rarity.color,
         ingredient_rarity.color,
@@ -362,23 +385,23 @@ def display_recipe_ingredients(recipe_ingredients):
             recipe_id = recipe_ingredient[0]
             recipe_name = recipe_ingredient[1]
             recipe_type = recipe_ingredient[2]
-            recipe_color = recipe_ingredient[4]
-            ingredient_name = recipe_ingredient[3]
-            ingredient_quantity = recipe_ingredient[6]
-            ingredient_color = recipe_ingredient[5]
+            recipe_description = recipe_ingredient[3]
+            recipe_color = recipe_ingredient[5]
+            ingredient_name = recipe_ingredient[4]
+            ingredient_quantity = recipe_ingredient[7]
+            ingredient_color = recipe_ingredient[6]
         
             if ingredient_name is not None:
                 ingredient_list.append((ingredient_name, ingredient_quantity, ingredient_color))
 
-        print(f'{recipe_id:<3} - {COLORS[recipe_color]}{recipe_name}{RESET}')
-        print(f"      {DIM}┌──────────────────────────────────────────────────────────────────────────────┐{RESET}")
+        print(f'{recipe_id:<2} - {COLORS[recipe_color]}{recipe_name}{RESET}')
+        display_description(recipe_description)
 
         for i in range(0, len(ingredient_list), 3):
             ingredients_line = ingredient_list[i:i + 3]
             ingredient_text = format_recipe_and_craft_items(ingredients_line)
-            print(f'        {ingredient_text}')
+            print(f'     {ingredient_text}')
         
-        print(f"      {DIM}└──────────────────────────────────────────────────────────────────────────────┘{RESET}")
         print()
              
 

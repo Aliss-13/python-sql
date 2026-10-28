@@ -80,7 +80,7 @@ def advertising_interference():
     advertising = lambda: random_dialogue(ADVERTISING_INTERFERENCE, "advertising")
 
     print("📡 INTERFÉRENCE PUBLICITAIRE ARCANIQUE DÉTECTÉE !")
-    print("Une fréquence commerciale parasite votre laboratoire...")
+    print("   Une fréquence commerciale parasite votre laboratoire...")
     print()
     start_temporary_event(advertising, "✨ Le signal publicitaire arcanique s'est dissipé.")
 
@@ -89,7 +89,7 @@ def advertising_interference():
 def hes_alive():
 
     print("🐙 IL EST VIVANT !")
-    print("Oh, mais il parle...")
+    print("  « Oh, mais il parle... »")
     print()
 
     companions = {
@@ -111,7 +111,7 @@ def hes_alive():
 def taxes_and_fuckeries():
 
     print("📋 Taxes et emmerdes !")
-    print("Sens mon doigt.")
+    print("  « Sens mon doigt. »")
     print()
 
     fuckeries = {
