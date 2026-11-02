@@ -148,6 +148,11 @@ def pick_ingredients_to_blend(cursor, capacity):
                 ingredient_id = group[0][0] # ref requête sql return_inventory
                 available_quantity = group[0][2]
 
+                already_selected = blending_ingredients.count(ingredient_id)
+                if already_selected >= available_quantity:
+                    print("Vous n'avez plus assez de cet ingrédient !")
+                    continue
+
                 cursor.execute("""
                     SELECT
                         ingredients.name,
@@ -162,11 +167,6 @@ def pick_ingredients_to_blend(cursor, capacity):
 
                 name = result[0]
                 color = result[1]
-
-                already_selected = blending_ingredients.count(ingredient_id)
-                if already_selected >= available_quantity:
-                    print("Vous n'avez plus assez de cet ingrédient !")
-                    continue
 
                 blending_ingredients.append(ingredient_id)
 

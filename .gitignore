@@ -17,3 +17,6 @@ __pycache__/
 
 # Fichiers de test
 test.py
+
+# Notes personnelles de développement
+/notes MD/
