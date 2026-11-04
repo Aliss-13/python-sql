@@ -35,7 +35,7 @@ def ask_positive_int(prompt):
             return None
 
         try:
-            value = int(input(prompt))
+            value = int(choice)
 
             if value > 0 :
                 return value

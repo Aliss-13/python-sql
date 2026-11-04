@@ -66,7 +66,7 @@ def get_available_containers(cursor):
     for display_number, (equipment_id, name, description, container_color, price, unlock_discoveries) in enumerate(available_containers, start=1):
         
         color = COLORS[container_color]
-        print(f'{display_number:<2} - {color}{name}{RESET} - 🔒 : {unlock_discoveries} découvertes - {YELLOW}{price} pièces.{RESET}')
+        print(f'{display_number:<2} - {color}{name}{RESET} - 🔓 : {unlock_discoveries} découvertes - {YELLOW}{price} pièces.{RESET}')
         display_description(description)
         print()
 
@@ -97,6 +97,9 @@ def buy_container(cursor, connection):
     price = selected_container[4]
         
     quantity = ask_positive_int("Quantité : ")
+
+    if not quantity:
+        return
 
     cursor.execute("""SELECT money
     FROM player

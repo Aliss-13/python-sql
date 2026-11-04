@@ -54,6 +54,6 @@ def display_ingredient(ingredients):
         
         affinity_text = format_affinity_items(sorted_affinity_list)
                     
-        print(f"{ingredient_id:<2} - {COLORS[color]}{name}{RESET}  {affinity_text}  - 🔒 : {unlock_discoveries} découvertes")
+        print(f"{ingredient_id:<2} - {COLORS[color]}{name}{RESET}  {affinity_text}  - 🔓 : {unlock_discoveries} découvertes")
         display_description(description)
         print()

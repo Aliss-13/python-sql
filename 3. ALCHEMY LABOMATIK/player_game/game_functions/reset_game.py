@@ -1,4 +1,5 @@
 from display.display_utils import YELLOW, RESET
+from player_game.game_functions.initialization import initialize_player_equipment 
 
 
 def display_reset_game():
@@ -36,6 +37,8 @@ def reset_game(cursor, connection):
     try:
         for table in tables_to_reset:
             cursor.execute(f"DELETE FROM {table}")
+
+        initialize_player_equipment(cursor)
 
         cursor.execute("""
             UPDATE player

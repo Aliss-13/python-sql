@@ -9,8 +9,8 @@ def menu_objectives(cursor):
     
         print()
         print("📈 OBJECTIFS")
-        display_objective_achievements(cursor)
         print()
+        print(f"{YELLOW}[0] Le Wrap-Up Session{RESET} {DIM} =LE BILAN= {RESET}")
         print("[1] 🧪 Laboratoire")
         print("[2] 🧫 La Popotte")
         print("[3] 🌀 Portails")
@@ -20,8 +20,11 @@ def menu_objectives(cursor):
     
         choix = input("> ")
         print()
+
+        if choix == "0":
+            display_objective_achievements(cursor)
     
-        if choix == "1":
+        elif choix == "1":
             display_objective_discovered_recipes(cursor)
             
         elif choix == "2":
