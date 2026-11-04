@@ -3,6 +3,7 @@ import shutil
 from pathlib import Path
 import sqlite3
 
+
 from database.database_creation_plan import create_tables
 from menu import menu
 from display.display_utils import display_main_menu
@@ -14,11 +15,13 @@ from player_game.game_functions.initialization import (
 
 if getattr(sys, "frozen", False):
     BASE_DIR = Path(sys.executable).resolve().parent
+    RESOURCE_DIR = Path(sys._MEIPASS)
 else:
     BASE_DIR = Path(__file__).resolve().parent
+    RESOURCE_DIR = BASE_DIR
 
 DATABASE_PATH = BASE_DIR / "database.db"
-TEMPLATE_PATH = BASE_DIR / "database_template.db"
+TEMPLATE_PATH = RESOURCE_DIR / "database_template.db"
 
 if not DATABASE_PATH.exists():
     shutil.copy2(TEMPLATE_PATH, DATABASE_PATH)
