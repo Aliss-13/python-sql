@@ -65,31 +65,15 @@ MAGIQUE BOUTIQUE/
 
 ## 🗄️ Schéma de la base de données
 
+```mermaid
+
+erDiagram
+    customers ||--o{ sales : passe
+    sales ||--|{ sale_items : contient
+    products ||--o{ sale_items : concerne
+    products ||--o{ stock_purchases : approvisionne
+```
 ```text
-customers
-    │
-    │ 1 → N
-    ▼
- sales
-    │
-    │ 1 → N
-    ▼
-sale_items
-    │
-    │ N → 1
-    ▼
-products
-
-
-products
-    │
-    │ 1 → N
-    ▼
-stock_purchases
-
-
-
-
 products
 ├── id
 ├── name
@@ -123,6 +107,35 @@ stock_purchases
 ├── unit_purchase_price
 └── date
 ```
+## 🛠️ Conception de la base de données et logique métier
+
+### 🗄️ Modélisation relationnelle
+
+La base SQLite est organisée en cinq tables reliées entre elles par des clés étrangères.
+Cette structure permet de distinguer les produits, les clients, les ventes, les lignes de vente et les achats de stock.
+Les relations entre les tables sont exploitées à travers des jointures SQL pour récupérer et analyser les données commerciales.
+
+### 📜 Conservation des données historiques
+
+Les prix de vente (`unit_price`) et les prix d'achat (`unit_purchase_price`) sont enregistrés dans la table `sale_items` au moment de chaque vente.
+
+Cette approche permet de conserver les valeurs financières associées à une transaction, indépendamment des modifications ultérieures du catalogue.
+
+Les calculs historiques de chiffre d'affaires et de marge restent ainsi cohérents avec les prix pratiqués lors des ventes.
+
+### 📊 Requêtes SQL et statistiques
+
+L'application utilise des jointures et des fonctions d'agrégation SQL (`JOIN`, `GROUP BY`, `SUM`, `ORDER BY`) pour produire des indicateurs commerciaux :
+
+- Chiffre d'affaires
+- Marges commerciales
+- Revenu net
+- Classement des produits
+- Classement des clients
+
+### 🛡️ Validation des opérations
+
+La logique métier comprend des contrôles destinés à éviter certaines opérations invalides, notamment les ventes dont la quantité demandée dépasse le stock disponible et les paniers vides.
 
 ## 🚀 Installation
 
@@ -189,16 +202,13 @@ Les prix sont enregistrés au moment de la vente.
 
 Ainsi, une modification ultérieure du prix d'un produit n'altère pas les ventes déjà enregistrées.
 
-## 📚 Ce que ce projet m'a permis de pratiquer
+## 📚 Compétences mises en pratique
 
-- Python
-- fonctions et modularité
-- gestion des erreurs et validation des entrées
-- SQL
-- SQLite
-- relations entre tables
-- JOIN
-- GROUP BY et fonctions d'agrégation
-- transactions et rollback
-- gestion de données historiques
-- architecture d'une application CLI
+- **Python** : fonctions, modularité et organisation du code
+- **Gestion des erreurs** et validation des entrées utilisateur
+- **SQL / SQLite** : conception et manipulation d'une base relationnelle
+- **Modélisation des données** : tables, clés primaires, clés étrangères et relations 1:N
+- **Jointures SQL** : `INNER JOIN`, `LEFT JOIN`
+- **Agrégation des données** : `GROUP BY`, `SUM`, `ORDER BY`
+- **Gestion des données historiques** : conservation des prix au moment des ventes
+- **Développement d'une application CLI** : séparation des responsabilités entre les modules
